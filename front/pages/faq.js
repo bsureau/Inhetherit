@@ -1,8 +1,7 @@
 import Head from 'next/head'
-import styles from '../styles/index.module.css'
-import Link from 'next/link';
+import styles from '../styles/faq.module.css'
 
-export default function Index() {
+export default function Faq() {
 
   return (
     <div className="container">
@@ -13,20 +12,8 @@ export default function Index() {
       </Head>
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Find peace of mind. <br />
-          Bequeath your cryptos!
+          FAQs
         </h1>
-        <div className={styles.actions}>
-          <Link href="/will">
-            <a className="primary-button">Make a will</a>
-          </Link>
-          <Link href="/claim">
-            <a className="primary-button">Claim</a>
-          </Link>
-          <Link href="/faq">
-            <a className="secondary-button">FAQs</a>
-          </Link>
-        </div>
       </main>
       <footer className={styles.footer}>
         <a
