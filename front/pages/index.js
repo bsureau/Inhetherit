@@ -14,7 +14,7 @@ export default function Index() {
       <main className={styles.main}>
         <h1 className={styles.title}>
           Find peace of mind. <br />
-          Bequeath your cryptos!
+          Bequeath your Eth!
         </h1>
         <div className={styles.actions}>
           <Link href="/will">

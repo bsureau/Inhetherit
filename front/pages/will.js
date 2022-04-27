@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/will.module.css'
 import { ethers } from "ethers";
 import Navbar from './components/nav';
+import Sidebar from './components/sidebar';
 
 async function approve() {
 
@@ -60,16 +61,21 @@ async function transfer() {
 export default function Will() {
 
   return (
-      <div className="container">
-        <Head>
-            <title>Inhetherit</title>
-            <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <Navbar />
-        <main className={styles.main}>
-            HELLO WORLD!
-        </main>
-    </div>
+      <div className="root">
+        <Sidebar />
+        <div className="container">
+          <Head>
+              <title>Inhetherit</title>
+              <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
+              <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <Navbar />
+          <main className={styles.main}>
+              <a className="primary-button">
+                Bequeath your Ethers
+              </a>
+          </main>
+        </div>
+      </div>
   )
 }

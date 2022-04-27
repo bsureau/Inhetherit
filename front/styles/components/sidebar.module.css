@@ -1,0 +1,20 @@
+.main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: grey;
+}
+
+.main a {
+    margin: 0 2.5rem 2.5rem 0;
+}
+
+.main a:first-child {
+    margin-bottom: 5rem;
+}
+
+.main a:last-child {
+    margin-top: auto;
+}
