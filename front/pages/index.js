@@ -59,7 +59,7 @@ export default function Index() {
           h3 
           size={20}
         >
-          Your cryptos should not disappear when you die. <br/>Start bequeath your cryptos to your belove ones now!
+          Your cryptos should <strong>never</strong> disappear when you die. <br/>Start bequeath your cryptos to your belove ones now!
         </Text>
         <Spacer y={2} />
         <Row 
