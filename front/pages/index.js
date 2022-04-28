@@ -176,10 +176,11 @@ export default function Index() {
             </Grid>
           </Grid.Container>
         </Row>
-        <Spacer y={5} />
+        <Spacer />
         <Row 
           justify="center" 
           align="center"
+          background="#fefefe"
         >
           Powered by &nbsp;
           <Link 
@@ -197,6 +198,7 @@ export default function Index() {
             FAQs
           </Link>
         </Row>
+        <Spacer />
       </Col>
     </Container>
   )

@@ -86,9 +86,8 @@ export default function Will() {
           css={{ 
             marginLeft: "280px", 
             paddingTop: "5.3rem", 
-            background: '#fefefe', 
+            background: '#fefefe',
             minHeight: "100vh", 
-            background: '#f0f0f0',
             textAlign: "center",
             width: "100%"
           }}

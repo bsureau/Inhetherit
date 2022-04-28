@@ -12,8 +12,9 @@ export default function WillList() {
         minWidth: "1000px",
         margin: "auto",
         borderRadius: "1rem",
-        backgroundColor: "#ffffff",
-        marginTop: "3rem"
+        background: "#ffffff",
+        marginTop: "3rem",
+        boxShadow: "0px 0.2rem 10px #e0e0e0"
       }}
     >
       <Row 

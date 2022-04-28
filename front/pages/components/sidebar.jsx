@@ -26,7 +26,7 @@ export default function Sidebar() {
         >
           <Text 
             h1 
-            size={35} 
+            size={33} 
             weight="bold" 
             color="#ffffff"
           >
@@ -44,7 +44,7 @@ export default function Sidebar() {
             href="/will"
           >
             <Text 
-              size={18} 
+              size={17} 
               weight="bold" 
               color= { router.pathname == "/will" ? "#dedede" : "#ffffff"}
             >
@@ -64,7 +64,7 @@ export default function Sidebar() {
             href="/claim"
           >
             <Text 
-              size={18} 
+              size={17} 
               weight="bold" 
               color= { router.pathname == "/claim" ? "#dedede" : "#ffffff"}
             >
@@ -86,7 +86,7 @@ export default function Sidebar() {
             href="/faq"
           >
             <Text 
-              size={18} 
+              size={17} 
               weight="bold" 
               color= { router.pathname == "/faq" ? "#dedede" : "#ffffff"}
             >

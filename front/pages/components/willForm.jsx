@@ -26,6 +26,8 @@ export default function WillForm() {
   const handleWill = () => {
     alert("coucou");
     //TODO: interact with contract
+    // 1. call approve on Ethereum smart contract
+    // 2. save will informations in inhetherit smart contract
   }
 
   const handleClose = () => {
@@ -39,7 +41,8 @@ export default function WillForm() {
         minWidth: "1000px",
         margin: "auto",
         borderRadius: "1rem",
-        backgroundColor: "#ffffff",
+        background: "#ffffff",
+        boxShadow: "0px 0.2rem 10px #e0e0e0"
       }}
     >
       <Row 
@@ -57,7 +60,7 @@ export default function WillForm() {
           label="First name:"
           placeholder="Jean"
           color="primary" 
-          width="200px" 
+          width="15%" 
           value={firstName}
           onChange={e => setFirstName(e.target.value)}
           disabled={submit}
@@ -68,7 +71,7 @@ export default function WillForm() {
           label="Last name:"
           placeholder="Bono"
           color="primary" 
-          width="200px" 
+          width="15%" 
           value={lastName}
           onChange={e => setLastName(e.target.value)}
           disabled={submit}
@@ -79,7 +82,7 @@ export default function WillForm() {
           label="Birthday date:"
           placeholder="07/12/1990"
           color="primary"
-          width="150px" 
+          width="15%" 
           value={birthdayDate}
           onChange={e => setBirthdayDate(e.target.value)}
           disabled={submit}
@@ -90,7 +93,7 @@ export default function WillForm() {
           label="Birth post code:"
           placeholder="75012"
           color="primary" 
-          width="150px" 
+          width="15%" 
           value={birthPostCode}
           onChange={e => setBirthPostCode(e.target.value)}
           disabled={submit}
@@ -101,7 +104,7 @@ export default function WillForm() {
           label="Heir address"
           placeholder="0x..."
           color="primary" 
-          width="400px" 
+          width="30%" 
           value={heirAddress}
           onChange={e => setHeirAddress(e.target.value)}
           disabled={submit}
