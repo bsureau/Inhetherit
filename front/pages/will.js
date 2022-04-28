@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import TopBar from './components/topbar';
 import Sidebar from './components/sidebar';
 import WillForm from './components/willForm';
+import WillList from './components/willList';
 import { Container, Row, Col, Spacer } from "@nextui-org/react";
 
 
@@ -98,12 +99,17 @@ export default function Will() {
               <link rel="icon" href="/favicon.ico" />
           </Head>
           <Spacer y={3} />
-          <Row
+          <Col
             justify="center" 
             align="center"
           >
+            <Row>
               <WillForm />
-          </Row>
+            </Row>
+            <Row>
+              <WillList />
+            </Row>
+          </Col>
         </Col>
       </Row>
     </Container>
