@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import styles from '../styles/claim.module.css'
 
 export default function Claim() {
 

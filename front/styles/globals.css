@@ -14,34 +14,3 @@ a {
 * {
   box-sizing: border-box;
 }
-
-.root {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  min-height: 100vh;
-}
-
-.container {
-  width: 100%;
-}
-
-.primary-button {
-  margin: 4rem 0;
-  border: 1px solid #000;
-  border-radius: 50px;
-  padding: 10px 50px;
-  background: #000;
-  text-decoration: none;
-  color: #fff;
-} 
-
-.secondary-button {
-  margin: 4rem 0;
-  border: 1px solid grey;
-  border-radius: 50px;
-  padding: 10px;
-  background: grey;
-  text-decoration: none;
-  color: black;
-}

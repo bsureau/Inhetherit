@@ -1,8 +1,10 @@
 import Head from 'next/head'
-import styles from '../styles/will.module.css'
 import { ethers } from "ethers";
-import Navbar from './components/nav';
+import TopBar from './components/topbar';
 import Sidebar from './components/sidebar';
+import WillForm from './components/willForm';
+import { Container, Row, Col, Spacer } from "@nextui-org/react";
+
 
 async function approve() {
 
@@ -61,21 +63,49 @@ async function transfer() {
 export default function Will() {
 
   return (
-      <div className="root">
-        <Sidebar />
-        <div className="container">
+    <Container 
+      fluid 
+      responsive 
+      css={{ 
+        minHeight: '100vh',  
+        minWidth: '100vw',  
+        padding: '0',
+        zIndex: "-10"
+      }}
+    >
+      <TopBar />
+      <Sidebar />
+      <Row 
+      justify="center" 
+      align="center"
+      >
+        <Col 
+          justify="center" 
+          align="center" 
+          css={{ 
+            marginLeft: "280px", 
+            paddingTop: "5.3rem", 
+            background: '#fefefe', 
+            minHeight: "100vh", 
+            background: '#f0f0f0',
+            textAlign: "center",
+            width: "100%"
+          }}
+        >
           <Head>
               <title>Inhetherit</title>
               <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
               <link rel="icon" href="/favicon.ico" />
           </Head>
-          <Navbar />
-          <main className={styles.main}>
-              <a className="primary-button">
-                Bequeath your Ethers
-              </a>
-          </main>
-        </div>
-      </div>
+          <Spacer y={3} />
+          <Row
+            justify="center" 
+            align="center"
+          >
+              <WillForm />
+          </Row>
+        </Col>
+      </Row>
+    </Container>
   )
 }

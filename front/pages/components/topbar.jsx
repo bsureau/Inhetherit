@@ -1,9 +1,10 @@
-import styles from "../../styles/components/nav.module.css"
 import { ethers } from "ethers";
 import React, { useState, useEffect } from 'react';
 import {WalletError} from '../../exceptions/walletError';
+import { Button, Link, Row, Spacer } from "@nextui-org/react";
+import { FaDotCircle, FaWallet } from 'react-icons/fa';
 
-export default function Navbar() {
+export default function TopBar() {
 
   const [isConnected, setConnected] = useState(false);
   const [account, setAccount] = useState("");
@@ -11,6 +12,7 @@ export default function Navbar() {
   const [signer, setSigner] = useState(null);
 
   const checkIfWalletIsConnected = async () => {
+
     try {
       const { ethereum } = window;
 
@@ -29,6 +31,10 @@ export default function Navbar() {
         setProvider(provider);
         setAccount(address);
         setConnected(true);
+
+        ethereum.on('accountsChanged', async () => {
+          checkIfWalletIsConnected();
+        });
       } else { // Need to request permission to connect users account firs (see connectWallet method)
         setConnected(false);
       }
@@ -38,6 +44,7 @@ export default function Navbar() {
   };
 
   const connectWallet = async () => {
+
     try {
       const { ethereum } = window;
 
@@ -52,6 +59,10 @@ export default function Navbar() {
       const address = await signer.getAddress();
       setAccount(address);
       setConnected(true);
+
+      ethereum.on('accountsChanged', async () => {
+        checkIfWalletIsConnected();
+      });
       
     } catch (error) {
       console.log(error);
@@ -70,17 +81,57 @@ export default function Navbar() {
   }, []); 
 
   return (
-      <nav className={styles.main}>
-          <a href="#" className="secondary-button">
-              Ethereum Mainnet
-          </a>
+
+      <Row 
+        css={{
+          background: "#ffffff",
+          position: "fixed", 
+          width: "100%", 
+          zIndex: "10", 
+          height: "5rem", 
+          padding: "0 2rem", 
+          paddingLeft: "320px", 
+          display: "flex", 
+          flexDirection: "row", 
+          justifyContent: "space-between", 
+          alignItems: "center", 
+          boxShadow: "0px 0.2rem 10px #e0e0e0"
+        }}>
+          <Link 
+            href="#" 
+            className="secondary-button"
+          >
+            <Button 
+              bordered 
+              color="success" 
+              size="xs"
+            >
+              <FaDotCircle /> &nbsp;
+              Ethereum Rinkeby
+            </Button>
+          </Link>
           { isConnected ? 
-          <p>Connected with {account}</p>
+            <Button 
+              bordered 
+              color="primary" 
+              size="md" 
+            >
+              <FaWallet /> 
+              <Spacer w={1} />
+              {account.substring(0,15)}...
+            </Button>
           : 
-          <a href="#" className="primary-button" onClick={connectWallet}>
+            <Button 
+              bordered 
+              color="primary" 
+              size="md" 
+              onClick={connectWallet}
+            >
+              <FaWallet /> 
+              <Spacer w={1} />
               Connect your wallet
-          </a>
+            </Button>
           }
-      </nav>
+      </Row>
   )
 }
