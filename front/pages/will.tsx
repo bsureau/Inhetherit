@@ -49,7 +49,6 @@ async function getAllowance() {
 }
 
 async function transfer() {
-
   const dercAddress = "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1";
   const dercAbi = [
     "function balanceOf(address account) public view returns (uint256 balance)",
