@@ -125,7 +125,7 @@ export default function WillForm() {
           onClick={handleSubmit}
           disabled={!isValid() || (isValid() && submit)}
         >
-          Bequeath your Eth
+          Pass on your ETH
         </Button>
       </Row> 
       <Modal

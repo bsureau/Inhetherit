@@ -40,10 +40,13 @@ export default function Index() {
       >
         <Spacer y={3} />
         <Text 
-          h1 size={50} 
+          h1 size={25} 
           weight="bold"
+          css={{
+            fontFamily: 'Avenir Next'
+          }}
         >
-          Inhetherit 🌈  
+          🌈 &nbsp;INHETHERIT  
         </Text>
         <Text 
           h2 
@@ -59,7 +62,7 @@ export default function Index() {
           h3 
           size={20}
         >
-          Your cryptos should <strong>never</strong> disappear when you die. <br/>Start bequeath your cryptos to your belove ones now!
+          Your cryptos should <strong>never</strong> disappear when you die. <br/>Plan to pass on your cryptos to your loved ones now!
         </Text>
         <Spacer y={2} />
         <Row 
@@ -102,7 +105,7 @@ export default function Index() {
                     textAlign: "center"
                   }}
                 >
-                  Start bequeath your cryptos to your belove ones without compromising security! 
+                  Pass on your cryptos to your loved ones today, without compromising security! 
                 </Text>
                 <Card.Footer 
                   css={{
@@ -155,7 +158,7 @@ export default function Index() {
                     textAlign: "center"
                   }}
                 >
-                  You lost someone who gave you their cryptos? Just get them back!
+                  You lost someone who gave you their cryptos? 
                 </Text>
                 <Card.Footer 
                   css={{
@@ -168,7 +171,7 @@ export default function Index() {
                     <Button 
                       auto
                     >
-                      Get started
+                      Claim it now
                     </Button>
                   </Link>
                 </Card.Footer>

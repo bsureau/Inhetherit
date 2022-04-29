@@ -15,24 +15,31 @@ export default function Sidebar() {
           minWidth: "280px",  
           width: "280px", 
           background: "#054EA9", 
-          paddingTop: "1rem", 
-          borderRadius: "0 3.8rem 0 0", 
+          paddingTop: "1.5rem", 
+          borderTopRightRadius: "50px",
           zIndex: "100"
         }}
       >
         <Link 
-          color="text" 
           href="/"
         >
           <Text 
-            h1 
-            size={33} 
-            weight="bold" 
-            color="#ffffff"
+            h1 size={20} 
+            color="white"
+            weight="bold"
+            css={{
+              fontFamily: 'Avenir Next'
+            }}
           >
-            Inhetherit 🌈 
+            🌈 &nbsp;INHETHERIT {"\n"}
           </Text>
         </Link>
+        <Text 
+            size={13} 
+            color="white"
+          >
+            Find peace of mind.
+          </Text>
         <Spacer y={3} />
         <Row 
           css={{
