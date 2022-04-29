@@ -56,5 +56,4 @@ describe("InhetheritFactory", function () {
       inhetheritContract.createWill("Jean", "Bono", "07/12/1990", "75012", heirAddress)
     ).to.be.revertedWith("Will already created");
   });
-    
 });
