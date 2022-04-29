@@ -9,12 +9,12 @@ export default function Faq() {
         <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
+      <main>
+        <h1>
           FAQs
         </h1>
       </main>
-      <footer className={styles.footer}>
+      <footer>
         <a
           href="#"
           target="_blank"
