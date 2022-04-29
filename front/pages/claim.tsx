@@ -5,9 +5,7 @@ export default function Claim() {
   return (
     <div className="container">
       <Head>
-        <title>Inhetherit</title>
-        <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Inhetherit - Claim token</title>
       </Head>
       <main>
         <h1>
