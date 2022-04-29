@@ -9,8 +9,8 @@ export default function Claim() {
         <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
+      <main>
+        <h1>
           Claim
         </h1>
       </main>

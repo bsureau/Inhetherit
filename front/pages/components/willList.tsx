@@ -1,6 +1,4 @@
-import { ethers } from "ethers";
-import React, { useState, useEffect } from 'react';
-import {WalletError} from '../../exceptions/walletError';
+import React from 'react';
 import { Col, Row, Text } from '@nextui-org/react';
 
 export default function WillList() {
