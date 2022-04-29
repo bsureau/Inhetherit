@@ -1,12 +1,18 @@
-import Head from 'next/head'
-
+import Head from 'next/head';
 import { ethers } from "ethers";
-import { Container, Row, Col, Spacer } from "@nextui-org/react";
+import {
+  Container,
+  Row,
+  Col,
+  Spacer
+} from "@nextui-org/react";
 
-import TopBar from './components/topbar';
-import Sidebar from './components/sidebar';
-import WillForm from './components/willForm';
-import WillList from './components/willList';
+import {
+  TopBar,
+  Sidebar,
+  WillForm,
+  WillList
+} from './components';
 
 async function approve() {
 
