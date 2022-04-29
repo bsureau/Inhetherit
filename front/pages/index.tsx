@@ -2,31 +2,55 @@ import Head from 'next/head'
 import { Button, Card, Container, Grid, Row, Col, Text, Spacer, Link } from "@nextui-org/react";
 import { FaMoneyCheck, FaRegStickyNote } from 'react-icons/fa';
 
+const styles = {
+  container: {
+    minHeight: '100vh',
+    minWidth: '100vw',
+    padding: '0',
+    background: '#fefefe'
+  },
+  row: {
+    background: '#000',
+    height: '4rem'
+  },
+  logo: {
+    fontFamily: 'Avenir Next'
+  },
+  title: {
+    textGradient: "90deg, #0700b8 0%, #00ff88 100%"
+  },
+  card: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "2rem"
+  },
+  cardTitle: {
+    textAlign: "center"
+  },
+  cardText: {
+    paddingTop: "1rem",
+    textAlign: "center"
+  },
+  cardFooter: {
+    justifyContent: "center"
+  },
+};
+
 export default function Index() {
 
   return (
     <Container 
       fluid 
       responsive 
-      css={{ 
-        minHeight: '100vh', 
-        minWidth: '100vw',  
-        padding: '0', 
-        background: '#fefefe'
-      }}
+      css={styles.container}
     >
       <Head>
-        <title>Inhetherit</title>
-        <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>Inhetherit - Find peace of mind. Pass on your cryptos!</title>
       </Head>
       <Row 
         justify="center" 
         align="center" 
-        css={{
-          background: '#000',
-          height: '4rem'
-        }}
+        css={styles.row}
       >
         <Text 
           color="#ffffff"
@@ -42,27 +66,21 @@ export default function Index() {
         <Text 
           h1 size={25} 
           weight="bold"
-          css={{
-            fontFamily: 'Avenir Next'
-          }}
+          css={styles.logo}
         >
           🌈 &nbsp;INHETHERIT  
         </Text>
         <Text 
           h2 
           size={100} 
-          css={{
-            textGradient: "90deg, #0700b8 0%, #00ff88 100%"
-          }} 
+          css={styles.title} 
           weight="bold"
         >
           Find peace of mind. 
         </Text>
-        <Text 
-          h3 
-          size={20}
-        >
-          Your cryptos should <strong>never</strong> disappear when you die. <br/>Plan to pass on your cryptos to your loved ones now!
+        <Text h3 size={20}>
+          Your cryptos should <strong>never</strong> disappear when you die. <br />
+          Plan to pass on your cryptos to your loved ones now!
         </Text>
         <Spacer y={2} />
         <Row 
@@ -79,20 +97,11 @@ export default function Index() {
               justify="center" 
               wrap="wrap"
             >
-              <Card 
-                hoverable 
-                css={{
-                  justifyContent : "center", 
-                  alignItems:"center", 
-                  padding: "2rem"
-                }}
-              >
+              <Card hoverable css={styles.card}>
                 <Text 
                   h4 size={35} 
                   weight="bold"
-                  css={{
-                    textAlign: "center"
-                  }}
+                  css={styles.cardTitle}
                 >
                   <FaRegStickyNote />
                   <br />
@@ -100,25 +109,13 @@ export default function Index() {
                 </Text>
                 <Text 
                   size={18} 
-                  css={{
-                    paddingTop: "1rem", 
-                    textAlign: "center"
-                  }}
+                  css={styles.cardText}
                 >
                   Pass on your cryptos to your loved ones today, without compromising security! 
                 </Text>
-                <Card.Footer 
-                  css={{
-                    justifyContent: "center"
-                  }}
-                >
-                  <Link 
-                    href="/will"
-                  >
-                    <Button 
-                      auto 
-                      justify="center"
-                    >
+                <Card.Footer css={styles.cardFooter}>
+                  <Link href="/will">
+                    <Button auto justify="center">
                       Get started
                     </Button>
                   </Link>
@@ -131,21 +128,12 @@ export default function Index() {
               justify="center" 
               wrap="wrap"
             >
-              <Card 
-                hoverable 
-                css={{
-                  justifyContent : "center", 
-                  alignItems:"center", 
-                  padding: "2rem"
-                }}
-              >
+              <Card hoverable css={styles.card}>
                 <Text 
                   h4 
                   size={35} 
                   weight="bold"
-                  css={{
-                    textAlign: "center"
-                  }}
+                  css={styles.cardTitle}
                 >
                   <FaMoneyCheck />
                   <br />
@@ -153,24 +141,13 @@ export default function Index() {
                 </Text>
                 <Text 
                   size={18} 
-                  css={{
-                    paddingTop: "1rem", 
-                    textAlign: "center"
-                  }}
+                  css={styles.cardText}
                 >
                   You lost someone who gave you their cryptos? 
                 </Text>
-                <Card.Footer 
-                  css={{
-                    justifyContent: "center"
-                  }}
-                >
-                  <Link 
-                    href="/claim"
-                  >
-                    <Button 
-                      auto
-                    >
+                <Card.Footer css={styles.cardFooter}>
+                  <Link href="/claim">
+                    <Button auto>
                       Claim it now
                     </Button>
                   </Link>
@@ -191,14 +168,19 @@ export default function Index() {
           >
             Maître Yoda
           </Link>
-          <Spacer w={5} />
-          -
-          <Spacer w={5} />
+          &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
           <Link 
             color="text" 
             href="/faq"
           >
             FAQs
+          </Link>
+          &nbsp; - &nbsp;
+          <Link
+            color="text"
+            href="/manifesto"
+          >
+            Manifesto
           </Link>
         </Row>
         <Spacer />

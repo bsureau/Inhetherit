@@ -1,11 +1,18 @@
-import Head from 'next/head'
+import Head from 'next/head';
 import { ethers } from "ethers";
-import TopBar from './components/topbar';
-import Sidebar from './components/sidebar';
-import WillForm from './components/willForm';
-import WillList from './components/willList';
-import { Container, Row, Col, Spacer } from "@nextui-org/react";
+import {
+  Container,
+  Row,
+  Col,
+  Spacer
+} from "@nextui-org/react";
 
+import {
+  TopBar,
+  Sidebar,
+  WillForm,
+  WillList
+} from './components';
 
 async function approve() {
 
@@ -42,7 +49,6 @@ async function getAllowance() {
 }
 
 async function transfer() {
-
   const dercAddress = "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1";
   const dercAbi = [
     "function balanceOf(address account) public view returns (uint256 balance)",
@@ -61,42 +67,45 @@ async function transfer() {
   console.log("tx: ", tx.hash);
 }
 
+const styles = {
+  container: {
+    minHeight: '100vh',
+    minWidth: '100vw',
+    padding: '0',
+    zIndex: "-10"
+  },
+  column: {
+    marginLeft: "280px",
+    paddingTop: "5.3rem",
+    background: "#fefefe",
+    minHeight: "100vh",
+    textAlign: "center",
+    width: "100%",
+  },
+};
+
 export default function Will() {
 
   return (
     <Container 
       fluid 
       responsive 
-      css={{ 
-        minHeight: '100vh',  
-        minWidth: '100vw',  
-        padding: '0',
-        zIndex: "-10"
-      }}
+      css={styles.container}
     >
+      <Head>
+        <title>Inhetherit - Create a will</title>
+      </Head>
       <TopBar />
       <Sidebar />
       <Row 
-      justify="center" 
-      align="center"
+        justify="center"
+        align="center"
       >
         <Col 
           justify="center" 
           align="center" 
-          css={{ 
-            marginLeft: "280px", 
-            paddingTop: "5.3rem", 
-            background: '#fefefe',
-            minHeight: "100vh", 
-            textAlign: "center",
-            width: "100%"
-          }}
+          css={styles.column}
         >
-          <Head>
-              <title>Inhetherit</title>
-              <meta name="description" content="Find peace of mind. Bequeath your cryptos!" />
-              <link rel="icon" href="/favicon.ico" />
-          </Head>
           <Spacer y={3} />
           <Col
             justify="center" 
