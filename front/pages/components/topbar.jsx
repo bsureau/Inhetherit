@@ -2,12 +2,13 @@ import { ethers } from "ethers";
 import React, { useState, useEffect } from 'react';
 import {WalletError} from '../../exceptions/walletError';
 import { Button, Link, Row, Spacer } from "@nextui-org/react";
-import { FaDotCircle, FaWallet } from 'react-icons/fa';
+import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
 
 export default function TopBar() {
 
   const [isConnected, setConnected] = useState(false);
   const [account, setAccount] = useState("");
+  const [balance, setBalance] = useState(0);
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
 
@@ -27,13 +28,21 @@ export default function TopBar() {
       if (accounts.length > 0) {
         const signer = provider.getSigner();
         const address = await signer.getAddress();
+        const balance = await signer.getBalance();
         setSigner(signer);
         setProvider(provider);
+        setBalance(balance);
         setAccount(address);
         setConnected(true);
 
         ethereum.on('accountsChanged', async () => {
           checkIfWalletIsConnected();
+        });
+
+        provider.on('block', async () => {
+          if (account === "") return;
+          const balance = await provider.getBalance(signer.getAddress());
+          setBalance(balance);
         });
       } else { // Need to request permission to connect users account firs (see connectWallet method)
         setConnected(false);
@@ -57,7 +66,9 @@ export default function TopBar() {
       await provider.send("eth_requestAccounts", []); // Requesting permission to connect users accounts
       const signer = provider.getSigner();
       const address = await signer.getAddress();
+      const balance = await signer.getBalance();
       setAccount(address);
+      setBalance(balance);
       setConnected(true);
 
       ethereum.on('accountsChanged', async () => {
@@ -111,15 +122,28 @@ export default function TopBar() {
             </Button>
           </Link>
           { isConnected ? 
-            <Button 
-              bordered 
-              color="primary" 
-              size="md" 
-            >
-              <FaWallet /> 
-              <Spacer w={1} />
-              {account.substring(0,15)}...
-            </Button>
+            <div>
+              <Button 
+                css={{ display: "inline-block", minWidth: 0, marginRight: 10 }}
+                bordered 
+                color="black" 
+                size="md" 
+              >
+                <FaEthereum /> 
+                &nbsp;
+                {Math.round(ethers.utils.formatEther(balance) * 100)/100} ETH
+              </Button>
+              <Button 
+                css={{ display: "inline-block" }}
+                bordered 
+                color="primary" 
+                size="md" 
+              >
+                <FaWallet /> 
+                &nbsp;&nbsp; 
+                {account.substring(0,15)}...
+              </Button>
+            </div>
           : 
             <Button 
               bordered 

@@ -37,9 +37,6 @@ export default function Sidebar() {
         <Text 
             size={13} 
             color="white"
-            css={{
-              display: "block"
-            }}
           >
             Find peace of mind.
           </Text>
