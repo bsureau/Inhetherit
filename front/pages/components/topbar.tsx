@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { WalletError } from '../../exceptions/walletError';
 import { Button, Link, Row, Spacer } from "@nextui-org/react";
 import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
+import { store } from '../../store';
 
 const styles = {
   row: {
@@ -60,6 +61,16 @@ export default function TopBar() {
           const balance = await provider.getBalance(signer.getAddress());
           setBalance(balance);
         });
+
+        store.dispatch(
+          {
+            type:"INIT_WALLET",
+            account: account, 
+            balance: balance, 
+            signer: signer
+          }
+        );
+
       } else { // Need to request permission to connect users account firs (see connectWallet method)
         setConnected(false);
       }

@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Col, Input, Link, Modal, Row, Spacer, Text } from '@nextui-org/react';
+import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
+import { ethers } from 'ethers';
+import { store } from '../../store';
+
 
 export default function WillForm() {
 
@@ -23,8 +26,18 @@ export default function WillForm() {
     }
   }
 
-  const handleWill = () => {
-    alert("coucou");
+  const handleWill = async () => {
+    const inhetheritFactoryAddress = "0x06F92EA1Ed585d2d27Ecaf3DC327A7cb2D42aFae";
+    const inhetheritFactoryABI = [
+      "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
+      "function getWill() public view returns(address)"
+    ];
+
+    const contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, store.getState().signer);
+    const tx = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
+    tx.wait(1);
+    console.log(tx.hash);
+
     //TODO: interact with contract
     // 1. call approve on Ethereum smart contract
     // 2. save will informations in inhetherit smart contract

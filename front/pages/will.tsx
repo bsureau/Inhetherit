@@ -14,6 +14,8 @@ import {
   WillList
 } from './components';
 
+import { store } from '../store'
+
 async function approve() {
 
   const dercAddress = "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1";
@@ -95,6 +97,7 @@ export default function Will() {
       <Head>
         <title>Inhetherit - Create a will</title>
       </Head>
+      
       <TopBar />
       <Sidebar />
       <Row 
