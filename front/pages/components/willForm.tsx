@@ -13,7 +13,10 @@ export default function WillForm() {
   const [birthdayDate, setBirthdayDate]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [birthPostCode, setBirthPostCode]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [heirAddress, setHeirAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
-  const [submit, setSubmit]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+  const [submited, setSubmited]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+  const [openReviewInfo, setOpenReviewInfo]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [confirmation, setConfirmation] = useState(false);
   
   const isValid: Function = () => {
     if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
@@ -24,23 +27,27 @@ export default function WillForm() {
   const handleSubmit: Function = (evt) => {
     evt.preventDefault();
     if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
-      setSubmit(true);
+      setSubmited(true);
+      setOpenReviewInfo(true);
     }
   }
 
   const handleWill: Function = async () => {
-    const inhetheritFactoryAddress: string = "0x38B0F3d3a1071B09CC4D2D159A5AFbFF96CfCB82";
+    const inhetheritFactoryAddress: string = "0x0a0B1eA109042C8C85576a5f3B86e4912944e3e4";
     const inhetheritFactoryABI: string[] = [
       "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
       "function getWill() public view returns(address)",
     ];
+
+    setOpenReviewInfo(false);
+    setLoading(true);
 
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
     const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
 
     // wait at least 3 block mined before saying all good
-    const txReceipt: TransactionReceipt = await tx.wait(2);
+    const txReceipt: TransactionReceipt = await tx.wait(1);
 
     console.log('Will created', txReceipt);
 
@@ -54,16 +61,15 @@ export default function WillForm() {
     const txCancelReceipt: TransactionReceipt = await txWill.wait(1);
     console.log('Will canceled', txCancelReceipt);
 
+    setLoading(false);
+    setConfirmation(true);
+
     // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
     // la modal, demander le droit d'approve, virer le loading etc...
 
     //TODO: interact with contract
     // 1. call approve on Ethereum smart contract
     // 2. save will informations in inhetherit smart contract
-  }
-
-  const handleClose: Function = () => {
-      setSubmit(false);
   }
 
   return (
@@ -95,7 +101,7 @@ export default function WillForm() {
           width="15%" 
           value={firstName}
           onChange={e => setFirstName(e.target.value)}
-          disabled={submit}
+          disabled={submited}
         />
         <Input 
           rounded
@@ -106,7 +112,7 @@ export default function WillForm() {
           width="15%" 
           value={lastName}
           onChange={e => setLastName(e.target.value)}
-          disabled={submit}
+          disabled={submited}
         />
         <Input 
           rounded
@@ -117,7 +123,7 @@ export default function WillForm() {
           width="15%" 
           value={birthdayDate}
           onChange={e => setBirthdayDate(e.target.value)}
-          disabled={submit}
+          disabled={submited}
         />
         <Input 
           rounded
@@ -128,7 +134,7 @@ export default function WillForm() {
           width="15%" 
           value={birthPostCode}
           onChange={e => setBirthPostCode(e.target.value)}
-          disabled={submit}
+          disabled={submited}
         />
         <Input 
           rounded
@@ -139,7 +145,7 @@ export default function WillForm() {
           width="30%" 
           value={heirAddress}
           onChange={e => setHeirAddress(e.target.value)}
-          disabled={submit}
+          disabled={submited}
         />
       </Row> 
       <Row 
@@ -155,17 +161,18 @@ export default function WillForm() {
           color="primary" 
           size="lg" 
           onClick={handleSubmit}
-          disabled={!isValid() || (isValid() && submit)}
+          disabled={!isValid() || (isValid() && submited)}
         >
           Pass on your ETH
         </Button>
       </Row> 
+
       <Modal
         closeButton
         aria-labelledby="modal-title"
         width="600px"
-        open={submit}
-        onClose={handleClose}
+        open={openReviewInfo}
+        onClose={() => setOpenReviewInfo(false)}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -175,7 +182,7 @@ export default function WillForm() {
         <Modal.Body>
           <Col justify="center" align="center">
             <Text>
-              You are about to give the right to transfer all your Eth funds to your heir. <br/>
+              You are about to give the right to transfer all your Eth funds to your heir. <br />
               Please make sure all the informations are correct or your funds could never be transferred at the time of your death.
             </Text>
             <Spacer />
@@ -206,21 +213,63 @@ export default function WillForm() {
             <Text>
               <strong>Heir address:</strong>
               <br />
-              <Link 
+              <Link
                 href={`https://rinkeby.etherscan.io/search?f=1&q=${heirAddress}`}
                 target="_blank"
               >
-                  {heirAddress}
+                {heirAddress}
               </Link>
             </Text>
           </Col>
         </Modal.Body>
         <Modal.Footer>
-          <Button auto flat color="error" onClick={handleClose}>
+          <Button auto flat color="error" onClick={() => setOpenReviewInfo(false)}>
             Cancel
           </Button>
           <Button auto onClick={handleWill}>
             Yes, I confirm!
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        preventClose={true}
+        aria-labelledby="modal-title"
+        width="600px"
+        open={isLoading}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={30}>
+            Uploading your will...
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Text>
+            Your will is being uploaded... It may take a few minutes...
+          </Text>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        width="600px"
+        open={confirmation}
+        onClose={() => setConfirmation(false)}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={30}>
+            All good
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Text>
+            Your will is now on your wallet and will be executed when you die.
+          </Text>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button auto flat onClick={() => setConfirmation(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>
