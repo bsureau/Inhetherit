@@ -41,7 +41,7 @@ describe("InhetheritFactory", function () {
     expect(await willContract.getState()).to.be.equal(0); // == "OPEN"
   });
 
-  it("It reverts if will already exist", async function () {
+  it("Reverts if will already exist", async function () {
 
     const [giver, heir] = await ethers.getSigners();
     const heirAddress = await heir.getAddress();
@@ -58,5 +58,46 @@ describe("InhetheritFactory", function () {
     await expect(
       inhetheritContract.createWill("Jean", "Bono", "07/12/1990", "75012", heirAddress)
     ).to.be.revertedWith("Will already created");
+  });
+
+  it("Creates will after cancel", async function () {
+
+     // Arrange 
+     const inhetheritWillContractABI = [
+      "function getGiver() public view returns(address)",
+      "function getFirstName() public view returns(string memory)",
+      "function getLastName() public view returns(string memory)",
+      "function getBirthdayDate() public view returns(string memory)",
+      "function getBirthPlace() public view returns(string memory)",
+      "function getHeir() public view returns(address)",
+      "function getState() public view returns(uint8)",
+      "function cancel() public"
+    ];
+    const [giver, heir] = await ethers.getSigners();
+    const giverAddress = await giver.getAddress();
+    const heirAddress = await heir.getAddress();
+
+    const InhetheritFactory = await ethers.getContractFactory("InhetheritFactory");
+    const inhetheritContract = await InhetheritFactory.deploy();
+    await inhetheritContract.deployed();
+
+    // Act
+    tx = await inhetheritContract.createWill("Jean", "Bono", "07/12/1990", "75012", heirAddress);
+    tx.wait(1);
+  
+    const willContractAddress = await inhetheritContract.getWill();
+    const willContract = new ethers.Contract(willContractAddress, inhetheritWillContractABI, giver);
+
+    tx = await willContract.cancel();
+    tx.wait(1);
+
+    tx = await inhetheritContract.createWill("Jean", "Bono", "07/12/1990", "75012", heirAddress);
+    tx.wait(1);
+    const newWillContractAddress = await inhetheritContract.getWill();
+    const newWillContract = new ethers.Contract(newWillContractAddress, inhetheritWillContractABI, giver);
+
+    // Assert
+    expect(await willContract.getState()).to.be.equal(1); // == "CANCELED"
+    expect(await newWillContract.getState()).to.be.equal(0); // == "OPEN"
   });
 });
