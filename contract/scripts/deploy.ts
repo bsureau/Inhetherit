@@ -14,7 +14,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const InhetheritFactory = await hre.ethers.getContractFactory("InhetheritFactory");
+  const InhetheritFactory: any = await hre.ethers.getContractFactory("InhetheritFactory");
   const contract = await InhetheritFactory.deploy();
 
   await contract.deployed();

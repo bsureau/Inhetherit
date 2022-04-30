@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "./InhetheritWill.sol";
 
 contract InhetheritFactory {
@@ -22,7 +21,7 @@ contract InhetheritFactory {
 
         require(giverToWill[msg.sender].exist == false, "Will already created");
 
-        InhetheritWill willContract = new InhetheritWill(_firstName, _lastName, _birthdayDate, _birthPlace, _heir);
+        InhetheritWill willContract = new InhetheritWill(msg.sender, _firstName, _lastName, _birthdayDate, _birthPlace, _heir);
         
         address willContractAddress = address(willContract);
 
