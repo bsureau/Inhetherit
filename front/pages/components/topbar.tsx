@@ -27,11 +27,8 @@ const styles: any = {
 
 export default function TopBar() {
   const [isConnected, setConnected] = useState(false);
-  const [provider, setProvider] = useState(null);
 
-  // TODO: refacto en utilisant Redux
   const checkIfWalletIsConnected = async () => {
-
     try {
       const { ethereum } = window;
 
@@ -47,7 +44,6 @@ export default function TopBar() {
         const signer = provider.getSigner();
         const address = await signer.getAddress();
         const balance = await signer.getBalance();
-        setProvider(provider);
         setConnected(true);
 
         ethereum.on('accountsChanged', async () => {
@@ -55,8 +51,8 @@ export default function TopBar() {
         });
 
         provider.on('block', async () => {
-          if (address === "") return;
-          const balance = await provider.getBalance(signer.getAddress());
+          if (store.getState().user.account === "") return;
+          const balance = await provider.getBalance(store.getState().user.signer.getAddress());
           store.dispatch(
             {
               type: "UPDATE_BALANCE",
