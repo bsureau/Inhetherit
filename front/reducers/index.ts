@@ -1,35 +1,31 @@
-import { BigNumber, Signer } from "ethers";
-
-type User = {
-  account: string;
-  balance: BigNumber | number;
-  signer: Signer | null;
-};
-
-type GlobalState = {
-  wallet: User;
-};
-
-type Action = {
-  type: string;
-  wallet?: User;
-}
+import {
+  GlobalState,
+  Action
+} from '../types';
 
 const initialState: GlobalState = {
-  wallet: {
-    account: "",
-    balance: 0,
-    signer: null,
+  user: {
+      account: "",
+      balance: 0,
+      signer: null,
   }
 };
 
 export default function appReducer(state: GlobalState = initialState, action: Action) {
   switch (action.type) {
-    case 'INIT_WALLET':
+    case 'INIT_USER':
       return {
         ...state,
-        wallet: action.wallet,
+        user: action.user,
       };
+    case 'UPDATE_BALANCE':
+      return {
+        ...state,
+        wallet: {
+          ...state.user,
+          balance: action.user.balance,
+        }
+      }
     default:
       return state
   }

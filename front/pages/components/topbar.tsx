@@ -1,11 +1,12 @@
-import { ethers } from "ethers";
 import React, { Dispatch, useState, useEffect, SetStateAction } from 'react';
-import { WalletError } from '../../exceptions/walletError';
-import { Button, Link, Row, Spacer } from "@nextui-org/react";
 import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
+
+import { Button, Link, Row } from "@nextui-org/react";
+
+import { ethers, Provider } from "ethers";
+
 import { store } from '../../store';
-import { ExternalProvider } from "@ethersproject/providers";
-import { BigNumber, Signer, Provider } from "ethers";
+import { WalletError } from '../../exceptions/walletError';
 
 const styles: any = {
   row: {
@@ -24,19 +25,9 @@ const styles: any = {
   }
 };
 
-declare global {
-  interface Window {
-    ethereum: ExternalProvider;
-  }
-};
-
 export default function TopBar() {
-
-  const [isConnected, setConnected]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [account, setAccount]: [string, Dispatch<SetStateAction<string>>] = useState("");
-  const [balance, setBalance]: [BigNumber | number, Dispatch<SetStateAction<BigNumber|number>>] = useState(0);
-  const [provider, setProvider]: [Provider, Dispatch<SetStateAction<Provider>>] = useState(null);
-  const [signer, setSigner]: [Signer, Dispatch<SetStateAction<Signer>>] = useState(null);
+  const [isConnected, setConnected] = useState(false);
+  const [provider, setProvider] = useState(null);
 
   // TODO: refacto en utilisant Redux
   const checkIfWalletIsConnected = async () => {
@@ -53,13 +44,10 @@ export default function TopBar() {
       const accounts: any[] = await provider.send("eth_accounts", []); // Retrieve authorized accounts
 
       if (accounts.length > 0) {
-        const signer: Signer = provider.getSigner();
-        const address: string = await signer.getAddress();
-        const balance: BigNumber | number = await signer.getBalance();
-        setSigner(signer);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        const balance = await signer.getBalance();
         setProvider(provider);
-        setBalance(balance);
-        setAccount(address);
         setConnected(true);
 
         ethereum.on('accountsChanged', async () => {
@@ -67,16 +55,23 @@ export default function TopBar() {
         });
 
         provider.on('block', async () => {
-          if (account === "") return;
-          const balance: BigNumber | number = await provider.getBalance(signer.getAddress());
-          setBalance(balance);
+          if (address === "") return;
+          const balance = await provider.getBalance(signer.getAddress());
+          store.dispatch(
+            {
+              type: "UPDATE_BALANCE",
+              user: {
+                balance: balance,
+              }
+            }
+          );
         });
 
         store.dispatch(
           {
-            type:"INIT_WALLET",
-            wallet: {
-              account: account,
+            type:"INIT_USER",
+            user: {
+              account: address,
               balance: balance,
               signer: signer
             }
@@ -103,16 +98,25 @@ export default function TopBar() {
 
       const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
       await provider.send("eth_requestAccounts", []); // Requesting permission to connect users accounts
-      const signer: Signer = provider.getSigner();
-      const address: string = await signer.getAddress();
-      const balance: BigNumber | number = await signer.getBalance();
-      setAccount(address);
-      setBalance(balance);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      const balance = await signer.getBalance();
       setConnected(true);
 
       ethereum.on('accountsChanged', async () => {
         checkIfWalletIsConnected();
       });
+
+      store.dispatch(
+        {
+          type: "INIT_USER",
+          user: {
+            account: address,
+            balance: balance,
+            signer: signer
+          }
+        }
+      );
 
     } catch (error) {
       console.log(error);
@@ -157,7 +161,7 @@ export default function TopBar() {
           >
             <FaEthereum />
             &nbsp;
-            {Math.round(ethers.utils.formatEther(balance) * 100) / 100} ETH
+            {Math.round(ethers.utils.formatEther(store.getState().user.balance) * 100) / 100} ETH
           </Button>
           <Button
             css={{ display: "inline-block" }}
@@ -167,7 +171,7 @@ export default function TopBar() {
           >
             <FaWallet />
             &nbsp;&nbsp;
-            {account.substring(0, 15)}...
+            {store.getState().user.account.substring(0, 15)}...
           </Button>
         </div>
         :

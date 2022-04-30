@@ -1,8 +1,10 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
-import { BigNumber, Contract, ethers, Signer, TransactionResponse } from 'ethers';
-import { store } from '../../store';
 
+import { Contract, ethers } from 'ethers';
+
+import { store } from '../../store';
+import { User } from '../../types';
 
 export default function WillForm() {
 
@@ -33,18 +35,12 @@ export default function WillForm() {
       "function getWill() public view returns(address)"
     ];
 
-    type Wallet = {
-      account: string;
-      balance: BigNumber | number;
-      signer: Signer | null;
-    };
-
-    const wallet: Wallet = store.getState().wallet;
+    const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
     const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
 
     // wait at least 3 block mined before saying all good
-    const txReceipt = await tx.wait(3);
+    const txReceipt: TransactionReceipt = await tx.wait(3);
 
     // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
     // la modal, demander le droit d'approve, virer le loading etc...
