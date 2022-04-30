@@ -35,8 +35,13 @@ export default function WillForm() {
 
     const contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, store.getState().signer);
     const tx = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
-    tx.wait(1);
-    console.log(tx.hash);
+
+    // wait at least 3 block mined before saying all good
+    const txReceipt = await tx.wait(3);
+
+    console.log(txReceipt);
+    // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
+    // la modal, demander le droit d'approve, virer le loading etc...
 
     //TODO: interact with contract
     // 1. call approve on Ethereum smart contract
