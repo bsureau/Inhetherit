@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 import { ethers } from 'ethers';
 import { store } from '../../store';
@@ -33,7 +33,8 @@ export default function WillForm() {
       "function getWill() public view returns(address)"
     ];
 
-    const contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, store.getState().signer);
+    const wallet = store.getState().wallet;
+    const contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
     const tx = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
 
     // wait at least 3 block mined before saying all good

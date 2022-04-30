@@ -4,6 +4,7 @@ import { WalletError } from '../../exceptions/walletError';
 import { Button, Link, Row, Spacer } from "@nextui-org/react";
 import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
 import { store } from '../../store';
+import { ExternalProvider } from "@ethersproject/providers";
 
 const styles = {
   row: {
@@ -22,6 +23,12 @@ const styles = {
   }
 };
 
+declare global {
+  interface Window {
+    ethereum: ExternalProvider;
+  }
+};
+
 export default function TopBar() {
   const [isConnected, setConnected] = useState(false);
   const [account, setAccount] = useState("");
@@ -29,6 +36,7 @@ export default function TopBar() {
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
 
+  // TODO: refacto en utilisant Redux
   const checkIfWalletIsConnected = async () => {
 
     try {
@@ -65,9 +73,11 @@ export default function TopBar() {
         store.dispatch(
           {
             type:"INIT_WALLET",
-            account: account, 
-            balance: balance, 
-            signer: signer
+            wallet: {
+              account: account,
+              balance: balance,
+              signer: signer
+            }
           }
         );
 
