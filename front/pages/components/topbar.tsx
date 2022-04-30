@@ -123,6 +123,7 @@ export default function TopBar() {
         message = "Can't connect to Metamask. Please try again or contact our support."
       }
       alert(message);
+      // TODO: Display modal
     }
   };
 

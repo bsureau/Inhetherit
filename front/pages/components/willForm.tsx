@@ -5,6 +5,7 @@ import { Contract, ethers } from 'ethers';
 
 import { store } from '../../store';
 import { User } from '../../types';
+import { FaCheck } from 'react-icons/fa';
 
 export default function WillForm() {
 
@@ -15,6 +16,7 @@ export default function WillForm() {
   const [heirAddress, setHeirAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [submited, setSubmited]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
   const [openReviewInfo, setOpenReviewInfo]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+  const [metamaskInfo, setMetamaskInfo] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   
@@ -39,12 +41,17 @@ export default function WillForm() {
       "function getWill() public view returns(address)",
     ];
 
+    // we display loading once user has validated transaction with metamask
     setOpenReviewInfo(false);
-    setLoading(true);
+    setMetamaskInfo(true);
 
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
     const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
+
+    // we display loading once user has validated transaction with metamask
+    setMetamaskInfo(false);
+    setLoading(true);
 
     // wait at least 3 block mined before saying all good
     const txReceipt: TransactionReceipt = await tx.wait(1);
@@ -66,6 +73,9 @@ export default function WillForm() {
 
     // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
     // la modal, demander le droit d'approve, virer le loading etc...
+
+    // TODO: gérer les erreurs
+    // TODO: gérer l'annulation via Metamask par l'utilisateur
 
     //TODO: interact with contract
     // 1. call approve on Ethereum smart contract
@@ -236,6 +246,25 @@ export default function WillForm() {
         preventClose={true}
         aria-labelledby="modal-title"
         width="600px"
+        open={metamaskInfo}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={30}>
+            Confirm the transaction
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Text>
+            You need to confirm the transaction using metamask
+          </Text>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      <Modal
+        preventClose={true}
+        aria-labelledby="modal-title"
+        width="600px"
         open={isLoading}
       >
         <Modal.Header>
@@ -248,6 +277,7 @@ export default function WillForm() {
             Your will is being uploaded... It may take a few minutes...
           </Text>
         </Modal.Body>
+        <Modal.Footer></Modal.Footer>
       </Modal>
 
       <Modal
@@ -257,21 +287,17 @@ export default function WillForm() {
         open={confirmation}
         onClose={() => setConfirmation(false)}
       >
-        <Modal.Header>
-          <Text id="modal-title" size={30}>
+        <Modal.Header></Modal.Header>
+        <Modal.Body style={{ textAlign: "center" }}>
+          <span style={{ textAlign: "center" }}>
+            <FaCheck size={80} color="#16a085" style={{ display: "inline-block" }} />
+          </span>
+          <Text size={30}>
             All good
           </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text>
-            Your will is now on your wallet and will be executed when you die.
-          </Text>
+          Your will is now on your wallet and will be executed when you die.
         </Modal.Body>
-        <Modal.Footer>
-          <Button auto flat onClick={() => setConfirmation(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </Col>
   )
