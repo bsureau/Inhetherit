@@ -29,10 +29,10 @@ export default function WillForm() {
   }
 
   const handleWill: Function = async () => {
-    const inhetheritFactoryAddress: string = "0x06F92EA1Ed585d2d27Ecaf3DC327A7cb2D42aFae";
+    const inhetheritFactoryAddress: string = "0x38B0F3d3a1071B09CC4D2D159A5AFbFF96CfCB82";
     const inhetheritFactoryABI: string[] = [
       "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
-      "function getWill() public view returns(address)"
+      "function getWill() public view returns(address)",
     ];
 
     const wallet: User = store.getState().user;
@@ -40,7 +40,19 @@ export default function WillForm() {
     const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
 
     // wait at least 3 block mined before saying all good
-    const txReceipt: TransactionReceipt = await tx.wait(3);
+    const txReceipt: TransactionReceipt = await tx.wait(2);
+
+    console.log('Will created', txReceipt);
+
+    const inheritWillAddress: string = await contract.getWill();
+    const inheritWillABI: string[] = [
+      "function cancel() public returns(uint8)",
+    ];
+    const willContract: Contract = new ethers.Contract(inheritWillAddress, inheritWillABI, wallet.signer);
+    const txWill = await willContract.cancel();
+
+    const txCancelReceipt: TransactionReceipt = await txWill.wait(1);
+    console.log('Will canceled', txCancelReceipt);
 
     // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
     // la modal, demander le droit d'approve, virer le loading etc...
