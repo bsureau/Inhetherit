@@ -1,46 +1,51 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
-import { ethers } from 'ethers';
+import { BigNumber, Contract, ethers, Signer, TransactionResponse } from 'ethers';
 import { store } from '../../store';
 
 
 export default function WillForm() {
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [birthdayDate, setBirthdayDate] = useState("");
-  const [birthPostCode, setBirthPostCode] = useState("");
-  const [heirAddress, setHeirAddress] = useState("");
-  const [submit, setSubmit] = useState(false);
+  const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [lastName, setLastName]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [birthdayDate, setBirthdayDate]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [birthPostCode, setBirthPostCode]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [heirAddress, setHeirAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [submit, setSubmit]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
   
-  const isValid = () => {
+  const isValid: Function = () => {
     if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
       return true
     }
   }
 
-  const handleSubmit = (evt) => {
+  const handleSubmit: Function = (evt) => {
     evt.preventDefault();
     if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
       setSubmit(true);
     }
   }
 
-  const handleWill = async () => {
-    const inhetheritFactoryAddress = "0x06F92EA1Ed585d2d27Ecaf3DC327A7cb2D42aFae";
-    const inhetheritFactoryABI = [
+  const handleWill: Function = async () => {
+    const inhetheritFactoryAddress: string = "0x06F92EA1Ed585d2d27Ecaf3DC327A7cb2D42aFae";
+    const inhetheritFactoryABI: string[] = [
       "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
       "function getWill() public view returns(address)"
     ];
 
-    const wallet = store.getState().wallet;
-    const contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
-    const tx = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
+    type Wallet = {
+      account: string;
+      balance: BigNumber | number;
+      signer: Signer | null;
+    };
+
+    const wallet: Wallet = store.getState().wallet;
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
+    const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
 
     // wait at least 3 block mined before saying all good
     const txReceipt = await tx.wait(3);
 
-    console.log(txReceipt);
     // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
     // la modal, demander le droit d'approve, virer le loading etc...
 
@@ -49,7 +54,7 @@ export default function WillForm() {
     // 2. save will informations in inhetherit smart contract
   }
 
-  const handleClose = () => {
+  const handleClose: Function = () => {
       setSubmit(false);
   }
 

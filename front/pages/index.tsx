@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { Button, Card, Container, Grid, Row, Col, Text, Spacer, Link } from "@nextui-org/react";
 import { FaMoneyCheck, FaRegStickyNote } from 'react-icons/fa';
 
-const styles = {
+const styles: any = {
   container: {
     minHeight: '100vh',
     minWidth: '100vw',

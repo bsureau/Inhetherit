@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Row, Text } from '@nextui-org/react';
 
-const styles = {
+const styles: any = {
   column: {
     width: "85%",
     minWidth: "1000px",

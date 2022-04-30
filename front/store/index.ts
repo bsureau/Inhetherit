@@ -1,4 +1,4 @@
-import { createStore } from 'redux';
+import { createStore, Action, Store, GlobalState } from 'redux';
 import rootReducer from '../reducers';
 
-export const store = createStore(rootReducer);
+export const store: Store<GlobalState, Action> = createStore(rootReducer);

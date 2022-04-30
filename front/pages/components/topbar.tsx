@@ -1,12 +1,13 @@
 import { ethers } from "ethers";
-import React, { useState, useEffect } from 'react';
+import React, { Dispatch, useState, useEffect, SetStateAction } from 'react';
 import { WalletError } from '../../exceptions/walletError';
 import { Button, Link, Row, Spacer } from "@nextui-org/react";
 import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
 import { store } from '../../store';
 import { ExternalProvider } from "@ethersproject/providers";
+import { BigNumber, Signer, Provider } from "ethers";
 
-const styles = {
+const styles: any = {
   row: {
     background: "#ffffff",
     position: "fixed",
@@ -30,11 +31,12 @@ declare global {
 };
 
 export default function TopBar() {
-  const [isConnected, setConnected] = useState(false);
-  const [account, setAccount] = useState("");
-  const [balance, setBalance] = useState(0);
-  const [provider, setProvider] = useState(null);
-  const [signer, setSigner] = useState(null);
+
+  const [isConnected, setConnected]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+  const [account, setAccount]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [balance, setBalance]: [BigNumber | number, Dispatch<SetStateAction<BigNumber|number>>] = useState(0);
+  const [provider, setProvider]: [Provider, Dispatch<SetStateAction<Provider>>] = useState(null);
+  const [signer, setSigner]: [Signer, Dispatch<SetStateAction<Signer>>] = useState(null);
 
   // TODO: refacto en utilisant Redux
   const checkIfWalletIsConnected = async () => {
@@ -47,13 +49,13 @@ export default function TopBar() {
         return;
       }
 
-      const provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
-      const accounts = await provider.send("eth_accounts", []); // Retrieve authorized accounts
+      const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
+      const accounts: any[] = await provider.send("eth_accounts", []); // Retrieve authorized accounts
 
       if (accounts.length > 0) {
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        const balance = await signer.getBalance();
+        const signer: Signer = provider.getSigner();
+        const address: string = await signer.getAddress();
+        const balance: BigNumber | number = await signer.getBalance();
         setSigner(signer);
         setProvider(provider);
         setBalance(balance);
@@ -66,7 +68,7 @@ export default function TopBar() {
 
         provider.on('block', async () => {
           if (account === "") return;
-          const balance = await provider.getBalance(signer.getAddress());
+          const balance: BigNumber | number = await provider.getBalance(signer.getAddress());
           setBalance(balance);
         });
 
@@ -99,11 +101,11 @@ export default function TopBar() {
         throw new WalletError("Please install Metamask first: https://metamask.io");
       }
 
-      const provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
+      const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
       await provider.send("eth_requestAccounts", []); // Requesting permission to connect users accounts
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      const balance = await signer.getBalance();
+      const signer: Signer = provider.getSigner();
+      const address: string = await signer.getAddress();
+      const balance: BigNumber | number = await signer.getBalance();
       setAccount(address);
       setBalance(balance);
       setConnected(true);

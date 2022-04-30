@@ -14,7 +14,6 @@ import {
   WillList
 } from './components';
 
-import { store } from '../store'
 
 async function approve() {
 
@@ -69,7 +68,7 @@ async function transfer() {
   console.log("tx: ", tx.hash);
 }
 
-const styles = {
+const styles: any = {
   container: {
     minHeight: '100vh',
     minWidth: '100vw',

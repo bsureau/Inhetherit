@@ -1,18 +1,18 @@
 import { BigNumber, Signer } from "ethers";
 
-type Wallet = {
+type User = {
   account: string;
   balance: BigNumber | number;
   signer: Signer | null;
 };
 
 type GlobalState = {
-  wallet: Wallet;
+  wallet: User;
 };
 
 type Action = {
   type: string;
-  wallet?: Wallet;
+  wallet?: User;
 }
 
 const initialState: GlobalState = {

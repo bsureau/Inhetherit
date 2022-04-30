@@ -1,8 +1,8 @@
 import { Link, Row, Col, Text, Spacer } from "@nextui-org/react";
 import { FaMoneyCheck, FaRegStickyNote, FaQuestion, FaFile } from 'react-icons/fa';
-import { useRouter } from "next/router";
+import { useRouter, NextRouter } from "next/router";
 
-const styles = {
+const styles: any = {
   column: {
     position: "fixed",
     minHeight: '100vh',
@@ -32,7 +32,7 @@ const styles = {
 
 export default function Sidebar() {
 
-  const router = useRouter();
+  const router: NextRouter = useRouter();
 
   return (
     <Col
