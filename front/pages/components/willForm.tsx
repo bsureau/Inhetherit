@@ -15,7 +15,6 @@ export default function WillForm() {
     'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709'
   };
 
-  const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [lastName, setLastName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [birthdayDate, setBirthdayDate]: [string, Dispatch<SetStateAction<string>>] = useState("");
@@ -28,10 +27,20 @@ export default function WillForm() {
   const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [token, setToken] = useState('');
+  const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [tokenBalance, setTokenBalance] = useState('0');
 
-  const handleChangeToken = (event) => {
+  const handleChangeToken = async (event) => {
     setToken(event.target.value);
     setErc20Address(erc20Addresses[event.target.value]);
+    setTokenBalance('...');
+
+    const wallet: User = store.getState().user;
+    const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], [
+      'function balanceOf(address _owner) public view returns(uint256)'
+    ], wallet.signer);
+    const balance = await contract.balanceOf(wallet.account);
+    setTokenBalance(`${ethers.utils.formatEther(balance)}`);
   }
 
   const isValid: Function = () => {
@@ -125,7 +134,7 @@ export default function WillForm() {
           }}
         >
           <select value={token} onChange={handleChangeToken}>
-            <option value='' defaultChecked>Select the token you want to transfer</option>
+            <option value='' disabled defaultChecked>Select the token you want to transfer</option>
             <option value='ETH'>Ethereum</option>
             <option value='WETH'>Wrapped Ethereum</option>
             <option value='LINK'>Chainlink</option>
@@ -152,7 +161,7 @@ export default function WillForm() {
         >
           {token != '' ? (
             <>
-              Current balance: &nbsp;<b>{ethers.utils.formatEther(store.getState().user.balance)} {token}</b>
+              Current balance: &nbsp;<b>{tokenBalance} {token}</b>
             </>
           ) : ''}
         </Row>
