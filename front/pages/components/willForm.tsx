@@ -15,20 +15,25 @@ export default function WillForm() {
     'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709'
   };
 
+  // form
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [lastName, setLastName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [birthdayDate, setBirthdayDate]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [birthPostCode, setBirthPostCode]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [heirAddress, setHeirAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [submited, setSubmited]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+
+  // token
+  const [token, setToken] = useState('');
+  const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [tokenBalance, setTokenBalance] = useState('0');
+
+  // validation funnel
   const [openReviewInfo, setOpenReviewInfo]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
   const [metamaskInfo, setMetamaskInfo] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
-  const [token, setToken] = useState('');
-  const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
-  const [tokenBalance, setTokenBalance] = useState('0');
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
