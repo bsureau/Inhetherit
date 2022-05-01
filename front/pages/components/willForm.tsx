@@ -80,6 +80,8 @@ export default function WillForm() {
     //TODO: interact with contract
     // 1. call approve on Ethereum smart contract
     // 2. save will informations in inhetherit smart contract
+
+    setSubmited(false);
   }
 
   return (

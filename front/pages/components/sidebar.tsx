@@ -98,24 +98,7 @@ export default function Sidebar() {
         <Col
           align="left"
           css={styles.menuFooterItem}
-        >          <Link
-          color="text"
-            href="/faq"
-          >
-            <Text
-              size={17}
-              weight="bold"
-              color={router.pathname == "/faq" ? "#dedede" : "#ffffff"}
-            >
-              <FaQuestion /> &nbsp;
-              FAQs
-            </Text>
-          </Link>
-        </Col>
-        <Col
-          align="left"
-          css={styles.menuFooterItem}
-        >
+        >          
           <Link
             color="text"
             href="/manifesto"

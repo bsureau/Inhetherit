@@ -80,7 +80,7 @@ export default function Index() {
         </Text>
         <Text h3 size={20}>
           Your cryptos should <strong>never</strong> disappear when you die. <br />
-          Plan to pass on your cryptos to your loved ones now!
+          Plan to pass on your cryptos to your loved ones!
         </Text>
         <Spacer y={2} />
         <Row 
@@ -169,13 +169,6 @@ export default function Index() {
             Maître Yoda
           </Link>
           &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
-          <Link 
-            color="text" 
-            href="/faq"
-          >
-            FAQs
-          </Link>
-          &nbsp; - &nbsp;
           <Link
             color="text"
             href="/manifesto"
