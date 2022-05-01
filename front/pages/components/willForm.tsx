@@ -9,6 +9,7 @@ import { FaCheck } from 'react-icons/fa';
 
 export default function WillForm() {
 
+  const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [lastName, setLastName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [birthdayDate, setBirthdayDate]: [string, Dispatch<SetStateAction<string>>] = useState("");
@@ -18,20 +19,36 @@ export default function WillForm() {
   const [openReviewInfo, setOpenReviewInfo]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
   const [metamaskInfo, setMetamaskInfo] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   
   const isValid: Function = () => {
-    if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
+    if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
       return true
     }
   }
 
   const handleSubmit: Function = (evt) => {
     evt.preventDefault();
-    if (firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
+    if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
       setSubmited(true);
       setOpenReviewInfo(true);
     }
+  }
+
+  async function approveTransfer(inhetheritWillAddress: string) {
+
+    const erc20Abi = [
+      "function approve(address _spender, uint256 _value) public returns (bool success)"
+    ];
+  
+    const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, store.getState().user.signer);
+  
+    const tx = await erc20Contract.approve(inhetheritWillAddress, ethers.utils.parseUnits("2", 18)); //replace value by max uint256 value
+
+    const txReceipt: TransactionReceipt = await tx.wait(1);
+
+    console.log('Approve ok: ', txReceipt);
   }
 
   const handleWill: Function = async () => {
@@ -59,27 +76,14 @@ export default function WillForm() {
     console.log('Will created', txReceipt);
 
     const inheritWillAddress: string = await contract.getWill();
-    const inheritWillABI: string[] = [
-      "function cancel() public returns(uint8)",
-    ];
-    const willContract: Contract = new ethers.Contract(inheritWillAddress, inheritWillABI, wallet.signer);
-    const txWill = await willContract.cancel();
-
-    const txCancelReceipt: TransactionReceipt = await txWill.wait(1);
-    console.log('Will canceled', txCancelReceipt);
 
     setLoading(false);
+
+    setApprove(true);
+    await approveTransfer(inheritWillAddress);
+
+    setApprove(false);
     setConfirmation(true);
-
-    // ici notre contrat est mint, donc on peu mettre a jour le state local pour changer
-    // la modal, demander le droit d'approve, virer le loading etc...
-
-    // TODO: gérer les erreurs
-    // TODO: gérer l'annulation via Metamask par l'utilisateur
-
-    //TODO: interact with contract
-    // 1. call approve on Ethereum smart contract
-    // 2. save will informations in inhetherit smart contract
 
     setSubmited(false);
   }
@@ -96,69 +100,98 @@ export default function WillForm() {
       }}
     >
       <Row 
-        justify="center"
         css={{
           flexWrap: "wrap",
-          justifyContent: "space-around",
-          textAlign:"left",
-          padding: "3rem"
         }}
       >
-        <Input 
-          rounded
-          bordered
-          label="First name:"
-          placeholder="Jean"
-          color="primary" 
-          width="15%" 
-          value={firstName}
-          onChange={e => setFirstName(e.target.value)}
-          disabled={submited}
-        />
-        <Input 
-          rounded
-          bordered
-          label="Last name:"
-          placeholder="Bono"
-          color="primary" 
-          width="15%" 
-          value={lastName}
-          onChange={e => setLastName(e.target.value)}
-          disabled={submited}
-        />
-        <Input 
-          rounded
-          bordered
-          label="Birthday date:"
-          placeholder="07/12/1990"
-          color="primary"
-          width="15%" 
-          value={birthdayDate}
-          onChange={e => setBirthdayDate(e.target.value)}
-          disabled={submited}
-        />
-        <Input 
-          rounded
-          bordered
-          label="Birth post code:"
-          placeholder="75012"
-          color="primary" 
-          width="15%" 
-          value={birthPostCode}
-          onChange={e => setBirthPostCode(e.target.value)}
-          disabled={submited}
-        />
-        <Input 
-          rounded
-          bordered
-          label="Heir address"
-          placeholder="0x..."
-          color="primary" 
-          width="30%" 
-          value={heirAddress}
-          onChange={e => setHeirAddress(e.target.value)}
-          disabled={submited}
-        />
+        <Row
+          css={{
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            textAlign:"left",
+            padding: "3rem 3rem 0rem 3rem"
+          }}
+        >
+          <Input 
+            rounded
+            bordered
+            label="ERC-20 address:"
+            placeholder="0x..."
+            color="primary" 
+            width="30%" 
+            value={erc20Address}
+            onChange={e => setErc20Address(e.target.value)}
+            disabled={submited}
+          />
+        </Row>
+        <Row
+          css={{
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            textAlign:"left",
+            padding: "3rem"
+          }}
+        >
+          <Input 
+            rounded
+            bordered
+            label="First name:"
+            placeholder="Jean"
+            color="primary" 
+            width="15%" 
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+            disabled={submited}
+          />
+          <Spacer x={1} />
+          <Input 
+            rounded
+            bordered
+            label="Last name:"
+            placeholder="Bono"
+            color="primary" 
+            width="15%" 
+            value={lastName}
+            onChange={e => setLastName(e.target.value)}
+            disabled={submited}
+          />
+          <Spacer x={1} />
+          <Input 
+            rounded
+            bordered
+            label="Birthday date:"
+            placeholder="07/12/1990"
+            color="primary"
+            width="15%" 
+            value={birthdayDate}
+            onChange={e => setBirthdayDate(e.target.value)}
+            disabled={submited}
+          />
+          <Spacer x={1} />
+          <Input 
+            rounded
+            bordered
+            label="Birth post code:"
+            placeholder="75012"
+            color="primary" 
+            width="15%" 
+            value={birthPostCode}
+            onChange={e => setBirthPostCode(e.target.value)}
+            disabled={submited}
+          />
+          <Spacer x={1} />
+          <Input 
+            rounded
+            bordered
+            label="Heir address"
+            placeholder="0x..."
+            color="primary" 
+            width="30%" 
+            value={heirAddress}
+            onChange={e => setHeirAddress(e.target.value)}
+            disabled={submited}
+          />
+        </Row>
       </Row> 
       <Row 
         justify="center"
@@ -175,7 +208,7 @@ export default function WillForm() {
           onClick={handleSubmit}
           disabled={!isValid() || (isValid() && submited)}
         >
-          Pass on your ETH
+          Pass on your cryptos
         </Button>
       </Row> 
 
@@ -277,6 +310,25 @@ export default function WillForm() {
         <Modal.Body>
           <Text>
             Your will is being uploaded... It may take a few minutes...
+          </Text>
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      <Modal
+        preventClose={true}
+        aria-labelledby="modal-title"
+        width="600px"
+        open={approve}
+      >
+        <Modal.Header>
+          <Text id="modal-title" size={30}>
+            Last step
+          </Text>
+        </Modal.Header>
+        <Modal.Body>
+          <Text>
+            You must now approve transfer of your token by your will smart contract 
           </Text>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>

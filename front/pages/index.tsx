@@ -55,7 +55,7 @@ export default function Index() {
         <Text 
           color="#ffffff"
         >
-         <strong>REMINDER: </strong> Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet (for now)... 
+         <strong>REMINDER: </strong> Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet... 
         </Text>
       </Row>
       <Col 
