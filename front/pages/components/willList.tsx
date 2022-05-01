@@ -42,7 +42,7 @@ export default function WillList() {
             </Table.Cell>
             <Table.Cell>
               <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x90ld57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+                {"0x90ld57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
               </Link>
             </Table.Cell>
             <Table.Cell>
@@ -62,11 +62,11 @@ export default function WillList() {
             </Table.Cell>
             <Table.Cell>
               <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x84jd57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+                {"0x84jd57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
               </Link>
             </Table.Cell>
             <Table.Cell>
-              130 ETH
+              130.48267 ETH
             </Table.Cell>
             <Table.Cell>
               <Button light color="error">Delete will</Button>
@@ -83,7 +83,7 @@ export default function WillList() {
             </Table.Cell>
             <Table.Cell>
               <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x7ffc57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+                {"0x7ffc57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
               </Link>
             </Table.Cell>
             <Table.Cell>
