@@ -9,6 +9,12 @@ import { FaCheck } from 'react-icons/fa';
 
 export default function WillForm() {
 
+  const erc20Addresses = {
+    'ETH': '',
+    'WETH': '0xdf032bc4b9dc2782bb09352007d4c57b75160b15',
+    'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709'
+  };
+
   const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [lastName, setLastName]: [string, Dispatch<SetStateAction<string>>] = useState("");
@@ -21,7 +27,13 @@ export default function WillForm() {
   const [isLoading, setLoading] = useState(false);
   const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
-  
+  const [token, setToken] = useState('');
+
+  const handleChangeToken = (event) => {
+    setToken(event.target.value);
+    setErc20Address(erc20Addresses[event.target.value]);
+  }
+
   const isValid: Function = () => {
     if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
       return true
@@ -112,17 +124,37 @@ export default function WillForm() {
             padding: "3rem 3rem 0rem 3rem"
           }}
         >
-          <Input 
+          <select value={token} onChange={handleChangeToken}>
+            <option value='' defaultChecked>Select the token you want to transfer</option>
+            <option value='ETH'>Ethereum</option>
+            <option value='WETH'>Wrapped Ethereum</option>
+            <option value='LINK'>Chainlink</option>
+          </select>
+          {/* <Input
             rounded
             bordered
             label="ERC-20 address:"
             placeholder="0x..."
-            color="primary" 
-            width="30%" 
+            color="primary"
+            width="30%"
             value={erc20Address}
             onChange={e => setErc20Address(e.target.value)}
             disabled={submited}
-          />
+          /> */}
+        </Row>
+        <Row
+          css={{
+            flexWrap: "wrap",
+            justifyContent: "flex-start",
+            textAlign: "left",
+            padding: "1rem 0rem 0rem 3rem"
+          }}
+        >
+          {token != '' ? (
+            <>
+              Current balance: &nbsp;<b>{ethers.utils.formatEther(store.getState().user.balance)} {token}</b>
+            </>
+          ) : ''}
         </Row>
         <Row
           css={{
