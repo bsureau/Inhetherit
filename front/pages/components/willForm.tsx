@@ -138,30 +138,34 @@ export default function WillForm() {
             padding: "3rem 3rem 0rem 3rem"
           }}
         >
-          <select value={token} onChange={handleChangeToken}>
-            <option value='' disabled defaultChecked>Select the token you want to transfer</option>
-            <option value='ETH'>Ethereum</option>
-            <option value='WETH'>Wrapped Ethereum</option>
-            <option value='LINK'>Chainlink</option>
-          </select>
-          {/* <Input
-            rounded
-            bordered
-            label="ERC-20 address:"
-            placeholder="0x..."
-            color="primary"
-            width="30%"
-            value={erc20Address}
-            onChange={e => setErc20Address(e.target.value)}
-            disabled={submited}
-          /> */}
+          <div>
+            <span style={{ marginLeft: "5px", color: '#3985f6', fontSize: 14 }}>Token:</span><br />
+            <select
+              value={token}
+              onChange={handleChangeToken}
+              style={{
+                appearance: 'none',
+                marginTop: "5px",
+                padding: "10px 20px",
+                borderRadius: '30px',
+                border: 'solid 2px #EAEAEA',
+                color: '#757575',
+                cursor: 'pointer',
+              }}
+            >
+              <option value='' disabled defaultChecked>Select the token you want to transfer 🔽</option>
+              {/* <option value='ETH'>Ethereum</option> */}
+              <option value='WETH'>Wrapped Ethereum (WETH)</option>
+              <option value='LINK'>Chainlink (LINK)</option>
+            </select>
+          </div>
         </Row>
         <Row
           css={{
             flexWrap: "wrap",
             justifyContent: "flex-start",
             textAlign: "left",
-            padding: "1rem 0rem 0rem 3rem"
+            padding: "1rem 0rem 1rem 3rem"
           }}
         >
           {token != '' ? (
@@ -175,7 +179,7 @@ export default function WillForm() {
             flexWrap: "wrap",
             justifyContent: "flex-start",
             textAlign:"left",
-            padding: "3rem"
+            padding: "1rem 0 3rem 3rem"
           }}
         >
           <Input 
