@@ -50,19 +50,6 @@ export default function TopBar() {
           checkIfWalletIsConnected();
         });
 
-        provider.on('block', async () => {
-          if (store.getState().user.account === "") return;
-          const balance = await provider.getBalance(store.getState().user.signer.getAddress());
-          store.dispatch(
-            {
-              type: "UPDATE_BALANCE",
-              user: {
-                balance: balance,
-              }
-            }
-          );
-        });
-
         store.dispatch(
           {
             type:"INIT_USER",
@@ -150,16 +137,6 @@ export default function TopBar() {
       </Link>
       {isConnected ?
         <div>
-          <Button
-            css={{ display: "inline-block", minWidth: 0, marginRight: 10 }}
-            bordered
-            color="black"
-            size="md"
-          >
-            <FaEthereum />
-            &nbsp;
-            {Math.round(ethers.utils.formatEther(store.getState().user.balance) * 100) / 100} ETH
-          </Button>
           <Button
             css={{ display: "inline-block" }}
             bordered
