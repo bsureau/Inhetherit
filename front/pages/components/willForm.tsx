@@ -130,6 +130,9 @@ export default function WillForm() {
           flexWrap: "wrap",
         }}
       >
+        <Text size={30} css={{ fontWeight: 500, padding: "2rem 0rem 0rem 3rem" }}>
+          Make a will for a crypto
+        </Text>
         <Row
           css={{
             flexWrap: "wrap",
@@ -179,7 +182,7 @@ export default function WillForm() {
             flexWrap: "wrap",
             justifyContent: "flex-start",
             textAlign:"left",
-            padding: "1rem 0 3rem 3rem"
+            padding: "1rem 3rem 3rem 3rem"
           }}
         >
           <Input 
