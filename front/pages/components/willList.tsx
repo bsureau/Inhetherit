@@ -34,7 +34,7 @@ export default function WillList() {
           <Table.Row>
             <Table.Cell>
               <Tooltip content={"That means we won't be able to execute your will"}>
-                <FaExclamationTriangle color="#f9690e" size={20} />&nbsp; <small>Missing Approval</small>
+                <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Missing Approval</small>
               </Tooltip>
             </Table.Cell>
             <Table.Cell>
@@ -55,7 +55,7 @@ export default function WillList() {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <FaCheck color="#16a085" size={20} />&nbsp; <small>All good</small>
+              <FaCheck color="#16a085" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>All good</small>
             </Table.Cell>
             <Table.Cell>
               Ethereum
@@ -75,7 +75,7 @@ export default function WillList() {
           <Table.Row>
             <Table.Cell>
               <Tooltip content={"That means we won't be able to execute your will"}>
-                <FaExclamationTriangle color="#f9690e" size={20} />&nbsp; <small>Allowance too low</small>
+                <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Allowance too low</small>
               </Tooltip>
             </Table.Cell>
             <Table.Cell>
