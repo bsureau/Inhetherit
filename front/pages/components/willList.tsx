@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Row, Table, Text, Tooltip } from '@nextui-org/react';
+import { Button, Col, Link, Row, Table, Text, Tooltip } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
 const styles: any = {
@@ -26,8 +26,7 @@ export default function WillList() {
         <Table.Header>
           <Table.Column>Status</Table.Column>
           <Table.Column>Crypto</Table.Column>
-          <Table.Column>Name</Table.Column>
-          <Table.Column>Address</Table.Column>
+          <Table.Column>Heir Address</Table.Column>
           <Table.Column>Amount</Table.Column>
           <Table.Column></Table.Column>
         </Table.Header>
@@ -39,13 +38,12 @@ export default function WillList() {
               </Tooltip>
             </Table.Cell>
             <Table.Cell>
-              Link
+              Chainlink
             </Table.Cell>
             <Table.Cell>
-              Romain Quilliot
-            </Table.Cell>
-            <Table.Cell>
-              blablabla
+              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
+                {"0x90ld57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+              </Link>
             </Table.Cell>
             <Table.Cell>
               130 LINK
@@ -63,10 +61,9 @@ export default function WillList() {
               Ethereum
             </Table.Cell>
             <Table.Cell>
-              Romain Quilliot
-            </Table.Cell>
-            <Table.Cell>
-              blablabla
+              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
+                {"0x84jd57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+              </Link>
             </Table.Cell>
             <Table.Cell>
               130 ETH
@@ -85,10 +82,9 @@ export default function WillList() {
               Wrapped Ethereum
             </Table.Cell>
             <Table.Cell>
-              Romain Quilliot
-            </Table.Cell>
-            <Table.Cell>
-              blablabla
+              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
+                {"0x7ffc57839b00206d1ad20c69a1981b489f772031".substring(0, 15)}...
+              </Link>
             </Table.Cell>
             <Table.Cell>
               30 WETH
