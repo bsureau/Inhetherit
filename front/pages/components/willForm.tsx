@@ -131,7 +131,7 @@ export default function WillForm() {
         }}
       >
         <Text size={30} css={{ fontWeight: 500, padding: "2rem 0rem 0rem 3rem" }}>
-          Make a will for a crypto
+          Make a will for a token
         </Text>
         <Row
           css={{
