@@ -7,7 +7,8 @@ const initialState: GlobalState = {
   user: {
       account: "",
       balance: 0,
-      signer: null,
+      signer: null, 
+      will: ""
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 
 import { Contract, ethers } from 'ethers';
@@ -35,6 +35,11 @@ export default function WillForm() {
   const [isLoading, setLoading] = useState(false);
   const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
+
+  const [willAddress, setWillAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
+  const [isWillCreated, setWillCreated]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
+
+
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
@@ -81,7 +86,7 @@ export default function WillForm() {
   const handleWill: Function = async () => {
     const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
     const inhetheritFactoryABI: string[] = [
-      "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
+      "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
       "function getWill() public view returns(address)",
     ];
 
@@ -91,7 +96,7 @@ export default function WillForm() {
 
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
-    const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, heirAddress);
+    const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, erc20Address, heirAddress);
 
     // we display loading once user has validated transaction with metamask
     setMetamaskInfo(false);
@@ -111,9 +116,33 @@ export default function WillForm() {
 
     setApprove(false);
     setConfirmation(true);
+    setWillCreated(true);
 
     setSubmited(false);
   }
+
+  const getWill = async () => {
+    const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
+    const inhetheritFactoryABI: string[] = [
+      "function getWill() public view returns(address)",
+    ];
+    const wallet: User = store.getState().user;
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
+   
+    try {
+      setWillAddress(await contract.getWill());
+      setWillCreated(true);
+    } catch (error) {
+      if (error.reason = "will not found") {
+        setWillCreated(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+      getWill();
+    }
+  );
 
   return (
     <Col
@@ -131,38 +160,55 @@ export default function WillForm() {
           flexWrap: "wrap",
         }}
       >
-        <Text size={30} css={{ fontWeight: 500, padding: "2rem 0rem 0rem 3rem" }}>
-          Make a will for a token
-        </Text>
         <Row
           css={{
+            display: "flex",
+            flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "flex-start",
+            alignItems: "center",
             textAlign:"left",
             padding: "3rem 3rem 0rem 3rem"
           }}
         >
-          <div>
-            <span style={{ marginLeft: "5px", color: '#3985f6', fontSize: 14 }}>Token:</span><br />
-            <select
-              value={token}
-              onChange={handleChangeToken}
-              style={{
-                appearance: 'none',
-                marginTop: "5px",
-                padding: "10px 20px",
-                borderRadius: '30px',
-                border: 'solid 2px #EAEAEA',
-                color: '#757575',
-                cursor: 'pointer',
+            <Col 
+              css= {{
+                width: "auto",
+                marginRight: "1.5%"
               }}
             >
-              <option value='' disabled defaultChecked>Select the token you want to transfer 🔽</option>
-              {/* <option value='ETH'>Ethereum</option> */}
-              <option value='WETH'>Wrapped Ethereum (WETH)</option>
-              <option value='LINK'>Chainlink (LINK)</option>
-            </select>
-          </div>
+              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#3985f6', fontSize: 14 }}>Token:</Text>
+              <select
+                value={token}
+                onChange={handleChangeToken}
+                style={{
+                  appearance: 'none',
+                  padding: "8px 20px",
+                  borderRadius: '30px',
+                  border: 'solid 2px #EAEAEA',
+                  color: '#757575',
+                  cursor: 'pointer',
+                }}
+              >
+                <option value='' disabled defaultChecked>Select the token you want to transfer 🔽 &nbsp;</option>
+                {/* <option value='ETH'>Ethereum</option> */}
+                <option value='WETH'>Wrapped Ethereum (WETH)</option>
+                <option value='LINK'>Chainlink (LINK)</option>
+              </select>
+            </Col>
+            { isWillCreated &&
+              <Input 
+                rounded
+                bordered
+                label="Heir address"
+                placeholder="0x..."
+                color="primary" 
+                width="30%" 
+                value={heirAddress}
+                onChange={e => setHeirAddress(e.target.value)}
+                disabled={submited}
+            />
+          }
         </Row>
         <Row
           css={{
@@ -178,81 +224,85 @@ export default function WillForm() {
             </>
           ) : ''}
         </Row>
-        <Row
-          css={{
-            flexWrap: "wrap",
-            justifyContent: "flex-start",
-            textAlign:"left",
-            padding: "1rem 3rem 3rem 3rem"
-          }}
-        >
-          <Input 
-            rounded
-            bordered
-            label="First name:"
-            placeholder="Jean"
-            color="primary" 
-            width="15%" 
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-            disabled={submited}
-          />
-          <Spacer x={1} />
-          <Input 
-            rounded
-            bordered
-            label="Last name:"
-            placeholder="Bono"
-            color="primary" 
-            width="15%" 
-            value={lastName}
-            onChange={e => setLastName(e.target.value)}
-            disabled={submited}
-          />
-          <Spacer x={1} />
-          <Input 
-            rounded
-            bordered
-            label="Birthday date:"
-            placeholder="07/12/1990"
-            color="primary"
-            width="15%" 
-            value={birthdayDate}
-            onChange={e => setBirthdayDate(e.target.value)}
-            disabled={submited}
-          />
-          <Spacer x={1} />
-          <Input 
-            rounded
-            bordered
-            label="Birth post code:"
-            placeholder="75012"
-            color="primary" 
-            width="15%" 
-            value={birthPostCode}
-            onChange={e => setBirthPostCode(e.target.value)}
-            disabled={submited}
-          />
-          <Spacer x={1} />
-          <Input 
-            rounded
-            bordered
-            label="Heir address"
-            placeholder="0x..."
-            color="primary" 
-            width="30%" 
-            value={heirAddress}
-            onChange={e => setHeirAddress(e.target.value)}
-            disabled={submited}
-          />
-        </Row>
+        { !isWillCreated &&
+          <>
+            <Row
+              css={{
+                flexWrap: "wrap",
+                justifyContent: "flex-start",
+                textAlign:"left",
+                padding: "1rem 3rem 3rem 3rem"
+              }}
+            >
+              <Input 
+                rounded
+                bordered
+                label="First name:"
+                placeholder="Jean"
+                color="primary" 
+                width="15%" 
+                value={firstName}
+                onChange={e => setFirstName(e.target.value)}
+                disabled={submited}
+              />
+              <Spacer x={1} />
+              <Input 
+                rounded
+                bordered
+                label="Last name:"
+                placeholder="Bono"
+                color="primary" 
+                width="15%" 
+                value={lastName}
+                onChange={e => setLastName(e.target.value)}
+                disabled={submited}
+              />
+              <Spacer x={1} />
+              <Input 
+                rounded
+                bordered
+                label="Birthday date:"
+                placeholder="07/12/1990"
+                color="primary"
+                width="15%" 
+                value={birthdayDate}
+                onChange={e => setBirthdayDate(e.target.value)}
+                disabled={submited}
+              />
+              <Spacer x={1} />
+              <Input 
+                rounded
+                bordered
+                label="Birth post code:"
+                placeholder="75012"
+                color="primary" 
+                width="15%" 
+                value={birthPostCode}
+                onChange={e => setBirthPostCode(e.target.value)}
+                disabled={submited}
+              />
+              <Spacer x={1} />
+              <Input 
+                rounded
+                bordered
+                label="Heir address"
+                placeholder="0x..."
+                color="primary" 
+                width="30%" 
+                value={heirAddress}
+                onChange={e => setHeirAddress(e.target.value)}
+                disabled={submited}
+              />
+            </Row>
+          </>
+        }
       </Row> 
       <Row 
         justify="center"
         css={{
-          justifyContent: "space-around",
+          justifyContent: "flex-start",
           textAlign:"left",
-          paddingBottom: "2rem"
+          padding: "1rem 3rem 3rem"       
         }}
       >
        <Button 
