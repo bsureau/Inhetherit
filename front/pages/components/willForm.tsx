@@ -10,9 +10,10 @@ import { FaCheck } from 'react-icons/fa';
 export default function WillForm() {
 
   const erc20Addresses = {
-    //'ETH': '',
+    'ETH': 'ETH',
+    'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709',
+    'WBTC': '',
     'WETH': '0xdf032bc4b9dc2782bb09352007d4c57b75160b15',
-    'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709'
   };
 
   // form
@@ -78,7 +79,7 @@ export default function WillForm() {
   }
 
   const handleWill: Function = async () => {
-    const inhetheritFactoryAddress: string = "0x0a0B1eA109042C8C85576a5f3B86e4912944e3e4";
+    const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
     const inhetheritFactoryABI: string[] = [
       "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
       "function getWill() public view returns(address)",
@@ -261,7 +262,7 @@ export default function WillForm() {
           onClick={handleSubmit}
           disabled={!isValid() || (isValid() && submited)}
         >
-          Pass on your cryptos
+          Create you will
         </Button>
       </Row> 
 
