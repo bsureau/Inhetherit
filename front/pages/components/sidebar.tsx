@@ -41,7 +41,7 @@ export default function Sidebar() {
     >
       <Link href="/">
         <Text
-          h1 size={20}
+          h1 size={23}
           color="white"
           weight="bold"
           css={styles.logo}
