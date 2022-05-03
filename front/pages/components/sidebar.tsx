@@ -10,7 +10,7 @@ const styles: any = {
     width: "280px",
     background: "#054EA9",
     paddingTop: "1.5rem",
-    borderTopRightRadius: "50px",
+    borderTopRightRadius: "30px",
     zIndex: "100"
   },
   logo: {
