@@ -55,7 +55,7 @@ export default function Index() {
         <Text 
           color="#ffffff"
         >
-         <strong>REMINDER: </strong> Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet... 
+         <strong>REMINDER: </strong> Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet (for now)... 
         </Text>
       </Row>
       <Col 
@@ -111,7 +111,7 @@ export default function Index() {
                   size={18} 
                   css={styles.cardText}
                 >
-                  Pass on your cryptos to your loved ones today, without compromising security! 
+                  Pass on your cryptos to your loved ones without compromising security! 
                 </Text>
                 <Card.Footer css={styles.cardFooter}>
                   <Link href="/will">
