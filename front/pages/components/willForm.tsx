@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 
 import { Contract, ethers } from 'ethers';
@@ -116,6 +116,14 @@ export default function WillForm() {
 
     const inheritWillAddress: string = await contract.getWill();
 
+    setWillAddress(inheritWillAddress);
+    store.dispatch({
+      type: 'ADD_WILL',
+      user: {
+        will: inheritWillAddress,
+      }
+    });
+
     setLoading(false);
 
     setApprove(true);
@@ -138,6 +146,7 @@ export default function WillForm() {
       "function getFirstName() public view returns(string memory)",
       "function getBirthdayDate() public view returns(string memory)",
       "function getBirthPlace() public view returns(string memory)",
+      "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
     ];
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
@@ -145,13 +154,32 @@ export default function WillForm() {
     try {
       const tempWillAddress = await contract.getWill();
       setWillAddress(tempWillAddress);
+      store.dispatch({
+        type: 'ADD_WILL',
+        user: {
+          will: tempWillAddress,
+        }
+      });
 
       const willContract: Contract = new ethers.Contract(tempWillAddress, willABI, wallet.signer);
+
       setLastName(await willContract.getLastName());
       setFirstName(await willContract.getFirstName());
       setBirthPostCode(await willContract.getBirthPlace());
       setBirthdayDate(await willContract.getBirthdayDate());
       setWillCreated(true);
+
+      const claims = await willContract.getClaims();
+      store.dispatch({
+        type: 'ADD_CLAIM',
+        user: {
+          claims: claims.map((claim) => ({
+            erc20TokenAddress: claim.erc20Token,
+            heirAddress: claim.heir,
+            hasBeenTransferred: false,
+          }))
+        }
+      });
     } catch (error) {
       console.log(error);
       if (error.reason = "WILL_NOT_FOUND") {
@@ -159,6 +187,10 @@ export default function WillForm() {
       }
     }
   }
+
+  useEffect(() => {
+    setTimeout(getWill, 1000);
+  }, []);
 
   return (
     <Col

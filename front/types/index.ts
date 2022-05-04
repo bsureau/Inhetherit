@@ -5,6 +5,14 @@ export type User = {
     account: string;
     balance: BigNumber | number;
     signer: Signer | null;
+    will: string;
+    claims: Array<Claim>;
+};
+
+export type Claim = {
+    erc20TokenAddress: string;
+    heirAddress: string;
+    hasBeenTransferred: boolean;
 };
 
 export type GlobalState = {
