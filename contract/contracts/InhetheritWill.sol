@@ -3,10 +3,12 @@ pragma solidity ^0.8.0;
 
 import './Claim.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
-contract InhetheritWill is Ownable {
+contract InhetheritWill is Ownable, ChainlinkClient {
 
-    enum State {OPEN, FILLED}
+    enum State {OPEN, CLOSED}
 
     address private giver;
     string private firstName;
@@ -18,6 +20,48 @@ contract InhetheritWill is Ownable {
     Claim[] private claims;
     State private state;
 
+    using Chainlink for Chainlink.Request;
+  
+    boolean private found;
+    
+    address private oracle;
+    bytes32 private jobId;
+    uint256 private fee;
+
+    modifier hasClaim {
+        boolean hasClaim = false;
+
+        for (uint i=0; i<claims.length; i++) {
+            if (claims[i].heir == msg.sender && claim[i].filled == false) {
+                hasClaim = true;
+            }
+        }
+
+        require(
+            hasClaim == true,
+            "NOTHING_TO_CLAIM"
+        );
+        _;
+    }
+
+    modifier isClosed {
+        require(
+            state == State.CLOSED,
+            "WILL_STILL_OPEN"
+        );
+        _;
+    }
+
+    modifier isOpen {
+        require(
+            state == State.OPEN,
+            "WILL_CLOSED"
+        );
+        _;
+    }
+
+    event DeathReport(boolean isDead);
+
     constructor (address _giver, string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace) {
 
         giver = _giver;
@@ -26,6 +70,11 @@ contract InhetheritWill is Ownable {
         birthdayDate = _birthdayDate;
         birthPlace = _birthPlace;
         state = State.OPEN;
+
+        setPublicChainlinkToken();
+        oracle = 0xc57B33452b4F7BB189bB5AfaE9cc4aBa1f7a4FD8; //TODO: change on mainnet
+        jobId = "d5270d1c311941d0b08bead21fea7747"; //TODO: change on mainnet
+        fee = 0.1 * 10 ** 18; // TODO: change on mainnet (varies by network and job) 
     }
 
     function getGiver() public view returns(address) {
@@ -63,7 +112,7 @@ contract InhetheritWill is Ownable {
     }
     
     function addErc20Token(address _heir, address _erc20Token) external onlyOwner {
-        require(isErc20TokenRecorded(_erc20Token) == false, "Token already given");
+        require(isErc20TokenRecorded(_erc20Token) == false, "TOKEN_ALREADY_GIVEN");
         Claim memory claim = Claim(_heir, _erc20Token);
         claims.push(claim);
         erc20Tokens.push(_erc20Token);
@@ -71,7 +120,7 @@ contract InhetheritWill is Ownable {
 
     function removeErc20Token(address _heir, address _erc20Token) external onlyOwner {
 
-        require(isErc20TokenRecorded(_erc20Token) == true, "Token not found");
+        require(isErc20TokenRecorded(_erc20Token) == true, "TOKEN_NOT_FOUND");
 
         for (uint i=0; i<claims.length; i++) {
             if (claims[uint(i)].erc20Token == _erc20Token) {
@@ -97,6 +146,7 @@ contract InhetheritWill is Ownable {
     }
 
     function addEth(address _heir) external payable onlyOwner {
+        
         require(msg.value > 0, "No Eth sent");
         eth = _heir;
     }
@@ -174,5 +224,43 @@ contract InhetheritWill is Ownable {
 
     function getState() public view returns(State) {
         return state;
+    }
+
+    /**
+     * Create a Chainlink request to retrieve API response, find the target
+     * data, then multiply by 1000000000000000000 (to remove decimal places from data).
+     */
+    function reportDeath(string memory _deathDate) public isOpen hasClaim {
+        
+        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+        string memory url = string(abi.encodePacked("https://deces.matchid.io/deces/api/v1/search?firstName=", firstName, "&lastName=", lastname, "&birthDate=", birthdayDate, "&birthPostalCode=", birthPlace, "&deathDate=", _deathDate, "&fuzzy=false"));
+        request.add("get", url);
+        request.add("path", "response.total"); 
+        return sendChainlinkRequestTo(oracle, request, fee);
+    }
+    
+    function fulfill(bytes32 _requestId, uint256 _total) public recordChainlinkFulfillment(_requestId)
+    {
+        if (total > 0) {
+            state = State.CLOSED;
+            emit DeathReport(true);
+        }
+
+        emit DeathReport(false);
+    }
+
+    function claim() public isClosed {
+
+        for (uint i=0; i<claims.length; i++) {
+            if (claims[i].heir == msg.sender && claim[i].filled == false) {
+                uint256 amount = IERC20(claims[i].erc20Token).allowance(giver, address(this));
+                IERC20(claims[i].erc20Token).transfer(msg.sender, amount);
+                claims[i].filled = true;
+            }
+        }
+
+        if (eth == msg.sender) {
+            msg.sender.transfer(address(this).balance);
+        }
     }
 }
