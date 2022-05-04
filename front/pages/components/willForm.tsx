@@ -133,13 +133,27 @@ export default function WillForm() {
     const inhetheritFactoryABI: string[] = [
       "function getWill() public view returns(address)",
     ];
+    const willABI: string[] = [
+      "function getLastName() public view returns(string memory)",
+      "function getFirstName() public view returns(string memory)",
+      "function getBirthdayDate() public view returns(string memory)",
+      "function getBirthPlace() public view returns(string memory)",
+    ];
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
    
     try {
-      setWillAddress(await contract.getWill());
+      const tempWillAddress = await contract.getWill();
+      setWillAddress(tempWillAddress);
+
+      const willContract: Contract = new ethers.Contract(tempWillAddress, willABI, wallet.signer);
+      setLastName(await willContract.getLastName());
+      setFirstName(await willContract.getFirstName());
+      setBirthPostCode(await willContract.getBirthPlace());
+      setBirthdayDate(await willContract.getBirthdayDate());
       setWillCreated(true);
     } catch (error) {
+      console.log(error);
       if (error.reason = "WILL_NOT_FOUND") {
         setWillCreated(false);
       }
@@ -325,7 +339,7 @@ export default function WillForm() {
         aria-labelledby="modal-title"
         width="600px"
         open={openReviewInfo}
-        onClose={() => { setOpenReviewInfo(false); setSubmited(true); }}
+        onClose={() => { setOpenReviewInfo(false); setSubmited(false); }}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -447,7 +461,7 @@ export default function WillForm() {
         aria-labelledby="modal-title"
         width="600px"
         open={confirmation}
-        onClose={() => { setConfirmation(false); setSubmited(true); }}
+        onClose={() => { setConfirmation(false); setSubmited(false); }}
       >
         <Modal.Header></Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
