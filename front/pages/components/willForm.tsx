@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 
 import { Contract, ethers } from 'ethers';
@@ -37,14 +37,15 @@ export default function WillForm() {
   const [confirmation, setConfirmation] = useState(false);
 
   const [willAddress, setWillAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
-  const [isWillCreated, setWillCreated]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-
+  const [isWillCreated, setWillCreated]: [number, Dispatch<SetStateAction<boolean>>] = useState(-1); // -1 unknown, 0 false, 1 true
 
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
+
+    getWill();
 
     const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], [
@@ -55,17 +56,23 @@ export default function WillForm() {
   }
 
   const isValid: Function = () => {
-    if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
-      return true
+    if (isWillCreated == 0) {
+      if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== "" && birthdayDate.trim() !== "" && birthPostCode.trim() !== "" && heirAddress.trim() !== "") {
+        return true
+      }
+    }
+
+    if (isWillCreated == 1) {
+      if (erc20Address.trim() !== "" && heirAddress.trim() !== "") {
+        return true
+      }
     }
   }
 
   const handleSubmit: Function = (evt) => {
     evt.preventDefault();
-    if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== ""  && birthdayDate.trim() !== ""  && birthPostCode.trim() !== ""  && heirAddress.trim() !== "") {
-      setSubmited(true);
-      setOpenReviewInfo(true);
-    }
+    setSubmited(true);
+    setOpenReviewInfo(true);
   }
 
   async function approveTransfer(inhetheritWillAddress: string) {
@@ -133,16 +140,11 @@ export default function WillForm() {
       setWillAddress(await contract.getWill());
       setWillCreated(true);
     } catch (error) {
-      if (error.reason = "will not found") {
+      if (error.reason = "WILL_NOT_FOUND") {
         setWillCreated(false);
       }
     }
   }
-
-  useEffect(() => {
-      getWill();
-    }
-  );
 
   return (
     <Col
@@ -196,7 +198,7 @@ export default function WillForm() {
                 <option value='LINK'>Chainlink (LINK)</option>
               </select>
             </Col>
-            { isWillCreated &&
+            { isWillCreated == 1 &&
               <Input 
                 rounded
                 bordered
@@ -224,7 +226,7 @@ export default function WillForm() {
             </>
           ) : ''}
         </Row>
-        { !isWillCreated &&
+        { isWillCreated == 0 &&
           <>
             <Row
               css={{
@@ -305,15 +307,17 @@ export default function WillForm() {
           padding: "1rem 3rem 3rem"       
         }}
       >
-       <Button 
-          bordered 
-          color="primary" 
-          size="lg" 
-          onClick={handleSubmit}
-          disabled={!isValid() || (isValid() && submited)}
-        >
-          Create you will
-        </Button>
+        { isWillCreated != -1 ? (
+           <Button
+              bordered
+              color="primary"
+              size="lg"
+              onClick={handleSubmit}
+              disabled={!isValid() || (isValid() && submited)}
+            >
+              Create you will
+            </Button>
+        ) : '' }
       </Row> 
 
       <Modal
@@ -321,7 +325,7 @@ export default function WillForm() {
         aria-labelledby="modal-title"
         width="600px"
         open={openReviewInfo}
-        onClose={() => setOpenReviewInfo(false)}
+        onClose={() => { setOpenReviewInfo(false); setSubmited(true); }}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -443,7 +447,7 @@ export default function WillForm() {
         aria-labelledby="modal-title"
         width="600px"
         open={confirmation}
-        onClose={() => setConfirmation(false)}
+        onClose={() => { setConfirmation(false); setSubmited(true); }}
       >
         <Modal.Header></Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
