@@ -12,14 +12,14 @@ contract InhetheritFactory {
     modifier hasWill {
         require(
             giverToWill[msg.sender] != address(0),
-            "Will not found"
+            "WILL_NOT_FOUND"
         );
         _;
     }
 
     modifier isOpen {
          require(InhetheritWill(giverToWill[msg.sender]).getState() == InhetheritWill.State.OPEN,
-            "No Open will"
+            "NO_OPEN_WILL"
         );
         _;
     }
@@ -27,7 +27,7 @@ contract InhetheritFactory {
     modifier hasClaim {
         require(
             heirToWills[msg.sender].length > 0,
-            "Claim not found"
+            "CLAIM_NOT_FOUND"
         );
         _;
     }
@@ -36,14 +36,13 @@ contract InhetheritFactory {
 
         require( 
             giverToWill[msg.sender] == address(0) 
-            , "Will already created"
+            , "WILL_ALREADY_EXIST"
         );
 
         InhetheritWill willContract = new InhetheritWill(msg.sender, _firstName, _lastName, _birthdayDate, _birthPlace);
         willContract.addErc20Token(_heir, _erc20Token);
         
         address willContractAddress = address(willContract);
-
         giverToWill[msg.sender] = willContractAddress;
         heirToWills[_heir].push(willContractAddress);
 
@@ -54,17 +53,15 @@ contract InhetheritFactory {
 
         require( 
             giverToWill[msg.sender] == address(0) 
-            , "Will already created"
+            , "WILL_ALREADY_EXIST"
         );
-        require(msg.value > 0, "No Eth sent");
 
+        require(msg.value > 0, "ETH_MISSING");
 
         InhetheritWill willContract = new InhetheritWill(msg.sender, _firstName, _lastName, _birthdayDate, _birthPlace);
-
         willContract.addEth{value:msg.value}(_heir);
         
         address willContractAddress = address(willContract);
-
         giverToWill[msg.sender] = willContractAddress;
         heirToWills[_heir].push(willContractAddress);
 
@@ -88,7 +85,7 @@ contract InhetheritFactory {
         addClaim(_heir, willContractAddress);
     }
 
-    function removeErc20Token(address _heir, address _erc20Token) public hasWill isOpen{
+    function removeErc20Token(address _heir, address _erc20Token) public hasWill isOpen {
 
         address willContractAddress = giverToWill[msg.sender];
         InhetheritWill(willContractAddress).removeErc20Token(_heir, _erc20Token);
@@ -96,7 +93,7 @@ contract InhetheritFactory {
     }
 
     function addEth(address _heir) public hasWill isOpen payable {
-        require(msg.value > 0, "No Eth sent");
+        require(msg.value > 0, "ETH_MISSING");
 
         address willContractAddress = giverToWill[msg.sender];
 

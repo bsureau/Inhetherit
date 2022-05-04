@@ -1,11 +1,11 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("InhetheritFactory", function () {
+describe("InhetheritFacade", function () {
 
   let willContractABI;
   let ContractFactory;
-  let inhetheritFactory;
+  let inhetheritFacade;
 
   beforeEach( async () => {
     willContractABI = [
@@ -20,9 +20,9 @@ describe("InhetheritFactory", function () {
       "function getClaimsForHeir() public view returns(address[] memory)",
       "function getState() public view returns(uint)"
     ];
-    ContractFactory = await ethers.getContractFactory("InhetheritFactory");
-    inhetheritFactory = await ContractFactory.deploy();
-    await inhetheritFactory.deployed();
+    ContractFactory = await ethers.getContractFacade("InhetheritFacade");
+    inhetheritFacade = await ContractFactory.deploy();
+    await inhetheritFacade.deployed();
   })
 
   it("Creates will contract with erc20 token", async function () {
@@ -33,9 +33,9 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress);
+    const tx = await inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress);
     tx.wait(1);
-    const willContractAddress = await inhetheritFactory.getWill();
+    const willContractAddress = await inhetheritFacade.getWill();
     
     const heirConnectedToWillContract = new ethers.Contract(willContractAddress, willContractABI, heir);
     const hackerConnectedToWillContract = new ethers.Contract(willContractAddress, willContractABI, hacker);
@@ -58,11 +58,11 @@ describe("InhetheritFactory", function () {
     const heirAddress = await heir.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
 
     // Assert
-    const willContractAddress = await inhetheritFactory.getWill();
+    const willContractAddress = await inhetheritFacade.getWill();
     const balance = await ethers.provider.getBalance(willContractAddress);
     expect(ethers.utils.formatEther(balance)).to.be.equal("3.0");
   });
@@ -76,12 +76,12 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress);
+    const tx = await inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress);
     tx.wait(1);
 
     // Assert
     await expect(
-      inhetheritFactory.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
+      inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
     ).to.be.revertedWith("Will already created");
   });
   
@@ -93,12 +93,12 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
 
     // Assert
     await expect(
-      inhetheritFactory.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
+      inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
     ).to.be.revertedWith("Will already created");
   });
 
@@ -106,7 +106,7 @@ describe("InhetheritFactory", function () {
      
     // Assert
     await expect(
-      inhetheritFactory.getWill()
+      inhetheritFacade.getWill()
     ).to.be.revertedWith("Will not found");
   });
 
@@ -117,17 +117,17 @@ describe("InhetheritFactory", function () {
     const heirAddress = await heir.getAddress();
 
     // Act
-    let tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    let tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
-    const willContract1Address = await inhetheritFactory.getWill();
+    const willContract1Address = await inhetheritFacade.getWill();
 
-    const giver2ConnectedToInhetheritFactory = inhetheritFactory.connect(giver2);
-    tx = await giver2ConnectedToInhetheritFactory.createWillWithEth("Jean", "Némard", "10/11/1986", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const giver2ConnectedToInhetheritFacade = inhetheritFacade.connect(giver2);
+    tx = await giver2ConnectedToInhetheritFacade.createWillWithEth("Jean", "Némard", "10/11/1986", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
-    const willContract2Address = await giver2ConnectedToInhetheritFactory.getWill();
+    const willContract2Address = await giver2ConnectedToInhetheritFacade.getWill();
 
-    const heirConnectedToInhetheritFactory = inhetheritFactory.connect(heir);
-    const wills = await heirConnectedToInhetheritFactory.getWills();
+    const heirConnectedToInhetheritFacade = inhetheritFacade.connect(heir);
+    const wills = await heirConnectedToInhetheritFacade.getWills();
 
     // Assert
     expect(wills.length).to.be.equal(2);
@@ -139,7 +139,7 @@ describe("InhetheritFactory", function () {
 
     // Assert
     await expect(
-      inhetheritFactory.getWills()
+      inhetheritFacade.getWills()
      ).to.be.revertedWith("Claim not found");
   });
 
@@ -152,13 +152,13 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress2 = await fakeErc20Token2.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
     
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress);
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress2);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress2);
 
-    const willContractAddress = await inhetheritFactory.getWill();
+    const willContractAddress = await inhetheritFacade.getWill();
     const willContract = new ethers.Contract(willContractAddress, willContractABI, heir);
     const heirClaims = await willContract.getClaimsForHeir();
     
@@ -179,12 +179,12 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
 
     // Assert
-    await expect(inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token already given");
+    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token already given");
   });
 
   it("Reverts on addErc20Token if will does not exist", async function () {
@@ -195,7 +195,7 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Assert
-    await expect(inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Will not found");
+    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Will not found");
   });
 
   it("Removes erc20Token", async function () {
@@ -209,15 +209,15 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress3 = await fakeErc20Token3.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress);
-    await inhetheritFactory.removeErc20Token(heirAddress, fakeErc20TokenAddress);
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress2);
-    await inhetheritFactory.addErc20Token(heirAddress2, fakeErc20TokenAddress3);
-    await inhetheritFactory.removeErc20Token(heirAddress2, fakeErc20TokenAddress3);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
+    await inhetheritFacade.removeErc20Token(heirAddress, fakeErc20TokenAddress);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress2);
+    await inhetheritFacade.addErc20Token(heirAddress2, fakeErc20TokenAddress3);
+    await inhetheritFacade.removeErc20Token(heirAddress2, fakeErc20TokenAddress3);
 
-    const willContractAddress = inhetheritFactory.getWill();
+    const willContractAddress = inhetheritFacade.getWill();
     const willContract = new ethers.Contract(willContractAddress, willContractABI, heir);
     const heirClaims = await willContract.getClaimsForHeir();
 
@@ -227,8 +227,8 @@ describe("InhetheritFactory", function () {
     expect((await willContract.getClaimsForHeir()).length).to.be.equal(1);
     expect((await willContract.getErc20Tokens()).length).to.be.equal(1);
     expect(heirClaims[0]).to.be.equal(fakeErc20TokenAddress2);
-    const heir2ConnectedToInhetheritFactory = inhetheritFactory.connect(heir2);
-    await expect(heir2ConnectedToInhetheritFactory.getWills()).to.be.revertedWith("Claim not found");
+    const heir2ConnectedToInhetheritFacade = inhetheritFacade.connect(heir2);
+    await expect(heir2ConnectedToInhetheritFacade.getWills()).to.be.revertedWith("Claim not found");
   });
 
   it("Reverts on removeErc20Token if token is not found", async function () {
@@ -239,11 +239,11 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
 
     // Assert
-    await expect(inhetheritFactory.removeErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token not found")
+    await expect(inhetheritFacade.removeErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token not found")
   });
 
   it("Reverts on removeErc20Token if token does not belong to heir", async function () {
@@ -255,12 +255,12 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    const tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    const tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
-    await inhetheritFactory.addErc20Token(heirAddress, fakeErc20TokenAddress);
+    await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
 
     // Assert
-    await expect(inhetheritFactory.removeErc20Token(heirAddress2, fakeErc20TokenAddress)).to.be.revertedWith("erc20Token does not belong to heir");
+    await expect(inhetheritFacade.removeErc20Token(heirAddress2, fakeErc20TokenAddress)).to.be.revertedWith("erc20Token does not belong to heir");
   });
 
   it("Adds ETH", async function () {
@@ -272,13 +272,13 @@ describe("InhetheritFactory", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Act
-    tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
 
-    inhetheritFactory.addEth(heir2Address, {value: ethers.utils.parseEther("3", 18)})
+    inhetheritFacade.addEth(heir2Address, {value: ethers.utils.parseEther("3", 18)})
 
     // Assert
-    const willContractAddress = await inhetheritFactory.getWill();
+    const willContractAddress = await inhetheritFacade.getWill();
     const balance = await ethers.provider.getBalance(willContractAddress);
     expect(ethers.utils.formatEther(balance)).to.be.equal("6.0");
     const willContract = new ethers.Contract(willContractAddress, willContractABI, heir);
@@ -293,7 +293,7 @@ describe("InhetheritFactory", function () {
     const heir2Address = await heir2.getAddress();
 
     // Act
-    await expect(inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress)).to.be.revertedWith("No Eth sent");
+    await expect(inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress)).to.be.revertedWith("No Eth sent");
   });
 
   it("Removes Eth", async function () {
@@ -304,16 +304,16 @@ describe("InhetheritFactory", function () {
     const heirAddress = await heir.getAddress();
 
     // Act
-    tx = await inhetheritFactory.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
+    tx = await inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress, {value: ethers.utils.parseEther("3", 18)});
     tx.wait(1);
 
-    inhetheritFactory.removeEth(heirAddress);
-    heirConnectedToInhetheritFactory = inhetheritFactory.connect(heir);
+    inhetheritFacade.removeEth(heirAddress);
+    heirConnectedToInhetheritFacade = inhetheritFacade.connect(heir);
 
     // Assert
-    const willContractAddress = await inhetheritFactory.getWill();
+    const willContractAddress = await inhetheritFacade.getWill();
     const balance = await ethers.provider.getBalance(willContractAddress);
     expect(ethers.utils.formatEther(balance)).to.be.equal("0.0");
-    await expect(heirConnectedToInhetheritFactory.getWills()).to.be.revertedWith("Claim not found");
+    await expect(heirConnectedToInhetheritFacade.getWills()).to.be.revertedWith("Claim not found");
   });
 });
