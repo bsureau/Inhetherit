@@ -22,23 +22,21 @@ contract InhetheritWill is Ownable, ChainlinkClient {
 
     using Chainlink for Chainlink.Request;
   
-    boolean private found;
-    
     address private oracle;
     bytes32 private jobId;
     uint256 private fee;
 
     modifier hasClaim {
-        boolean hasClaim = false;
+        bool result = false;
 
         for (uint i=0; i<claims.length; i++) {
-            if (claims[i].heir == msg.sender && claim[i].filled == false) {
-                hasClaim = true;
+            if (claims[i].heir == msg.sender && claims[i].filled == false) {
+                result = true;
             }
         }
 
         require(
-            hasClaim == true,
+            result == true,
             "NOTHING_TO_CLAIM"
         );
         _;
@@ -60,7 +58,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         _;
     }
 
-    event DeathReport(boolean isDead);
+    event DeathReport(bool isDead);
 
     constructor (address _giver, string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace) {
 
@@ -113,7 +111,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
     
     function addErc20Token(address _heir, address _erc20Token) external onlyOwner {
         require(isErc20TokenRecorded(_erc20Token) == false, "TOKEN_ALREADY_GIVEN");
-        Claim memory claim = Claim(_heir, _erc20Token);
+        Claim memory claim = Claim(_heir, _erc20Token, false);
         claims.push(claim);
         erc20Tokens.push(_erc20Token);
     }
@@ -226,22 +224,19 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         return state;
     }
 
-    /**
-     * Create a Chainlink request to retrieve API response, find the target
-     * data, then multiply by 1000000000000000000 (to remove decimal places from data).
-     */
-    function reportDeath(string memory _deathDate) public isOpen hasClaim {
+    function reportDeath(string memory _deathDate) public isOpen hasClaim returns(bytes32 requestId) {
         
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
-        string memory url = string(abi.encodePacked("https://deces.matchid.io/deces/api/v1/search?firstName=", firstName, "&lastName=", lastname, "&birthDate=", birthdayDate, "&birthPostalCode=", birthPlace, "&deathDate=", _deathDate, "&fuzzy=false"));
+        string memory url = string(abi.encodePacked("https://deces.matchid.io/deces/api/v1/search?firstName=", firstName, "&lastName=", lastName, "&birthDate=", birthdayDate, "&birthPostalCode=", birthPlace, "&deathDate=", _deathDate, "&fuzzy=false"));
         request.add("get", url);
-        request.add("path", "response.total"); 
+        request.add("path", "response,total"); 
+        request.addInt("multiply", 1);
         return sendChainlinkRequestTo(oracle, request, fee);
     }
     
-    function fulfill(bytes32 _requestId, uint256 _total) public recordChainlinkFulfillment(_requestId)
+    function fulfill(bytes32 _requestId, uint8 _total) public recordChainlinkFulfillment(_requestId)
     {
-        if (total > 0) {
+        if (_total > 0) {
             state = State.CLOSED;
             emit DeathReport(true);
         }
@@ -249,10 +244,10 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         emit DeathReport(false);
     }
 
-    function claim() public isClosed {
+    function claimFunds() public isClosed {
 
         for (uint i=0; i<claims.length; i++) {
-            if (claims[i].heir == msg.sender && claim[i].filled == false) {
+            if (claims[i].heir == msg.sender && claims[i].filled == false) {
                 uint256 amount = IERC20(claims[i].erc20Token).allowance(giver, address(this));
                 IERC20(claims[i].erc20Token).transfer(msg.sender, amount);
                 claims[i].filled = true;
@@ -260,7 +255,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         }
 
         if (eth == msg.sender) {
-            msg.sender.transfer(address(this).balance);
+            payable(msg.sender).transfer(address(this).balance);
         }
     }
 }
