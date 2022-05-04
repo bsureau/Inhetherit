@@ -72,9 +72,9 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         state = State.OPEN;
 
         setPublicChainlinkToken();
-        oracle = 0xc57B33452b4F7BB189bB5AfaE9cc4aBa1f7a4FD8; //TODO: change on mainnet
-        jobId = "d5270d1c311941d0b08bead21fea7747"; //TODO: change on mainnet
-        fee = 0.1 * 10 ** 18; // TODO: change on mainnet (varies by network and job) 
+        oracle = 0xD0691a51e3C6c562691D3C44C2944Bd9D368Ec1f; //TODO: change on mainnet
+        jobId = "de58d01b258c492198602cdae0d47eb6"; //TODO: change on mainnet
+        fee = 0.05 * 10 ** 18; // TODO: change on mainnet (varies by network and job) 
     }
 
     function getGiver() public view returns(address) {
