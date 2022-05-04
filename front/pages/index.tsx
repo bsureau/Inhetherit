@@ -10,14 +10,14 @@ const styles: any = {
     background: '#fefefe'
   },
   row: {
-    background: '#000',
+    background: 'rgb(5, 78, 169)',
     height: '4rem'
   },
   logo: {
     fontFamily: 'Avenir Next'
   },
   title: {
-    textGradient: "90deg, #0700b8 0%, #00ff88 100%"
+    textGradient: "90deg, rgb(5, 78, 169) 30%, #00ff88 100%"
   },
   card: {
     justifyContent: "center",
@@ -162,7 +162,7 @@ export default function Index() {
           align="center"
           background="#fefefe"
         >
-          Powered by &nbsp;
+          Powered with ❤️ &nbsp; by &nbsp;
           <Link 
             color="text"
           >
