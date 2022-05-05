@@ -12,7 +12,7 @@ import {
   inhetheritFactoryABI,
   inhetheritFactoryAddress
 } from "../../utils/willContract";
-import { erc20Abi, erc20Addresses } from "../../utils/erc20Contract";
+import {erc20Abi, erc20Addresses, getBalanceOf} from "../../utils/erc20Contract";
 
 export default function WillForm() {
   const { user } = useUser();
@@ -45,8 +45,7 @@ export default function WillForm() {
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
 
-    const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], erc20Abi, user.signer);
-    const balance = await contract.balanceOf(user.account);
+    const balance = await getBalanceOf(user, erc20Addresses[event.target.value])
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
   }
 

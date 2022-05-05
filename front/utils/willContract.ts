@@ -1,4 +1,5 @@
 import { Contract, ethers } from "ethers";
+import {getBalanceOf} from "./erc20Contract";
 
 export const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
 
@@ -27,7 +28,15 @@ export async function getWill(user) {
     const firstName = await willContract.getFirstName();
     const postCode = await willContract.getBirthPlace();
     const birthdate = await willContract.getBirthdayDate();
-    const claims = await willContract.getClaims();
+    let claims = await willContract.getClaims();
+
+    // fetch balance for each token for which their is a will
+    claims = await Promise.all(claims.map(async (claim) => {
+      return {
+        ...claim,
+        balance: await getBalanceOf(user, claim.erc20Token)
+      };
+    }));
 
     return {
       address: willAddress,

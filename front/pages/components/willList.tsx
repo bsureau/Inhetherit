@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import { Button, Col, Link, Row, Table, Text, Tooltip } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
+import { ethers } from 'ethers';
+
+import { useWill } from "../../context/will";
+import { useUser } from "../../context/user";
+import { getErc20NameFromAddress, getErc20Iso3FromAddress, getBalanceOf } from "../../utils/erc20Contract";
+
 const styles: any = {
   column: {
     width: "85%",
@@ -16,6 +22,8 @@ const styles: any = {
 }
 
 export default function WillList() {
+  const { will } = useWill();
+  const { user } = useUser();
 
   return (
     <Col css={styles.column}>
@@ -31,69 +39,30 @@ export default function WillList() {
           <Table.Column></Table.Column>
         </Table.Header>
         <Table.Body>
-          <Table.Row>
-            <Table.Cell>
-              <Tooltip content={"That means we won't be able to execute your will"}>
-                <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Missing Approval</small>
-              </Tooltip>
-            </Table.Cell>
-            <Table.Cell>
-              Chainlink
-            </Table.Cell>
-            <Table.Cell>
-              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x90ld57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
-              </Link>
-            </Table.Cell>
-            <Table.Cell>
-              130 LINK
-            </Table.Cell>
-            <Table.Cell>
-              <Button>Approve transfert</Button>
-              <Button light color="error">Delete will</Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>
-              <FaCheck color="#16a085" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>All good</small>
-            </Table.Cell>
-            <Table.Cell>
-              Ethereum
-            </Table.Cell>
-            <Table.Cell>
-              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x84jd57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
-              </Link>
-            </Table.Cell>
-            <Table.Cell>
-              130.48267 ETH
-            </Table.Cell>
-            <Table.Cell>
-              <Button light color="error">Delete will</Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>
-              <Tooltip content={"That means we won't be able to execute your will"}>
-                <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Allowance too low</small>
-              </Tooltip>
-            </Table.Cell>
-            <Table.Cell>
-              Wrapped Ethereum
-            </Table.Cell>
-            <Table.Cell>
-              <Link href="https://rinkeby.etherscan.io/address" target="_blank">
-                {"0x7ffc57839b00206d1ad20c69a1981b489f772031".substring(0, 20)}...
-              </Link>
-            </Table.Cell>
-            <Table.Cell>
-              30 WETH
-            </Table.Cell>
-            <Table.Cell>
-              <Button>Increase allowance</Button>
-              <Button light color="error">Delete will</Button>
-            </Table.Cell>
-          </Table.Row>
+          { will.claims.map((claim) => (
+            <Table.Row key={claim.erc20Token}>
+              <Table.Cell>
+                <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
+                  <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Allowance too low (0.4 {getErc20Iso3FromAddress(claim.erc20Token)})</small>
+                </Tooltip>
+              </Table.Cell>
+              <Table.Cell>
+                {getErc20NameFromAddress(claim.erc20Token)}
+              </Table.Cell>
+              <Table.Cell>
+                <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
+                  {claim.heir.substring(0, 20)}...
+                </Link>
+              </Table.Cell>
+              <Table.Cell>
+                {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
+              </Table.Cell>
+              <Table.Cell>
+                <Button>Increase allowance</Button>
+                <Button light color="error">Delete will</Button>
+              </Table.Cell>
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table>
     </Col>

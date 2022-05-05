@@ -1,3 +1,5 @@
+import { Contract, ethers } from "ethers";
+
 export const erc20Abi = [
   "function approve(address _spender, uint256 _value) public returns (bool success)",
   "function allowance(address _tokenOwner, address _spender) public view returns(uint256)",
@@ -16,4 +18,17 @@ export const erc20Names = {
   'LINK': 'LinkChain',
   'WBTC': 'Wrapped BitCoin',
   'WETH': 'Wrapped Ethereum',
+}
+
+export function getErc20Iso3FromAddress(address: string) {
+  return Object.keys(erc20Addresses).find(key => erc20Addresses[key] == address.toLowerCase());
+}
+
+export function getErc20NameFromAddress(address: string) {
+  return erc20Names[getErc20Iso3FromAddress(address)];
+}
+
+export async function getBalanceOf(user, erc20Address) {
+  const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
+  return await contract.balanceOf(user.account);
 }
