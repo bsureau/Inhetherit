@@ -3,11 +3,19 @@ import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from 
 
 import { Contract, ethers } from 'ethers';
 
-import { store } from '../../store';
-import { User } from '../../types';
 import { FaCheck } from 'react-icons/fa';
+import { useUser } from "../../context/user";
+import { useWill } from "../../context/will";
+import { getWill } from "../../utils/willContract";
 
-export default function WillForm() {
+export default function WillForm(props) {
+  const { user } = useUser();
+  const { setWill } = useWill();
+  const { will } = props;
+
+  useEffect(() => {
+    // TODO: setWill in WillContext
+  })
 
   const erc20Addresses = {
     'ETH': 'ETH',
@@ -45,13 +53,19 @@ export default function WillForm() {
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
 
-    getWill();
+    const userWill = getWill(user);
+    // TODO: set Will
+    if (userWill == {}) {
+      setWillCreated(false);
+    } else {
+      setWillCreated(true);
+    }
+    setWill(userWill);
 
-    const wallet: User = store.getState().user;
     const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], [
       'function balanceOf(address _owner) public view returns(uint256)'
-    ], wallet.signer);
-    const balance = await contract.balanceOf(wallet.account);
+    ], user.signer);
+    const balance = await contract.balanceOf(user.account);
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
   }
 
@@ -81,7 +95,7 @@ export default function WillForm() {
       "function approve(address _spender, uint256 _value) public returns (bool success)"
     ];
   
-    const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, store.getState().user.signer);
+    const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
   
     const tx = await erc20Contract.approve(inhetheritWillAddress, ethers.utils.parseUnits("2", 18)); //replace value by max uint256 value
 
@@ -101,8 +115,7 @@ export default function WillForm() {
     setOpenReviewInfo(false);
     setMetamaskInfo(true);
 
-    const wallet: User = store.getState().user;
-    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
     const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, erc20Address, heirAddress);
 
     // we display loading once user has validated transaction with metamask
@@ -116,13 +129,8 @@ export default function WillForm() {
 
     const inheritWillAddress: string = await contract.getWill();
 
+    //TODO: set will Address with WillContext
     setWillAddress(inheritWillAddress);
-    store.dispatch({
-      type: 'ADD_WILL',
-      user: {
-        will: inheritWillAddress,
-      }
-    });
 
     setLoading(false);
 
@@ -136,7 +144,7 @@ export default function WillForm() {
     setSubmited(false);
   }
 
-  const getWill = async () => {
+  /*const getWill = async () => {
     const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
     const inhetheritFactoryABI: string[] = [
       "function getWill() public view returns(address)",
@@ -148,20 +156,14 @@ export default function WillForm() {
       "function getBirthPlace() public view returns(string memory)",
       "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
     ];
-    const wallet: User = store.getState().user;
-    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, wallet.signer);
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
    
     try {
       const tempWillAddress = await contract.getWill();
+      // TODO: set will address with WillContext
       setWillAddress(tempWillAddress);
-      store.dispatch({
-        type: 'ADD_WILL',
-        user: {
-          will: tempWillAddress,
-        }
-      });
 
-      const willContract: Contract = new ethers.Contract(tempWillAddress, willABI, wallet.signer);
+      const willContract: Contract = new ethers.Contract(tempWillAddress, willABI, user.signer);
 
       setLastName(await willContract.getLastName());
       setFirstName(await willContract.getFirstName());
@@ -170,27 +172,15 @@ export default function WillForm() {
       setWillCreated(true);
 
       const claims = await willContract.getClaims();
-      store.dispatch({
-        type: 'ADD_CLAIM',
-        user: {
-          claims: claims.map((claim) => ({
-            erc20TokenAddress: claim.erc20Token,
-            heirAddress: claim.heir,
-            hasBeenTransferred: false,
-          }))
-        }
-      });
+      // TODO: set claims with ClaimsContext
+
     } catch (error) {
       console.log(error);
       if (error.reason = "WILL_NOT_FOUND") {
         setWillCreated(false);
       }
     }
-  }
-
-  useEffect(() => {
-    setTimeout(getWill, 1000);
-  }, []);
+  }*/
 
   return (
     <Col

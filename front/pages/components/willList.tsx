@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { Button, Col, Link, Row, Table, Text, Tooltip } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
-import { store } from '../../store';
-
 const styles: any = {
   column: {
     width: "85%",
@@ -18,10 +16,6 @@ const styles: any = {
 }
 
 export default function WillList() {
-
-  useEffect(() => {
-    setTimeout(() => console.log(store.getState().user.claims), 1200);
-  }, []);
 
   return (
     <Col css={styles.column}>

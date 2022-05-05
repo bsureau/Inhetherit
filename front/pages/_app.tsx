@@ -1,16 +1,20 @@
-import '../styles/globals.css';
-import { NextUIProvider } from '@nextui-org/react';
-import React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../store'
+import '../styles/globals.css'
+import type { FC } from 'react'
+import type { NextComponentType } from 'next'
+import type { AppProps as NextAppProps } from 'next/app'
+import MainLayout from '../layouts/Main'
 
-// This default export is required in a new `pages/_app.js` file.
-export default function Inhetherit({ Component, pageProps }) {
-  return (
-    <NextUIProvider>
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
-    </NextUIProvider>
-  );
+type ComponentProp = NextComponentType & {
+  getLayout?: () => FC<{}>
 }
+
+type AppProps = NextAppProps & { Component: ComponentProp }
+
+function Application({ Component, pageProps }: AppProps) {
+  const getLayout =
+    Component.getLayout || ((page) => <MainLayout>{page}</MainLayout>)
+
+  return getLayout(<Component {...pageProps} />)
+}
+
+export default Application

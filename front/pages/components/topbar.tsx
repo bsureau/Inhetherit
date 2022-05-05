@@ -1,12 +1,12 @@
-import React, { Dispatch, useState, useEffect, SetStateAction } from 'react';
+import React, { useState, useEffect, SetStateAction } from 'react';
 import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
 
 import { Button, Link, Row } from "@nextui-org/react";
 
 import { ethers, Provider } from "ethers";
 
-import { store } from '../../store';
 import { WalletError } from '../../exceptions/walletError';
+import { useUser } from "../../context/user";
 
 const styles: any = {
   row: {
@@ -26,56 +26,14 @@ const styles: any = {
 };
 
 export default function TopBar() {
-  const [isConnected, setConnected] = useState(false);
-
-  const checkIfWalletIsConnected = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) { // Make sure you have Metamask
-        setConnected(false);
-        return;
-      }
-
-      const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
-      const accounts: any[] = await provider.send("eth_accounts", []); // Retrieve authorized accounts
-
-      if (accounts.length > 0) {
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        const balance = await signer.getBalance();
-        setConnected(true);
-
-        ethereum.on('accountsChanged', async () => {
-          checkIfWalletIsConnected();
-        });
-
-        store.dispatch(
-          {
-            type:"INIT_USER",
-            user: {
-              account: address,
-              balance: balance,
-              signer: signer
-            }
-          }
-        );
-
-      } else { // Need to request permission to connect users account firs (see connectWallet method)
-        setConnected(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { user, setUser } = useUser();
 
   const connectWallet = async () => {
-
     try {
       const { ethereum } = window;
 
       if (!ethereum) { // Make sure you have Metamask
-        setConnected(false);
+        setUser({});
         throw new WalletError("Please install Metamask first: https://metamask.io");
       }
 
@@ -84,42 +42,30 @@ export default function TopBar() {
       const signer = provider.getSigner();
       const address = await signer.getAddress();
       const balance = await signer.getBalance();
-      setConnected(true);
 
       ethereum.on('accountsChanged', async () => {
-        checkIfWalletIsConnected();
+        // TODO: update wallet
       });
 
-      store.dispatch(
-        {
-          type: "INIT_USER",
-          user: {
-            account: address,
-            balance: balance,
-            signer: signer
-          }
-        }
-      );
+      setUser({
+        account: address,
+        balance: balance,
+        signer: signer
+      });
 
     } catch (error) {
-      console.log(error);
       let message;
       if (error instanceof WalletError) {
         message = error.message;
       } else {
         message = "Can't connect to Metamask. Please try again or contact our support."
       }
-      alert(message);
+      console.log(message, error);
       // TODO: Display modal
     }
   };
 
-  useEffect(() => {
-    checkIfWalletIsConnected();
-  }, []);
-
   return (
-
     <Row
       css={styles.row}>
       <Link
@@ -135,7 +81,7 @@ export default function TopBar() {
           Ethereum Rinkeby
         </Button>
       </Link>
-      {isConnected ?
+      {user.account ?
         <div>
           <Button
             css={{ display: "inline-block" }}
@@ -145,7 +91,7 @@ export default function TopBar() {
           >
             <FaWallet />
             &nbsp;&nbsp;
-            {store.getState().user.account.substring(0, 15)}...
+            {user.account.substring(0, 15)}...
           </Button>
         </div>
         :
