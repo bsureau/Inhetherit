@@ -40,6 +40,12 @@ export default function Will() {
   useEffect(function () {
     getWallet(window.ethereum).then((user) => {
       setUser(user);
+
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) {
+          setUser({});
+        }
+      });
     })
   }, []);
 
