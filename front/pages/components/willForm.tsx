@@ -6,16 +6,10 @@ import { Contract, ethers } from 'ethers';
 import { FaCheck } from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
-import { getWill } from "../../utils/willContract";
 
-export default function WillForm(props) {
+export default function WillForm() {
   const { user } = useUser();
-  const { setWill } = useWill();
-  const { will } = props;
-
-  useEffect(() => {
-    // TODO: setWill in WillContext
-  })
+  const { will, setWill } = useWill();
 
   const erc20Addresses = {
     'ETH': 'ETH',
@@ -44,23 +38,10 @@ export default function WillForm(props) {
   const [approve, setApprove] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
 
-  const [willAddress, setWillAddress]: [string, Dispatch<SetStateAction<string>>] = useState("");
-  const [isWillCreated, setWillCreated]: [number, Dispatch<SetStateAction<boolean>>] = useState(-1); // -1 unknown, 0 false, 1 true
-
-
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
-
-    const userWill = getWill(user);
-    // TODO: set Will
-    if (userWill == {}) {
-      setWillCreated(false);
-    } else {
-      setWillCreated(true);
-    }
-    setWill(userWill);
 
     const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], [
       'function balanceOf(address _owner) public view returns(uint256)'
@@ -70,13 +51,12 @@ export default function WillForm(props) {
   }
 
   const isValid: Function = () => {
-    if (isWillCreated == 0) {
+    // if there is no will yet
+    if (!will) {
       if (erc20Address.trim() !== "" && firstName.trim() !== "" && lastName.trim() !== "" && birthdayDate.trim() !== "" && birthPostCode.trim() !== "" && heirAddress.trim() !== "") {
         return true
       }
-    }
-
-    if (isWillCreated == 1) {
+    } else {
       if (erc20Address.trim() !== "" && heirAddress.trim() !== "") {
         return true
       }
@@ -144,44 +124,6 @@ export default function WillForm(props) {
     setSubmited(false);
   }
 
-  /*const getWill = async () => {
-    const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
-    const inhetheritFactoryABI: string[] = [
-      "function getWill() public view returns(address)",
-    ];
-    const willABI: string[] = [
-      "function getLastName() public view returns(string memory)",
-      "function getFirstName() public view returns(string memory)",
-      "function getBirthdayDate() public view returns(string memory)",
-      "function getBirthPlace() public view returns(string memory)",
-      "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
-    ];
-    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
-   
-    try {
-      const tempWillAddress = await contract.getWill();
-      // TODO: set will address with WillContext
-      setWillAddress(tempWillAddress);
-
-      const willContract: Contract = new ethers.Contract(tempWillAddress, willABI, user.signer);
-
-      setLastName(await willContract.getLastName());
-      setFirstName(await willContract.getFirstName());
-      setBirthPostCode(await willContract.getBirthPlace());
-      setBirthdayDate(await willContract.getBirthdayDate());
-      setWillCreated(true);
-
-      const claims = await willContract.getClaims();
-      // TODO: set claims with ClaimsContext
-
-    } catch (error) {
-      console.log(error);
-      if (error.reason = "WILL_NOT_FOUND") {
-        setWillCreated(false);
-      }
-    }
-  }*/
-
   return (
     <Col
       css={{
@@ -234,7 +176,7 @@ export default function WillForm(props) {
                 <option value='LINK'>Chainlink (LINK)</option>
               </select>
             </Col>
-            { isWillCreated == 1 &&
+            { will &&
               <Input 
                 rounded
                 bordered
@@ -262,7 +204,7 @@ export default function WillForm(props) {
             </>
           ) : ''}
         </Row>
-        { isWillCreated == 0 &&
+        { !will &&
           <>
             <Row
               css={{
@@ -343,18 +285,16 @@ export default function WillForm(props) {
           padding: "1rem 3rem 3rem"       
         }}
       >
-        { isWillCreated != -1 ? (
-           <Button
-              bordered
-              color="primary"
-              size="lg"
-              onClick={handleSubmit}
-              disabled={!isValid() || (isValid() && submited)}
-            >
-              Create you will
-            </Button>
-        ) : '' }
-      </Row> 
+       <Button
+          bordered
+          color="primary"
+          size="lg"
+          onClick={handleSubmit}
+          disabled={!isValid() || (isValid() && submited)}
+        >
+          Create you will
+        </Button>
+      </Row>
 
       <Modal
         closeButton

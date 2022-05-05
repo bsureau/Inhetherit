@@ -35,9 +35,9 @@ export async function getWill(user) {
       }
     };
   } catch (error) {
-    console.log(error);
-    if (error.reason = "WILL_NOT_FOUND") {
+    /*if (error.reason = "WILL_NOT_FOUND") {
       return {};
-    }
+    }*/
+    return undefined;
   }
 }

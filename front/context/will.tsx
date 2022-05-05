@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react'
 const WillContext = createContext(undefined)
 
 export function WillProvider({ children }) {
-  const [will, setWill] = useState({})
+  const [will, setWill] = useState(undefined)
   return (
     <WillContext.Provider
       value={{

@@ -16,7 +16,9 @@ import {
 } from './components';
 
 import { getWallet } from "../utils/metamask";
+import { getWill } from "../utils/willContract";
 import { useUser } from "../context/user";
+import { useWill } from "../context/will";
 
 const styles: any = {
   container: {
@@ -37,17 +39,25 @@ const styles: any = {
 
 export default function Will() {
   const { user, setUser } = useUser();
+  const { will, setWill } = useWill();
 
   useEffect(function () {
-    getWallet(window.ethereum).then((user) => {
-      setUser(user);
+    getWallet(window.ethereum)
+      .then((user) => {
+        setUser(user);
 
-      window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length === 0) {
-          setUser({});
-        }
-      });
-    })
+        getWill(user)
+          .then((will) => {
+            setWill(will);
+          })
+
+        window.ethereum.on('accountsChanged', (accounts) => {
+          if (accounts.length === 0) {
+            setUser({});
+            setWill(undefined);
+          }
+        });
+      })
   }, []);
 
   return (
