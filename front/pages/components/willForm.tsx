@@ -77,7 +77,7 @@ export default function WillForm() {
   async function createWill() {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
-    if (will) {
+    if (will != undefined) {
       return await contract.addErc20Token(
         heirAddress,
         erc20Address
@@ -97,8 +97,9 @@ export default function WillForm() {
   const handleWill: Function = async () => {
     setOpenModal(MODAL_METAMASK_VALIDATE);
 
+    let willTx: TransactionResponse;
     try {
-      let willTx: TransactionResponse = await createWill();
+      willTx = await createWill();
     } catch {
       // TODO: handle errors in case will already exists or token already given
       setOpenModal(MODAL_ERROR);
@@ -115,8 +116,9 @@ export default function WillForm() {
 
     setOpenModal(MODAL_METAMASK_APPROVE);
 
+    let approveTx: TransactionResponse;
     try {
-      let approveTx: TransactionResponse = await approveTransfer(will.address);
+      approveTx = await approveTransfer(will.address);
     } catch {
       setOpenModal(MODAL_ERROR);
       return;
@@ -132,7 +134,7 @@ export default function WillForm() {
   }
 
   const onCloseModal = () => {
-    setOpenModal('');
+    //setOpenModal('');
     setSubmited(false);
   }
 
@@ -330,25 +332,25 @@ export default function WillForm() {
             <Text>
               <strong>First name:</strong>
               <br />
-              {firstName == '' ? will.firstName : firstName}
+              {firstName == '' && will ? will.firstName : firstName}
             </Text>
             <Spacer />
             <Text>
               <strong>Last name:</strong>
               <br />
-              {lastName == '' ? will.lastName : lastName}
+              {lastName == '' && will ? will.lastName : lastName}
             </Text>
             <Spacer />
             <Text>
               <strong>Birthday date:</strong>
               <br />
-              {birthdayDate == '' ? will.birthdate : birthdayDate}
+              {birthdayDate == '' && will ? will.birthdate : birthdayDate}
             </Text>
             <Spacer />
             <Text>
               <strong>Birth postal code:</strong>
               <br />
-              {birthPostCode == '' ? will.postCode : birthPostCode}
+              {birthPostCode == '' && will ? will.postCode : birthPostCode}
             </Text>
             <Spacer />
             <Text>
