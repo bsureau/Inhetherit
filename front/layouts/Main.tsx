@@ -10,8 +10,6 @@ export default function MainLayout ({ children }) {
         <WillProvider>
           <Head>
             <meta name="description" content="Find peace of mind. Pass on your cryptos!" />
-            <link rel="icon" href="/favicon.ico" />
-            {CssBaseline.flush()}
           </Head>
           <div className="container">
             <main className="mainWrapper">{ children }</main>
