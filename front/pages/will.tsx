@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Head from 'next/head';
 import {
   Container,
@@ -39,7 +39,8 @@ const styles: any = {
 
 export default function Will() {
   const { user, setUser } = useUser();
-  const { will, setWill } = useWill();
+  const { setWill } = useWill();
+  const [ loading, setLoading ] = useState(true);
 
   useEffect(function () {
     getWallet(window.ethereum)
@@ -50,6 +51,9 @@ export default function Will() {
           .then((will) => {
             setWill(will);
           })
+          .finally(() => {
+            setLoading(false);
+          });
 
         window.ethereum.on('accountsChanged', (accounts) => {
           if (accounts.length === 0) {
@@ -82,23 +86,29 @@ export default function Will() {
           css={styles.column}
         >
           <Spacer y={3} />
-          <Col
-            justify="center"
-            align="center"
-          >
-            {user.account ?
-              <>
-                <Row>
-                  <WillForm />
-                </Row>
-                <Row>
-                  <WillList />
-                </Row>
-              </>
+          {loading === true ?
+            <>
+              <Text h3>Loading...</Text>
+            </>
             :
-              <Row><Text h3>Please connect your wallet first...</Text></Row>
-            }
-          </Col>
+            <Col
+              justify="center"
+              align="center"
+            >
+              {user.account ?
+                <>
+                  <Row>
+                    <WillForm/>
+                  </Row>
+                  <Row>
+                    <WillList/>
+                  </Row>
+                </>
+                :
+                <Row><Text h3>Please connect your wallet first...</Text></Row>
+              }
+            </Col>
+          }
         </Col>
       </Row>
     </Container>
