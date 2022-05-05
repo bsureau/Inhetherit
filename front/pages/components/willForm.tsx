@@ -1,22 +1,22 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 
 import { Contract, ethers } from 'ethers';
+import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
 import { FaCheck } from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
+import {
+  getWill,
+  inhetheritFactoryABI,
+  inhetheritFactoryAddress
+} from "../../utils/willContract";
+import { erc20Abi, erc20Addresses } from "../../utils/erc20Contract";
 
 export default function WillForm() {
   const { user } = useUser();
   const { will, setWill } = useWill();
-
-  const erc20Addresses = {
-    'ETH': 'ETH',
-    'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709',
-    'WBTC': '',
-    'WETH': '0xdf032bc4b9dc2782bb09352007d4c57b75160b15',
-  };
 
   // form
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
@@ -32,20 +32,19 @@ export default function WillForm() {
   const [tokenBalance, setTokenBalance] = useState('0');
 
   // validation funnel
-  const [openReviewInfo, setOpenReviewInfo]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
-  const [metamaskInfo, setMetamaskInfo] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [approve, setApprove] = useState(false);
-  const [confirmation, setConfirmation] = useState(false);
+  const [openModal, setOpenModal] = useState('');
+  const MODAL_REVIEW = 'review-informations';
+  const MODAL_METAMASK_VALIDATE = 'metamask-validate';
+  const MODAL_LOADING = 'loading';
+  const MODAL_METAMASK_APPROVE = 'metamask-approve';
+  const MODAL_CONFIRMATION = 'confirmation';
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
 
-    const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], [
-      'function balanceOf(address _owner) public view returns(uint256)'
-    ], user.signer);
+    const contract: Contract = new ethers.Contract(erc20Addresses[event.target.value], erc20Abi, user.signer);
     const balance = await contract.balanceOf(user.account);
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
   }
@@ -66,61 +65,64 @@ export default function WillForm() {
   const handleSubmit: Function = (evt) => {
     evt.preventDefault();
     setSubmited(true);
-    setOpenReviewInfo(true);
+    setOpenModal(MODAL_REVIEW);
   }
 
   async function approveTransfer(inhetheritWillAddress: string) {
-
-    const erc20Abi = [
-      "function approve(address _spender, uint256 _value) public returns (bool success)"
-    ];
-  
     const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
-  
-    const tx = await erc20Contract.approve(inhetheritWillAddress, ethers.utils.parseUnits("2", 18)); //replace value by max uint256 value
+    return await erc20Contract.approve(inhetheritWillAddress, ethers.utils.parseUnits("2", 18)); //replace value by max uint256 value
+  }
 
-    const txReceipt: TransactionReceipt = await tx.wait(1);
+  async function createWill() {
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
-    console.log('Approve ok: ', txReceipt);
+    if (will) {
+      return await contract.addErc20Token(
+        heirAddress,
+        erc20Address
+      );
+    }
+
+    return await contract.createWill(
+      firstName,
+      lastName,
+      birthdayDate,
+      birthPostCode,
+      erc20Address,
+      heirAddress
+    );
   }
 
   const handleWill: Function = async () => {
-    const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
-    const inhetheritFactoryABI: string[] = [
-      "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
-      "function getWill() public view returns(address)",
-    ];
+    setOpenModal(MODAL_METAMASK_VALIDATE);
+
+    let willTx: TransactionResponse = await createWill();
+
+    // TODO: handle errors in case will already exists or token already given
 
     // we display loading once user has validated transaction with metamask
-    setOpenReviewInfo(false);
-    setMetamaskInfo(true);
+    setOpenModal(MODAL_LOADING);
 
-    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
-    const tx: TransactionResponse = await contract.createWill(firstName, lastName, birthdayDate, birthPostCode, erc20Address, heirAddress);
+    // wait that the block containing our transaction is mined to move forward
+    await willTx.wait(1);
 
-    // we display loading once user has validated transaction with metamask
-    setMetamaskInfo(false);
-    setLoading(true);
+    setWill(await getWill(user));
 
-    // wait at least 3 block mined before saying all good
-    const txReceipt: TransactionReceipt = await tx.wait(1);
+    setOpenModal(MODAL_METAMASK_APPROVE);
 
-    console.log('Will created', txReceipt);
+    let approveTx: TransactionResponse = await approveTransfer(will.address);
 
-    const inheritWillAddress: string = await contract.getWill();
+    setOpenModal(MODAL_LOADING);
 
-    //TODO: set will Address with WillContext
-    setWillAddress(inheritWillAddress);
+    await approveTx.wait(1);
 
-    setLoading(false);
+    setOpenModal(MODAL_CONFIRMATION);
 
-    setApprove(true);
-    await approveTransfer(inheritWillAddress);
+    //TODO: reset form ?
+  }
 
-    setApprove(false);
-    setConfirmation(true);
-    setWillCreated(true);
-
+  const onCloseModal = () => {
+    setOpenModal('');
     setSubmited(false);
   }
 
@@ -300,8 +302,8 @@ export default function WillForm() {
         closeButton
         aria-labelledby="modal-title"
         width="600px"
-        open={openReviewInfo}
-        onClose={() => { setOpenReviewInfo(false); setSubmited(false); }}
+        open={openModal == MODAL_REVIEW}
+        onClose={onCloseModal}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -311,32 +313,32 @@ export default function WillForm() {
         <Modal.Body>
           <Col justify="center" align="center">
             <Text>
-              You are about to give the right to transfer all your Eth funds to your heir. <br />
+              You are about to give the right to transfer all your {token} funds to your heir. <br />
               Please make sure all the informations are correct or your funds could never be transferred at the time of your death.
             </Text>
             <Spacer />
             <Text>
               <strong>First name:</strong>
               <br />
-              {firstName}
+              {firstName == '' ? will.firstName : firstName}
             </Text>
             <Spacer />
             <Text>
               <strong>Last name:</strong>
               <br />
-              {lastName}
+              {lastName == '' ? will.lastName : lastName}
             </Text>
             <Spacer />
             <Text>
               <strong>Birthday date:</strong>
               <br />
-              {birthdayDate}
+              {birthdayDate == '' ? will.birthdate : birthdayDate}
             </Text>
             <Spacer />
             <Text>
               <strong>Birth postal code:</strong>
               <br />
-              {birthPostCode}
+              {birthPostCode == '' ? will.postCode : birthPostCode}
             </Text>
             <Spacer />
             <Text>
@@ -352,9 +354,6 @@ export default function WillForm() {
           </Col>
         </Modal.Body>
         <Modal.Footer>
-          <Button auto flat color="error" onClick={() => setOpenReviewInfo(false)}>
-            Cancel
-          </Button>
           <Button auto onClick={handleWill}>
             Yes, I confirm!
           </Button>
@@ -365,7 +364,7 @@ export default function WillForm() {
         preventClose={true}
         aria-labelledby="modal-title"
         width="600px"
-        open={metamaskInfo}
+        open={openModal == MODAL_METAMASK_VALIDATE}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -384,16 +383,17 @@ export default function WillForm() {
         preventClose={true}
         aria-labelledby="modal-title"
         width="600px"
-        open={isLoading}
+        open={openModal == MODAL_LOADING}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
-            Uploading your will...
+            Loading...
           </Text>
         </Modal.Header>
         <Modal.Body>
           <Text>
-            Your will is being uploaded... It may take a few minutes...
+            Your will is being uploaded... <br/>
+            It may take a few minutes...
           </Text>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
@@ -403,7 +403,7 @@ export default function WillForm() {
         preventClose={true}
         aria-labelledby="modal-title"
         width="600px"
-        open={approve}
+        open={openModal == MODAL_METAMASK_APPROVE}
       >
         <Modal.Header>
           <Text id="modal-title" size={30}>
@@ -422,8 +422,8 @@ export default function WillForm() {
         closeButton
         aria-labelledby="modal-title"
         width="600px"
-        open={confirmation}
-        onClose={() => { setConfirmation(false); setSubmited(false); }}
+        open={openModal == MODAL_CONFIRMATION}
+        onClose={onCloseModal}
       >
         <Modal.Header></Modal.Header>
         <Modal.Body style={{ textAlign: "center" }}>
