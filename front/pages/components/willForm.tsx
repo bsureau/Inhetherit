@@ -4,7 +4,7 @@ import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from 
 import { Contract, ethers } from 'ethers';
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaTimes } from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
 import {
@@ -38,6 +38,7 @@ export default function WillForm() {
   const MODAL_LOADING = 'loading';
   const MODAL_METAMASK_APPROVE = 'metamask-approve';
   const MODAL_CONFIRMATION = 'confirmation';
+  const MODAL_ERROR = 'error';
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
@@ -96,9 +97,13 @@ export default function WillForm() {
   const handleWill: Function = async () => {
     setOpenModal(MODAL_METAMASK_VALIDATE);
 
-    let willTx: TransactionResponse = await createWill();
-
-    // TODO: handle errors in case will already exists or token already given
+    try {
+      let willTx: TransactionResponse = await createWill();
+    } catch {
+      // TODO: handle errors in case will already exists or token already given
+      setOpenModal(MODAL_ERROR);
+      return;
+    }
 
     // we display loading once user has validated transaction with metamask
     setOpenModal(MODAL_LOADING);
@@ -110,7 +115,12 @@ export default function WillForm() {
 
     setOpenModal(MODAL_METAMASK_APPROVE);
 
-    let approveTx: TransactionResponse = await approveTransfer(will.address);
+    try {
+      let approveTx: TransactionResponse = await approveTransfer(will.address);
+    } catch {
+      setOpenModal(MODAL_ERROR);
+      return;
+    }
 
     setOpenModal(MODAL_LOADING);
 
@@ -434,6 +444,29 @@ export default function WillForm() {
             All good
           </Text>
           Your will is now on your wallet and will be executed when you die.
+        </Modal.Body>
+        <Modal.Footer></Modal.Footer>
+      </Modal>
+
+      <Modal
+        closeButton
+        aria-labelledby="modal-title"
+        width="600px"
+        open={openModal == MODAL_ERROR}
+        onClose={onCloseModal}
+      >
+        <Modal.Header></Modal.Header>
+        <Modal.Body style={{ textAlign: "center" }}>
+          <span style={{ textAlign: "center" }}>
+            <FaTimes size={80} color="#96281b" style={{ display: "inline-block" }} />
+          </span>
+          <Text size={30}>
+            Oops
+          </Text>
+          Something went wrong here...<br/>
+          <code>
+            blablablablabla
+          </code>
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
