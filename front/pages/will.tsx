@@ -5,14 +5,15 @@ import {
   Row,
   Col,
   Spacer,
-  Text
+  Text, Button
 } from "@nextui-org/react";
 
 import {
   TopBar,
   Sidebar,
   WillForm,
-  WillList
+  WillList,
+  Loader
 } from './components';
 
 import { connectWallet, getWallet } from "../utils/metamask";
@@ -69,9 +70,13 @@ export default function Will() {
       .then((user) => {
         setUser(user);
 
+        setLoading(true);
         getWill(user)
           .then((will) => {
             setWill(will);
+          })
+          .finally(() => {
+            setLoading(false);
           })
       })
   }
@@ -99,9 +104,7 @@ export default function Will() {
         >
           <Spacer y={3} />
           {loading === true ?
-            <>
-              <Text h3>Loading...</Text>
-            </>
+            <Loader width={70} />
             :
             <Col
               justify="center"
@@ -117,7 +120,10 @@ export default function Will() {
                   </Row>
                 </>
                 :
-                <Row><Text h3>Please connect your wallet first...</Text></Row>
+                <Col>
+                  <h3>Please connect your wallet first...</h3><br/>
+                  <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
+                </Col>
               }
             </Col>
           }
