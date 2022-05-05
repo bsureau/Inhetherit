@@ -15,7 +15,7 @@ import {
   WillList
 } from './components';
 
-import { getWallet } from "../utils/metamask";
+import { connectWallet, getWallet } from "../utils/metamask";
 import { getWill } from "../utils/willContract";
 import { useUser } from "../context/user";
 import { useWill } from "../context/will";
@@ -64,6 +64,18 @@ export default function Will() {
       })
   }, []);
 
+  const onConnectWallet = function () {
+    connectWallet(window.ethereum)
+      .then((user) => {
+        setUser(user);
+
+        getWill(user)
+          .then((will) => {
+            setWill(will);
+          })
+      })
+  }
+
   return (
     <Container 
       fluid 
@@ -74,7 +86,7 @@ export default function Will() {
         <title>Inhetherit - Create a will</title>
       </Head>
       
-      <TopBar />
+      <TopBar onConnectWallet={onConnectWallet} />
       <Sidebar />
       <Row 
         justify="center"

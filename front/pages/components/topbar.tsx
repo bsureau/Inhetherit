@@ -25,45 +25,8 @@ const styles: any = {
   }
 };
 
-export default function TopBar() {
-  const { user, setUser } = useUser();
-
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) { // Make sure you have Metamask
-        setUser({});
-        throw new WalletError("Please install Metamask first: https://metamask.io");
-      }
-
-      const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
-      await provider.send("eth_requestAccounts", []); // Requesting permission to connect users accounts
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      const balance = await signer.getBalance();
-
-      ethereum.on('accountsChanged', async () => {
-        // TODO: update wallet
-      });
-
-      setUser({
-        account: address,
-        balance: balance,
-        signer: signer
-      });
-
-    } catch (error) {
-      let message;
-      if (error instanceof WalletError) {
-        message = error.message;
-      } else {
-        message = "Can't connect to Metamask. Please try again or contact our support."
-      }
-      console.log(message, error);
-      // TODO: Display modal
-    }
-  };
+export default function TopBar({ onConnectWallet }) {
+  const { user } = useUser();
 
   return (
     <Row
@@ -99,7 +62,7 @@ export default function TopBar() {
           bordered
           color="primary"
           size="md"
-          onClick={connectWallet}
+          onClick={onConnectWallet}
         >
           <FaWallet />
           &nbsp;
