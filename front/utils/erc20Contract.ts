@@ -1,5 +1,6 @@
 export const erc20Abi = [
   "function approve(address _spender, uint256 _value) public returns (bool success)",
+  "function allowance(address _tokenOwner, address _spender) public view returns(uint256)",
   "function balanceOf(address _owner) public view returns(uint256)",
 ];
 
