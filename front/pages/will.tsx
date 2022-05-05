@@ -4,7 +4,8 @@ import {
   Container,
   Row,
   Col,
-  Spacer
+  Spacer,
+  Text
 } from "@nextui-org/react";
 
 import {
@@ -85,7 +86,7 @@ export default function Will() {
                 </Row>
               </>
             :
-              <Row>Please connect your wallet first...</Row>
+              <Row><Text h3>Please connect your wallet first...</Text></Row>
             }
           </Col>
         </Col>
