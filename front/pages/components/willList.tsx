@@ -34,7 +34,7 @@ export default function WillList() {
         }}>
           <Table.Header>
             <Table.Column>Status</Table.Column>
-            <Table.Column>Crypto</Table.Column>
+            <Table.Column>Token Name</Table.Column>
             <Table.Column>Heir Address</Table.Column>
             <Table.Column>Amount</Table.Column>
             <Table.Column></Table.Column>
@@ -43,10 +43,19 @@ export default function WillList() {
             {will.claims.map((claim) => (
               <Table.Row key={claim.erc20Token}>
                 <Table.Cell>
-                  <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
-                    <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; <small>Allowance
-                    too low (0.4 {getErc20Iso3FromAddress(claim.erc20Token)})</small>
-                  </Tooltip>
+                  {claim.allowance < claim.balance ?
+                    <>
+                      <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
+                        <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
+                        <small>Allowance too low ({(ethers.utils.formatEther(claim.allowance) - (ethers.utils.formatEther(claim.balance)))} {getErc20Iso3FromAddress(claim.erc20Token)})</small>
+                      </Tooltip>
+                    </>
+                    :
+                    <>
+                      <FaCheck color="#17c964" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
+                      <small>All good</small>
+                    </>
+                  }
                 </Table.Cell>
                 <Table.Cell>
                   {getErc20NameFromAddress(claim.erc20Token)}
@@ -60,7 +69,10 @@ export default function WillList() {
                   {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button>Increase allowance</Button>
+                  {claim.allowance < claim.balance ?
+                    <Button>Increase allowance</Button>
+                    : ''
+                  }
                   <Button light color="error">Delete will</Button>
                 </Table.Cell>
               </Table.Row>

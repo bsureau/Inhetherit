@@ -12,7 +12,12 @@ import {
   inhetheritFactoryABI,
   inhetheritFactoryAddress
 } from "../../utils/willContract";
-import {erc20Abi, erc20Addresses, getBalanceOf} from "../../utils/erc20Contract";
+import {
+  erc20Abi,
+  erc20Addresses,
+  getBalanceOf,
+  maxUINT256
+} from "../../utils/erc20Contract";
 
 export default function WillForm() {
   const { user } = useUser();
@@ -70,7 +75,7 @@ export default function WillForm() {
 
   async function approveTransfer(inhetheritWillAddress: string) {
     const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
-    return await erc20Contract.approve(inhetheritWillAddress, ethers.utils.parseUnits("2", 18)); //replace value by max uint256 value
+    return await erc20Contract.approve(inhetheritWillAddress, maxUINT256); //replace value by max uint256 value
   }
 
   async function createWill() {
