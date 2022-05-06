@@ -1,7 +1,7 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
 
-import { Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
 import { FaCheck, FaTimes } from 'react-icons/fa';
@@ -50,7 +50,13 @@ export default function WillForm() {
     setErc20Address(erc20Addresses[event.target.value]);
     setTokenBalance('...');
 
-    const balance = await getBalanceOf(user, erc20Addresses[event.target.value])
+    let balance: BigNumber;
+    if (event.target.value == 'ETH') {
+      balance = user.balance;
+    } else {
+      balance = await getBalanceOf(user, erc20Addresses[event.target.value]);
+    }
+
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
   }
 
