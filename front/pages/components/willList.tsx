@@ -11,9 +11,9 @@ import {
   getErc20NameFromAddress,
   getErc20Iso3FromAddress,
   erc20Abi,
-  maxUINT256
+  maxUINT256, erc20Addresses
 } from "../../utils/erc20Contract";
-import { getWill } from "../../utils/willContract";
+import { getWill, removeErc20Token } from "../../utils/willContract";
 
 const styles: any = {
   column: {
@@ -38,14 +38,24 @@ export default function WillList() {
   const { user } = useUser();
 
   const onIncreaseAllowance = async (erc20Address) => {
-    const tx = await approveTransfer(user, will, erc20Address);
+    const tx: TransactionResponse = await approveTransfer(user, will, erc20Address);
 
-    // handle error and loading
+    // handle approve metamask modal, error and loading
 
     await tx.wait(1);
 
     setWill(await getWill(user));
   }
+
+  const onDeleteToken = async (heirAddress, erc20Address) => {
+    const tx: TransactionResponse = await removeErc20Token(user, heirAddress, erc20Address);
+
+    // handle approve metamask modal, error and loading
+
+    await tx.wait(1);
+
+    setWill(await getWill(user));
+  };
 
   return (
     <Col css={styles.column}>
@@ -95,7 +105,9 @@ export default function WillList() {
                     <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
                     : ''
                   }
-                  <Button light color="error">Delete will</Button>
+                  <Button light color="error" onClick={() => onDeleteToken(claim.heir, claim.erc20Token)}>
+                    Delete token from will
+                  </Button>
                 </Table.Cell>
               </Table.Row>
             ))}

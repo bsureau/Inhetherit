@@ -7,6 +7,7 @@ export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
   "function getWill() public view returns(address)",
   "function addErc20Token(address _heir, address _erc20Token) public",
+  "function removeErc20Token(address _heir, address _erc20Token) public",
 ];
 
 export const willABI: string[] = [
@@ -53,4 +54,9 @@ export async function getWill(user) {
     }*/
     return undefined;
   }
+}
+
+export async function removeErc20Token(user, heirAddress, erc20Address) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+  return await contract.removeErc20Token(heirAddress, erc20Address);
 }
