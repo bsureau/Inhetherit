@@ -61,7 +61,9 @@ export default function Will() {
             if (accounts.length === 0) {
               setUser({});
               setWill(undefined);
+              return;
             }
+            // TODO: update user & will
           });
         }
       })
