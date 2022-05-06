@@ -310,7 +310,7 @@ export default function WillForm() {
           onClick={handleSubmit}
           disabled={!isValid() || (isValid() && submited)}
         >
-          Create you will
+          {will ? 'Add to your will' : 'Create your will'}
         </Button>
       </Row>
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Col, Link, Row, Table, Text, Tooltip } from '@nextui-org/react';
+import { Button, Col, Link, Row, StyledHelperTextContainer, Table, Text, Tooltip } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
 import { ethers } from 'ethers';
@@ -77,7 +77,7 @@ export default function WillList() {
                 <Table.Cell>
                   {claim.allowance < claim.balance ?
                     <>
-                      <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
+                      <Tooltip content={"This mean we won't be able to transfer all your funds in case of your death. Please increase allowance."}>
                         <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
                         <small>Allowance too low ({(ethers.utils.formatEther(claim.allowance) - (ethers.utils.formatEther(claim.balance)))} {getErc20Iso3FromAddress(claim.erc20Token)})</small>
                       </Tooltip>
