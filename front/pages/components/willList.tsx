@@ -3,10 +3,17 @@ import { Button, Col, Link, Row, Table, Text, Tooltip } from '@nextui-org/react'
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
 import { ethers } from 'ethers';
+import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
 import { useWill } from "../../context/will";
 import { useUser } from "../../context/user";
-import { getErc20NameFromAddress, getErc20Iso3FromAddress, getBalanceOf } from "../../utils/erc20Contract";
+import {
+  getErc20NameFromAddress,
+  getErc20Iso3FromAddress,
+  erc20Abi,
+  maxUINT256
+} from "../../utils/erc20Contract";
+import { getWill } from "../../utils/willContract";
 
 const styles: any = {
   column: {
@@ -21,9 +28,24 @@ const styles: any = {
   },
 }
 
+async function approveTransfer(user, will, erc20Address) {
+  const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
+  return await erc20Contract.approve(will.address, maxUINT256); //replace value by max uint256 value
+}
+
 export default function WillList() {
-  const { will } = useWill();
+  const { will, setWill } = useWill();
   const { user } = useUser();
+
+  const onIncreaseAllowance = async (erc20Address) => {
+    const tx = await approveTransfer(user, will, erc20Address);
+
+    // handle error and loading
+
+    await tx.wait(1);
+
+    setWill(await getWill(user));
+  }
 
   return (
     <Col css={styles.column}>
@@ -70,7 +92,7 @@ export default function WillList() {
                 </Table.Cell>
                 <Table.Cell>
                   {claim.allowance < claim.balance ?
-                    <Button>Increase allowance</Button>
+                    <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
                     : ''
                   }
                   <Button light color="error">Delete will</Button>

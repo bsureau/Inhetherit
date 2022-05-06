@@ -116,8 +116,6 @@ export default function WillForm() {
     // wait that the block containing our transaction is mined to move forward
     await willTx.wait(1);
 
-    setWill(await getWill(user));
-
     setOpenModal(MODAL_METAMASK_APPROVE);
 
     let approveTx: TransactionResponse;
@@ -131,6 +129,8 @@ export default function WillForm() {
     setOpenModal(MODAL_LOADING);
 
     await approveTx.wait(1);
+
+    setWill(await getWill(user));
 
     setOpenModal(MODAL_CONFIRMATION);
 
