@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 import { MockContract, MockContractFactory, ProgrammableContractFunction, ProgrammedReturnValue, smock } from "@defi-wonderland/smock";
 import { Contract, ContractFactory } from 'ethers';
-import { State } from './State';
+import { State } from './types';
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from 'ethers';

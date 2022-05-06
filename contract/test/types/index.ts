@@ -1,4 +1,9 @@
-export default class Claim {
+export enum State {
+    OPEN = 0,
+    CLOSED = 1
+  };
+
+export class Claim {
 
     heir: string;
     erc20Token: string;
@@ -10,17 +15,17 @@ export default class Claim {
         this.erc20Token = erc20Token;
         this.filled = filled;
     }
-    
+
     getHeir(): string 
     {
         return this.heir;
     }
-    
+
     getErc20Token(): string 
     {
         return this.erc20Token;
     }
-    
+
     isFilled(): boolean 
     {
         return this.filled;

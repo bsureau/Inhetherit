@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 import { MockContract, MockContractFactory, smock } from "@defi-wonderland/smock";
 import { ContractFactory } from 'ethers';
 import { Signer } from 'ethers';
-import Claim from "./Claim";
+import { Claim } from "./types";
 
 
 describe("InhetheritWill", function () {
