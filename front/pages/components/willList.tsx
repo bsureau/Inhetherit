@@ -66,7 +66,7 @@ export default function WillList() {
         }}>
           <Table.Header>
             <Table.Column>Status</Table.Column>
-            <Table.Column>Token Name</Table.Column>
+            <Table.Column>Token</Table.Column>
             <Table.Column>Heir Address</Table.Column>
             <Table.Column>Amount</Table.Column>
             <Table.Column></Table.Column>
@@ -90,7 +90,7 @@ export default function WillList() {
                   }
                 </Table.Cell>
                 <Table.Cell>
-                  {getErc20NameFromAddress(claim.erc20Token)}
+                  {getErc20Iso3FromAddress(claim.erc20Token)}
                 </Table.Cell>
                 <Table.Cell>
                   <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">

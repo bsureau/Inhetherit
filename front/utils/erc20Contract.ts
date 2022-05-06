@@ -13,21 +13,10 @@ export const erc20Addresses = {
   'WETH': '0xdf032bc4b9dc2782bb09352007d4c57b75160b15',
 };
 
-export const erc20Names = {
-  'ETH': 'Ethereum',
-  'LINK': 'ChainLink Token',
-  'WBTC': 'Wrapped BitCoin',
-  'WETH': 'Wrapped Ethereum',
-}
-
 export const maxUINT256 = ethers.utils.parseUnits("2", 18);
 
 export function getErc20Iso3FromAddress(address: string) {
   return Object.keys(erc20Addresses).find(key => erc20Addresses[key] == address.toLowerCase());
-}
-
-export function getErc20NameFromAddress(address: string) {
-  return erc20Names[getErc20Iso3FromAddress(address)];
 }
 
 export async function getBalanceOf(user, erc20Address) {
