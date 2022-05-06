@@ -59,7 +59,7 @@ export default function WillList() {
 
   return (
     <Col css={styles.column}>
-      {will ?
+      {will && will.claims.length > 0 ?
         <Table lined css={{
           height: "auto",
           minWidth: "100%",
