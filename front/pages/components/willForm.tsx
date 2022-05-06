@@ -88,9 +88,25 @@ export default function WillForm() {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
     if (will != undefined) {
+      if (erc20Address == 'ETH') {
+        return await contract.addEth(
+          heirAddress
+        );
+      }
+
       return await contract.addErc20Token(
         heirAddress,
         erc20Address
+      );
+    }
+
+    if (erc20Address == 'ETH') {
+      return await contract.createWillWithEth(
+        firstName,
+        lastName,
+        birthdayDate,
+        birthPostCode,
+        heirAddress
       );
     }
 
@@ -124,17 +140,21 @@ export default function WillForm() {
 
     setOpenModal(MODAL_METAMASK_APPROVE);
 
-    let approveTx: TransactionResponse;
-    try {
-      approveTx = await approveTransfer(will.address);
-    } catch {
-      setOpenModal(MODAL_ERROR);
-      return;
+    if (erc20Address == 'ETH') {
+      setOpenModal(MODAL_LOADING);
+    } else {
+      let approveTx: TransactionResponse;
+      try {
+        approveTx = await approveTransfer(will.address);
+      } catch {
+        setOpenModal(MODAL_ERROR);
+        return;
+      }
+
+      setOpenModal(MODAL_LOADING);
+
+      await approveTx.wait(1);
     }
-
-    setOpenModal(MODAL_LOADING);
-
-    await approveTx.wait(1);
 
     setWill(await getWill(user));
 

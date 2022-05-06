@@ -7,9 +7,12 @@ export const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052E
 
 export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
+  "function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public payable returns(address)",
   "function getWill() public view returns(address)",
   "function addErc20Token(address _heir, address _erc20Token) public",
+  "function addEth(address _heir) public payable",
   "function removeErc20Token(address _heir, address _erc20Token) public",
+  "function removeEth(address _heir) public",
 ];
 
 export const willABI: string[] = [
