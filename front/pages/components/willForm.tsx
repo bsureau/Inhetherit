@@ -189,7 +189,7 @@ export default function WillForm() {
                 }}
               >
                 <option value='' disabled defaultChecked>Select the token you want to transfer 🔽 &nbsp;</option>
-                {/* <option value='ETH'>Ethereum</option> */}
+                <option value='ETH'>Ethereum (ETH)</option>
                 <option value='WETH'>Wrapped Ethereum (WETH)</option>
                 <option value='LINK'>Chainlink (LINK)</option>
               </select>

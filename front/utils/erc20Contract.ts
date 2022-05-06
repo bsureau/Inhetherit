@@ -7,9 +7,12 @@ export const erc20Abi = [
 ];
 
 export const erc20Addresses = {
-  'ETH': 'ETH',
+  'ETH': 'eth',
   'LINK': '0x01be23585060835e02b77ef475b0cc51aa1e0709',
+  'USDT': '',
+  'USDC': '',
   'WBTC': '',
+  'BNT': '',
   'WETH': '0xdf032bc4b9dc2782bb09352007d4c57b75160b15',
 };
 

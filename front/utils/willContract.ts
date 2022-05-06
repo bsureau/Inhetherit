@@ -1,5 +1,7 @@
 import { Contract, ethers } from "ethers";
-import { getAllowance, getBalanceOf } from "./erc20Contract";
+import { getAllowance, getBalanceOf, maxUINT256 } from "./erc20Contract";
+
+export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
 export const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
 
@@ -16,6 +18,7 @@ export const willABI: string[] = [
   "function getBirthdayDate() public view returns(string memory)",
   "function getBirthPlace() public view returns(string memory)",
   "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
+  "function getEth() public view returns(address)",
 ];
 
 export async function getWill(user) {
@@ -29,6 +32,7 @@ export async function getWill(user) {
     const firstName = await willContract.getFirstName();
     const postCode = await willContract.getBirthPlace();
     const birthdate = await willContract.getBirthdayDate();
+    const ethHeirAddress = await willContract.getEth();
     let claims = await willContract.getClaims();
 
     // fetch balance for each token for which their is a will
@@ -39,6 +43,15 @@ export async function getWill(user) {
         balance: await getBalanceOf(user, claim.erc20Token)
       };
     }));
+
+    if (ethHeirAddress != EMPTY_ADDRESS) {
+      claims.push({
+        heir: ethHeirAddress,
+        erc20Token: 'ETH',
+        allowance: maxUINT256,
+        balance: await willAddress.getBalance(),
+      });
+    }
 
     return {
       address: willAddress,
