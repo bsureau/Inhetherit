@@ -35,10 +35,6 @@ describe("InhetheritFacade", function () {
     await inhetheritFacade.setVariable('linkToken', linkToken.address)
     linkToken.transfer.returns(true);
     linkToken.balanceOf.returns(ethers.utils.parseEther("0.05"));
-
-    const chainlinkClientFactory = await smock.mock("ChainlinkClientMock");
-    chainlinkClient = await chainlinkClientFactory.deploy();
-
   })
 
   it("Creates will contract with erc20 token", async function () {
@@ -98,7 +94,7 @@ describe("InhetheritFacade", function () {
     // Assert
     await expect(
       inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
-    ).to.be.revertedWith("Will already created");
+    ).to.be.revertedWith("WILL_ALREADY_EXIST");
   });
   
   it("Reverts if will already exist on create will with Eth", async function () {
@@ -115,7 +111,7 @@ describe("InhetheritFacade", function () {
     // Assert
     await expect(
       inhetheritFacade.createWill("Jean", "Bono", "07/12/1990", "75012", fakeErc20TokenAddress, heirAddress)
-    ).to.be.revertedWith("Will already created");
+    ).to.be.revertedWith("WILL_ALREADY_EXIST");
   });
 
   it("Reverts on getWill if giver does not have will", async function () {
@@ -123,7 +119,7 @@ describe("InhetheritFacade", function () {
     // Assert
     await expect(
       inhetheritFacade.getWill()
-    ).to.be.revertedWith("Will not found");
+    ).to.be.revertedWith("WILL_NOT_FOUND");
   });
 
   it("Returns heir's wills", async function () {
@@ -156,7 +152,7 @@ describe("InhetheritFacade", function () {
     // Assert
     await expect(
       inhetheritFacade.getWills()
-     ).to.be.revertedWith("Claim not found");
+     ).to.be.revertedWith("CLAIM_NOT_FOUND");
   });
 
   it("Adds erc20 token", async function () {
@@ -200,7 +196,7 @@ describe("InhetheritFacade", function () {
     await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
 
     // Assert
-    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token already given");
+    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("TOKEN_ALREADY_GIVEN");
   });
 
   it("Reverts on addErc20Token if will does not exist", async function () {
@@ -211,7 +207,7 @@ describe("InhetheritFacade", function () {
     const fakeErc20TokenAddress = await fakeErc20Token.getAddress();
 
     // Assert
-    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Will not found");
+    await expect(inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("WILL_NOT_FOUND");
   });
 
   it("Removes erc20Token", async function () {
@@ -244,7 +240,7 @@ describe("InhetheritFacade", function () {
     expect((await willContract.getErc20Tokens()).length).to.be.equal(1);
     expect(heirClaims[0]).to.be.equal(fakeErc20TokenAddress2);
     const heir2ConnectedToInhetheritFacade = inhetheritFacade.connect(heir2);
-    await expect(heir2ConnectedToInhetheritFacade.getWills()).to.be.revertedWith("Claim not found");
+    await expect(heir2ConnectedToInhetheritFacade.getWills()).to.be.revertedWith("CLAIM_NOT_FOUND");
   });
 
   it("Reverts on removeErc20Token if token is not found", async function () {
@@ -259,7 +255,7 @@ describe("InhetheritFacade", function () {
     tx.wait(1);
 
     // Assert
-    await expect(inhetheritFacade.removeErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("Token not found")
+    await expect(inhetheritFacade.removeErc20Token(heirAddress, fakeErc20TokenAddress)).to.be.revertedWith("TOKEN_NOT_FOUND")
   });
 
   it("Reverts on removeErc20Token if token does not belong to heir", async function () {
@@ -276,7 +272,7 @@ describe("InhetheritFacade", function () {
     await inhetheritFacade.addErc20Token(heirAddress, fakeErc20TokenAddress);
 
     // Assert
-    await expect(inhetheritFacade.removeErc20Token(heirAddress2, fakeErc20TokenAddress)).to.be.revertedWith("erc20Token does not belong to heir");
+    await expect(inhetheritFacade.removeErc20Token(heirAddress2, fakeErc20TokenAddress)).to.be.revertedWith("TOKEN_DOES_NOT_MATCH_ADDRESS");
   });
 
   it("Adds ETH", async function () {
@@ -309,7 +305,7 @@ describe("InhetheritFacade", function () {
     const heir2Address = await heir2.getAddress();
 
     // Act
-    await expect(inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress)).to.be.revertedWith("No Eth sent");
+    await expect(inhetheritFacade.createWillWithEth("Jean", "Bono", "07/12/1990", "75012", heirAddress)).to.be.revertedWith("ETH_MISSING");
   });
 
   it("Removes Eth", async function () {
@@ -330,6 +326,6 @@ describe("InhetheritFacade", function () {
     const willContractAddress = await inhetheritFacade.getWill();
     const balance = await ethers.provider.getBalance(willContractAddress);
     expect(ethers.utils.formatEther(balance)).to.be.equal("0.0");
-    await expect(heirConnectedToInhetheritFacade.getWills()).to.be.revertedWith("Claim not found");
+    await expect(heirConnectedToInhetheritFacade.getWills()).to.be.revertedWith("CLAIM_NOT_FOUND");
   });
 });

@@ -124,7 +124,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         for (uint i=0; i<claims.length; i++) {
             if (claims[uint(i)].erc20Token == _erc20Token) {
                 if (claims[uint(i)].heir != _heir) {
-                    revert('erc20Token does not belong to heir');
+                    revert('TOKEN_DOES_NOT_MATCH_ADDRESS');
                 }
                 claims[uint(i)] = claims[claims.length - 1];
                 claims.pop();

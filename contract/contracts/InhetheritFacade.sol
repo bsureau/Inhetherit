@@ -21,7 +21,7 @@ contract InhetheritFacade {
     modifier hasEnoughLink {
         require(
             IERC20(linkToken).balanceOf(address(this)) >= 0.05 * 10 ** 18,
-            'MISSING_LINK'
+            'LINK_MISSING'
         );
         _;
     }

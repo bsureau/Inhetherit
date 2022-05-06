@@ -36,6 +36,10 @@ module.exports = {
   },
   networks : {
     hardhat: {
+      forking: {
+        url: process.env.STAGING_ALCHEMY_KEY,
+        accounts: [process.env.PRIVATE_KEY],
+      }
     },
     rinkeby: {
       url: process.env.STAGING_ALCHEMY_KEY,
