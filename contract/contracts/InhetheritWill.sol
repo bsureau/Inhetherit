@@ -26,18 +26,10 @@ contract InhetheritWill is Ownable, ChainlinkClient {
     bytes32 private jobId;
     uint256 private fee;
 
-    modifier hasClaim {
-        bool result = false;
-
-        for (uint i=0; i<claims.length; i++) {
-            if (claims[i].heir == msg.sender && claims[i].filled == false) {
-                result = true;
-            }
-        }
-
+    modifier isOpen {
         require(
-            result == true,
-            "NOTHING_TO_CLAIM"
+            state == State.OPEN,
+            "WILL_CLOSED"
         );
         _;
     }
@@ -50,10 +42,18 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         _;
     }
 
-    modifier isOpen {
+    modifier hasClaim {
+        bool result = false;
+
+        for (uint i=0; i<claims.length; i++) {
+            if (claims[i].heir == msg.sender && claims[i].filled == false) {
+                result = true;
+            }
+        }
+
         require(
-            state == State.OPEN,
-            "WILL_CLOSED"
+            result == true,
+            "NOTHING_TO_CLAIM"
         );
         _;
     }
@@ -110,6 +110,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
     }
     
     function addErc20Token(address _heir, address _erc20Token) external onlyOwner {
+
         require(isErc20TokenRecorded(_erc20Token) == false, "TOKEN_ALREADY_GIVEN");
         Claim memory claim = Claim(_heir, _erc20Token, false);
         claims.push(claim);

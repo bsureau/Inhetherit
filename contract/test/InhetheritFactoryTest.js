@@ -1,11 +1,14 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
+const { smock } = require("@defi-wonderland/smock");
+
 
 describe("InhetheritFacade", function () {
 
   let willContractABI;
-  let ContractFactory;
+  let InhetheritFacadeFactory;
   let inhetheritFacade;
+  let linkToken;
 
   beforeEach( async () => {
     willContractABI = [
@@ -20,9 +23,16 @@ describe("InhetheritFacade", function () {
       "function getClaimsForHeir() public view returns(address[] memory)",
       "function getState() public view returns(uint)"
     ];
-    ContractFactory = await ethers.getContractFacade("InhetheritFacade");
-    inhetheritFacade = await ContractFactory.deploy();
+    
+    InhetheritFacadeFactory = await smock.mock("InhetheritFacade");
+    inhetheritFacade = await InhetheritFacadeFactory.deploy();
     await inhetheritFacade.deployed();
+
+    const linkTokenMockFactory = await smock.mock("LinkToken");
+    linkToken = await linkTokenMockFactory.deploy();
+    await inhetheritFacade.setVariable('linkToken', linkToken.address)
+    linkToken.transfer.returns(true);
+    linkToken.balanceOf.returns(ethers.utils.parseEther("0.05"));
   })
 
   it("Creates will contract with erc20 token", async function () {

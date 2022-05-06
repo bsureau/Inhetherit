@@ -1,25 +1,43 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import './Claim.sol';
 import "./InhetheritWill.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract InhetheritFactory {
+contract InhetheritFacade {
 
     mapping(address => address) private giverToWill;
     mapping(address => address[]) private heirToWills;
+    address private linkToken = 0x01BE23585060835E02B77ef475b0Cc51aA1e0709; // TODO: change this on mainnet
+
+    modifier isOpen {
+         require(
+             InhetheritWill(giverToWill[msg.sender]).getState() == InhetheritWill.State.OPEN,
+            "NO_OPEN_WILL"
+        );
+        _;
+    }
+
+    modifier hasEnoughLink {
+        require(
+            IERC20(linkToken).balanceOf(address(this)) >= 0.05 * 10 ** 18,
+            'MISSING_LINK'
+        );
+        _;
+    }
+
+    modifier hasNotWill {
+        require(
+            giverToWill[msg.sender] == address(0),
+            "WILL_ALREADY_EXIST"
+        );
+        _;
+    }
 
     modifier hasWill {
         require(
             giverToWill[msg.sender] != address(0),
             "WILL_NOT_FOUND"
-        );
-        _;
-    }
-
-    modifier isOpen {
-         require(InhetheritWill(giverToWill[msg.sender]).getState() == InhetheritWill.State.OPEN,
-            "NO_OPEN_WILL"
         );
         _;
     }
@@ -32,7 +50,7 @@ contract InhetheritFactory {
         _;
     }
 
-    function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address) {    
+    function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public hasEnoughLink hasNotWill returns(address) {    
 
         require( 
             giverToWill[msg.sender] == address(0) 
@@ -40,19 +58,19 @@ contract InhetheritFactory {
         );
 
         InhetheritWill willContract = new InhetheritWill(msg.sender, _firstName, _lastName, _birthdayDate, _birthPlace);
+        IERC20(linkToken).transfer(address(willContract), 0.05 * 10 ** 18);
         willContract.addErc20Token(_heir, _erc20Token);
         
-        address willContractAddress = address(willContract);
-        giverToWill[msg.sender] = willContractAddress;
-        heirToWills[_heir].push(willContractAddress);
+        giverToWill[msg.sender] = address(willContract);
+        heirToWills[_heir].push(address(willContract));
 
-        return willContractAddress;
+        return address(willContract);
     }
 
-    function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public payable returns(address) {    
+    function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public hasEnoughLink hasNotWill payable returns(address) {    
 
-        require( 
-            giverToWill[msg.sender] == address(0) 
+        require(
+            giverToWill[msg.sender] == address(0)
             , "WILL_ALREADY_EXIST"
         );
 
@@ -60,12 +78,12 @@ contract InhetheritFactory {
 
         InhetheritWill willContract = new InhetheritWill(msg.sender, _firstName, _lastName, _birthdayDate, _birthPlace);
         willContract.addEth{value:msg.value}(_heir);
+        IERC20(linkToken).transfer(address(willContract), 0.05 * 10 ** 18);
         
-        address willContractAddress = address(willContract);
-        giverToWill[msg.sender] = willContractAddress;
-        heirToWills[_heir].push(willContractAddress);
-
-        return willContractAddress;
+         giverToWill[msg.sender] = address(willContract);
+        heirToWills[_heir].push(address(willContract));
+        
+        return address(willContract);
     }
 
     function getWill() public hasWill view returns(address) {
