@@ -225,7 +225,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         return state;
     }
 
-    function reportDeath(string memory _deathDate) public isOpen hasClaim returns(bytes32 requestId) {
+    function reportDeath(string memory _deathDate) public isOpen returns(bytes32 requestId) {
         
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         string memory url = string(abi.encodePacked("https://deces.matchid.io/deces/api/v1/search?firstName=", firstName, "&lastName=", lastName, "&birthDate=", birthdayDate, "&birthPostalCode=", birthPlace, "&deathDate=", _deathDate, "&fuzzy=false"));
@@ -235,8 +235,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         return sendChainlinkRequestTo(oracle, request, fee);
     }
     
-    function fulfill(bytes32 _requestId, uint8 _total) public recordChainlinkFulfillment(_requestId)
-    {
+    function fulfill(bytes32 _requestId, uint8 _total) public recordChainlinkFulfillment(_requestId) {
         if (_total > 0) {
             state = State.CLOSED;
             emit DeathReport(true);
