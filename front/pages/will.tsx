@@ -56,12 +56,14 @@ export default function Will() {
             setLoading(false);
           });
 
-        window.ethereum.on('accountsChanged', (accounts) => {
-          if (accounts.length === 0) {
-            setUser({});
-            setWill(undefined);
-          }
-        });
+        if (window.ethereum !== undefined) {
+          window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length === 0) {
+              setUser({});
+              setWill(undefined);
+            }
+          });
+        }
       })
   }, []);
 
