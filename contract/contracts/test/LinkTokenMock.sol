@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@chainlink/contracts/src/v0.8/interfaces/LinkTokenInterface.sol";
 
 
-contract LinkToken is LinkTokenInterface {
+contract LinkTokenMock is LinkTokenInterface {
 
   function allowance(address owner, address spender) external view override returns (uint256 remaining){}
 

@@ -9,6 +9,7 @@ describe("InhetheritFacade", function () {
   let InhetheritFacadeFactory;
   let inhetheritFacade;
   let linkToken;
+  let chainlinkClient;
 
   beforeEach( async () => {
     willContractABI = [
@@ -28,11 +29,16 @@ describe("InhetheritFacade", function () {
     inhetheritFacade = await InhetheritFacadeFactory.deploy();
     await inhetheritFacade.deployed();
 
-    const linkTokenMockFactory = await smock.mock("LinkToken");
-    linkToken = await linkTokenMockFactory.deploy();
+    const linkTokenFactory = await smock.mock("LinkTokenMock");
+    linkToken = await linkTokenFactory.deploy();
+    await linkToken.deployed();
     await inhetheritFacade.setVariable('linkToken', linkToken.address)
     linkToken.transfer.returns(true);
     linkToken.balanceOf.returns(ethers.utils.parseEther("0.05"));
+
+    const chainlinkClientFactory = await smock.mock("ChainlinkClientMock");
+    chainlinkClient = await chainlinkClientFactory.deploy();
+
   })
 
   it("Creates will contract with erc20 token", async function () {
