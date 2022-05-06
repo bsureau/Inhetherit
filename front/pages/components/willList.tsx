@@ -27,44 +27,52 @@ export default function WillList() {
 
   return (
     <Col css={styles.column}>
-      <Table lined css={{
-        height: "auto",
-        minWidth: "100%",
-      }}>
-        <Table.Header>
-          <Table.Column>Status</Table.Column>
-          <Table.Column>Crypto</Table.Column>
-          <Table.Column>Heir Address</Table.Column>
-          <Table.Column>Amount</Table.Column>
-          <Table.Column></Table.Column>
-        </Table.Header>
-        <Table.Body>
-          { will.claims.map((claim) => (
-            <Table.Row key={claim.erc20Token}>
-              <Table.Cell>
-                <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
-                  <FaExclamationTriangle color="#f7ca18" size={20} style={{ verticalAlign: 'middle' }} />&nbsp; <small>Allowance too low (0.4 {getErc20Iso3FromAddress(claim.erc20Token)})</small>
-                </Tooltip>
-              </Table.Cell>
-              <Table.Cell>
-                {getErc20NameFromAddress(claim.erc20Token)}
-              </Table.Cell>
-              <Table.Cell>
-                <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
-                  {claim.heir.substring(0, 20)}...
-                </Link>
-              </Table.Cell>
-              <Table.Cell>
-                {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
-              </Table.Cell>
-              <Table.Cell>
-                <Button>Increase allowance</Button>
-                <Button light color="error">Delete will</Button>
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+      {will ?
+        <Table lined css={{
+          height: "auto",
+          minWidth: "100%",
+        }}>
+          <Table.Header>
+            <Table.Column>Status</Table.Column>
+            <Table.Column>Crypto</Table.Column>
+            <Table.Column>Heir Address</Table.Column>
+            <Table.Column>Amount</Table.Column>
+            <Table.Column></Table.Column>
+          </Table.Header>
+          <Table.Body>
+            {will.claims.map((claim) => (
+              <Table.Row key={claim.erc20Token}>
+                <Table.Cell>
+                  <Tooltip content={"We won't be able to transfer your fund in case of your death"}>
+                    <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; <small>Allowance
+                    too low (0.4 {getErc20Iso3FromAddress(claim.erc20Token)})</small>
+                  </Tooltip>
+                </Table.Cell>
+                <Table.Cell>
+                  {getErc20NameFromAddress(claim.erc20Token)}
+                </Table.Cell>
+                <Table.Cell>
+                  <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
+                    {claim.heir.substring(0, 20)}...
+                  </Link>
+                </Table.Cell>
+                <Table.Cell>
+                  {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button>Increase allowance</Button>
+                  <Button light color="error">Delete will</Button>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      :
+        <Text css={{ color: '#888', fontWeight: 500 }}>
+          You don't have any will yet
+        </Text>
+
+      }
     </Col>
   )
 }
