@@ -20,9 +20,10 @@ export const willABI: string[] = [
   "function getFirstName() public view returns(string memory)",
   "function getBirthdayDate() public view returns(string memory)",
   "function getBirthPlace() public view returns(string memory)",
-  "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
+  "function getClaims() public view returns(tuple(address heir, address erc20Token, bool filled)[] memory)",
   "function getEth() public view returns(address)",
   "function getBalance() public view returns(uin256)",
+  "function getErc20Tokens() public view returns(address[] memory)",
 ];
 
 export async function getWill(user) {
