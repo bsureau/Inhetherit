@@ -147,7 +147,7 @@ export default function WillForm() {
     setOpenModal(MODAL_LOADING);
 
     // wait that the block containing our transaction is mined to move forward
-    await willTx.wait(1);
+    await willTx.wait(3);
 
     setOpenModal(MODAL_METAMASK_APPROVE);
 
@@ -232,10 +232,14 @@ export default function WillForm() {
                   cursor: 'pointer',
                 }}
               >
-                <option value='' disabled defaultChecked>Select the token you want to transfer 🔽 &nbsp;</option>
+                <option value='' disabled defaultChecked>Select a token 🔽 &nbsp;</option>
                 <option value='ETH'>Ethereum (ETH)</option>
-                <option value='WETH'>Wrapped Ethereum (WETH)</option>
                 <option value='LINK'>Chainlink (LINK)</option>
+                <option value='USDT'>Tether Token (USDT)</option>
+                <option value='USDC'>USD Coin (USDC)</option>
+                <option value='BNT'>Bancor Network Token (BNT)</option>
+                <option value='WBTC'>Wrapped Bitcoin (WBTC)</option>
+                <option value='WETH'>Wrapped Ethereum (WETH)</option>
               </select>
             </Col>
             { token == 'ETH' &&
@@ -285,7 +289,7 @@ export default function WillForm() {
                     <FaInfoCircle style={{verticalAlign: 'bottom'}} color="#dbdbdb" size={17}/>
                   </Tooltip>
                   <Text css={{ paddingTop: 10 }} color="warning">
-                    <FaExclamationTriangle size={20} style={{ verticalAlign: 'top' }}/> Since ETH is not ERC20 compliant the amount you decide to pass on will be locked on the contract <small>(you can unlock it by deleting the will)</small>
+                    <FaExclamationTriangle size={20} style={{ verticalAlign: 'top' }}/> Since ETH is not ERC20 compliant, the amount you decide to pass on will be locked on the contract <small>(you can unlock it by deleting the token from the will)</small>
                   </Text>
                 </>
               }
