@@ -1,10 +1,10 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
-import { Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights } from '@nextui-org/react';
+import {Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights, Tooltip} from '@nextui-org/react';
 
-import { BigNumber, Contract, ethers } from 'ethers';
+import {BigNumber, Contract, ethers, FixedNumber} from 'ethers';
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
-import { FaCheck, FaTimes } from 'react-icons/fa';
+import {FaCheck, FaExclamationTriangle, FaInfoCircle, FaTimes} from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
 import {
@@ -35,6 +35,8 @@ export default function WillForm() {
   const [token, setToken] = useState('');
   const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [tokenBalance, setTokenBalance] = useState('0');
+  const [tokenToTransfer, setTokenToTransfer] = useState(FixedNumber.from(0));
+  const [gasPrice, setGasPrice] = useState(BigNumber.from(0));
 
   // validation funnel
   const [openModal, setOpenModal] = useState('');
@@ -52,9 +54,10 @@ export default function WillForm() {
 
     let balance: BigNumber;
     if (event.target.value == 'ETH') {
-      balance = user.balance;
+      balance = await user.signer.getBalance();
     } else {
       balance = await getBalanceOf(user, erc20Addresses[event.target.value]);
+      setGasPrice(await user.signer.provider.getGasPrice());
     }
 
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
@@ -88,19 +91,25 @@ export default function WillForm() {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
     if (will != undefined) {
-      if (erc20Address == 'ETH') {
+      if (erc20Address == 'eth') {
+        console.log('Add ETH to will');
         return await contract.addEth(
-          heirAddress
+          heirAddress,
+          {
+            value: BigNumber.from(tokenToTransfer.toHexString())
+          }
         );
       }
 
+      console.log('Add ERC20 token to will');
       return await contract.addErc20Token(
         heirAddress,
         erc20Address
       );
     }
 
-    if (erc20Address == 'ETH') {
+    if (erc20Address == 'eth') {
+      console.log('Create will with ETH');
       return await contract.createWillWithEth(
         firstName,
         lastName,
@@ -110,6 +119,7 @@ export default function WillForm() {
       );
     }
 
+    console.log('Create will with ERC20');
     return await contract.createWill(
       firstName,
       lastName,
@@ -126,9 +136,10 @@ export default function WillForm() {
     let willTx: TransactionResponse;
     try {
       willTx = await createWill();
-    } catch {
+    } catch(error) {
       // TODO: handle errors in case will already exists or token already given
       setOpenModal(MODAL_ERROR);
+      console.error(error);
       return;
     }
 
@@ -140,14 +151,16 @@ export default function WillForm() {
 
     setOpenModal(MODAL_METAMASK_APPROVE);
 
-    if (erc20Address == 'ETH') {
+    if (erc20Address == 'eth') {
       setOpenModal(MODAL_LOADING);
     } else {
       let approveTx: TransactionResponse;
       try {
-        approveTx = await approveTransfer(will.address);
-      } catch {
+        const tempWill = await getWill(user);
+        approveTx = await approveTransfer(tempWill.address);
+      } catch(error) {
         setOpenModal(MODAL_ERROR);
+        console.error(error);
         return;
       }
 
@@ -160,7 +173,12 @@ export default function WillForm() {
 
     setOpenModal(MODAL_CONFIRMATION);
 
-    //TODO: reset form ?
+    // reset form
+    setTokenToTransfer(FixedNumber.from('0.0'));
+    setHeirAddress('');
+
+    // update current balance
+    await handleChangeToken({ target: { value: token }});
   }
 
   const onCloseModal = () => {
@@ -220,6 +238,20 @@ export default function WillForm() {
                 <option value='LINK'>Chainlink (LINK)</option>
               </select>
             </Col>
+            { token == 'ETH' &&
+              <Input
+                rounded
+                bordered
+                label="ETH to pass on"
+                placeholder="0.0"
+                color="primary"
+                width="20%"
+                css={{ paddingRight: "20px" }}
+                value={tokenToTransfer}
+                onChange={e => setTokenToTransfer(FixedNumber.from(e.target.value == '' ? 0.0 : e.target.value))}
+                disabled={submited}
+              />
+            }
             { will &&
               <Input 
                 rounded
@@ -244,7 +276,17 @@ export default function WillForm() {
         >
           {token != '' ? (
             <>
-              Current balance: &nbsp;<b>{tokenBalance} {token}</b>
+              Current balance: &nbsp;<b>{tokenBalance} {token}</b> &nbsp;
+              {token == 'ETH' &&
+                <>
+                  <Tooltip content={`Estimated gas price: ${ethers.utils.formatEther(gasPrice)} ETH`}>
+                    <FaInfoCircle style={{verticalAlign: 'bottom'}} color="#dbdbdb" size={17}/>
+                  </Tooltip>
+                  <Text css={{ paddingTop: 10 }} color="warning">
+                    <FaExclamationTriangle size={20} style={{ verticalAlign: 'top' }}/> Since ETH is not ERC20 compliant the amount you decide to pass on will be locked on the contract <small>(you can unlock it by deleting the will)</small>
+                  </Text>
+                </>
+              }
             </>
           ) : ''}
         </Row>

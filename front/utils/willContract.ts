@@ -3,11 +3,11 @@ import { getAllowance, getBalanceOf, maxUINT256 } from "./erc20Contract";
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
-export const inhetheritFactoryAddress: string = "0x9A3aB3b41747e62e597Ca6Ed0052Ee22D052882B";
+export const inhetheritFactoryAddress: string = "0x6775E21359d2F978a8B4675CDf855807EE2f6dC7";
 
 export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
-  "function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public payable returns(address)",
+  "function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
   "function getWill() public view returns(address)",
   "function addErc20Token(address _heir, address _erc20Token) public",
   "function addEth(address _heir) public payable",
@@ -22,6 +22,7 @@ export const willABI: string[] = [
   "function getBirthPlace() public view returns(string memory)",
   "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
   "function getEth() public view returns(address)",
+  "function getBalance() public view returns(uin256)",
 ];
 
 export async function getWill(user) {
@@ -52,7 +53,7 @@ export async function getWill(user) {
         heir: ethHeirAddress,
         erc20Token: 'ETH',
         allowance: maxUINT256,
-        balance: await willAddress.getBalance(),
+        balance: await user.signer.provider.getBalance(willAddress),
       });
     }
 
@@ -65,6 +66,7 @@ export async function getWill(user) {
       claims,
     };
   } catch (error) {
+    console.error(error);
     /*if (error.reason = "WILL_NOT_FOUND") {
       return {};
     }*/

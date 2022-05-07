@@ -14,11 +14,9 @@ export async function getWallet (ethereum) {
     if (accounts.length > 0) {
       const signer = provider.getSigner();
       const address = await signer.getAddress();
-      const balance = await signer.getBalance();
 
       return {
         account: address,
-        balance: balance,
         signer: signer
       };
 
