@@ -242,11 +242,13 @@ export default function WillForm() {
               <Input
                 rounded
                 bordered
+                type="number"
                 label="ETH to pass on"
                 placeholder="0.0"
                 color="primary"
                 width="20%"
                 css={{ paddingRight: "20px" }}
+                min="0.0"
                 value={tokenToTransfer}
                 onChange={e => setTokenToTransfer(FixedNumber.from(e.target.value == '' ? 0.0 : e.target.value))}
                 disabled={submited}

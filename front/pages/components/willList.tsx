@@ -8,12 +8,11 @@ import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract
 import { useWill } from "../../context/will";
 import { useUser } from "../../context/user";
 import {
-  getErc20NameFromAddress,
   getErc20Iso3FromAddress,
   erc20Abi,
-  maxUINT256, erc20Addresses
+  maxUINT256
 } from "../../utils/erc20Contract";
-import { getWill, removeErc20Token } from "../../utils/willContract";
+import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
 
 const styles: any = {
   column: {
@@ -48,7 +47,13 @@ export default function WillList() {
   }
 
   const onDeleteToken = async (heirAddress, erc20Address) => {
-    const tx: TransactionResponse = await removeErc20Token(user, heirAddress, erc20Address);
+    let tx: TransactionResponse;
+
+    if (erc20Address == 'ETH') {
+      tx = await removeEth(user, heirAddress);
+    } else {
+      tx = await removeErc20Token(user, heirAddress, erc20Address);
+    }
 
     // handle approve metamask modal, error and loading
 

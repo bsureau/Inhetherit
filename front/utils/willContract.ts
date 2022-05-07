@@ -78,3 +78,8 @@ export async function removeErc20Token(user, heirAddress, erc20Address) {
   const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
   return await contract.removeErc20Token(heirAddress, erc20Address);
 }
+
+export async function removeEth(user, heirAddress) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+  return await contract.removeEth(heirAddress);
+}
