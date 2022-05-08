@@ -22,7 +22,9 @@ const styles: any = {
     borderRadius: "1rem",
     background: "#ffffff",
     boxShadow: "0px 0.2rem 10px #e0e0e0",
-    padding: "2rem 0 2rem 0"
+    marginTop: "1rem",
+    marginBottom: "1rem",
+    padding: "0rem 0 0rem 0"
   },
 }
 
