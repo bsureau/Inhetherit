@@ -20,7 +20,7 @@ export function useWill() {
   const context = useContext(WillContext)
 
   if (!context) {
-    throw new Error('useUser must be used inside a `UserContext`')
+    throw new Error('useWill must be used inside a `WillContext`')
   }
 
   return context
