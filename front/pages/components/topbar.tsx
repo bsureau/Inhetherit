@@ -1,11 +1,10 @@
-import React, { useState, useEffect, SetStateAction } from 'react';
-import { FaDotCircle, FaEthereum, FaWallet } from 'react-icons/fa';
+import React from 'react';
+import { FaDotCircle, FaWallet } from 'react-icons/fa';
 
 import { Button, Link, Row } from "@nextui-org/react";
 
-import { ethers, Provider } from "ethers";
+import { inhetheritFactoryAddress } from "../../utils/willContract";
 
-import { WalletError } from '../../exceptions/walletError';
 import { useUser } from "../../context/user";
 
 const styles: any = {
@@ -32,7 +31,7 @@ export default function TopBar({ onConnectWallet }) {
     <Row
       css={styles.row}>
       <Link
-        href="#"
+        href={`https://rinkeby.etherscan.io/address/${inhetheritFactoryAddress}`} target="_blank"
         className="secondary-button"
       >
         <Button
