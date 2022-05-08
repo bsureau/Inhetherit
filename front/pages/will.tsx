@@ -65,7 +65,7 @@ export default function Will() {
               setWill(undefined);
               return;
             }
-            // TODO: update user & will
+            onConnectWallet();
           });
         }
       })
