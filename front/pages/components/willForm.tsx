@@ -2,9 +2,9 @@ import React, {Dispatch, SetStateAction, useState} from 'react';
 import {Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights, Tooltip} from '@nextui-org/react';
 
 import {BigNumber, Contract, ethers, FixedNumber} from 'ethers';
-import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
-import {FaCheck, FaExclamationTriangle, FaInfoCircle, FaTimes} from 'react-icons/fa';
+import { FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
 import { useModal } from "../../context/modal";
@@ -51,12 +51,12 @@ export default function WillForm() {
   const [gasPrice, setGasPrice] = useState(BigNumber.from(0));
 
   // validation funnel
-  const MODAL_REVIEW = 'review-informations';
-  const MODAL_METAMASK_VALIDATE = 'metamask-validate';
-  const MODAL_LOADING = 'loading';
-  const MODAL_METAMASK_APPROVE = 'metamask-approve';
-  const MODAL_CONFIRMATION = 'confirmation';
-  const MODAL_ERROR = 'error';
+  const MODAL_REVIEW = 'form-review-informations';
+  const MODAL_METAMASK_VALIDATE = 'form-metamask-validate';
+  const MODAL_LOADING = 'form-loading';
+  const MODAL_METAMASK_APPROVE = 'form-metamask-approve';
+  const MODAL_CONFIRMATION = 'form-confirmation';
+  const MODAL_ERROR = 'form-error';
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
@@ -458,7 +458,7 @@ export default function WillForm() {
       <MetamaskApproveModal isOpened={modal.open == MODAL_METAMASK_APPROVE} />
       <LoadingModal
         isOpened={modal.open == MODAL_LOADING}
-        text={modal.data.text ?? 'Working...'}
+        text={modal.data.text}
       />
       <ConfirmationModal
         isOpened={modal.open == MODAL_CONFIRMATION}

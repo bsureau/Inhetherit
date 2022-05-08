@@ -20,7 +20,7 @@ export function LoadingModal ({
       </Modal.Header>
       <Modal.Body>
         <Text style={{ textAlign: 'center' }}>
-          {text}
+          {text ?? 'Loading...'}
         </Text>
       </Modal.Body>
       <Modal.Footer></Modal.Footer>
