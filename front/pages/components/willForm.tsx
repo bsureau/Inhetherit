@@ -219,7 +219,7 @@ export default function WillForm() {
                 marginRight: "1.5%"
               }}
             >
-              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#3985f6', fontSize: 14 }}>Token:</Text>
+              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#0070f3', fontSize: 14 }}>Token</Text>
               <select
                 value={token}
                 onChange={handleChangeToken}
