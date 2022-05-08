@@ -22,6 +22,7 @@ import { connectWallet, getWallet } from "../utils/metamask";
 import { getWill } from "../utils/willContract";
 import { useUser } from "../context/user";
 import { useWill } from "../context/will";
+import { ModalProvider } from "../context/modal";
 
 const styles: any = {
   container: {
@@ -116,26 +117,28 @@ export default function Will() {
               justify="center"
               align="center"
             >
-              {user.account ?
-                <>
-                  <Row>
-                    <WillAddress will={will} />
-                  </Row>
-                  <Spacer />
-                  <Row>
-                    <WillForm/>
-                  </Row>
-                  <Spacer y={2}/>
-                  <Row>
-                    <WillList/>
-                  </Row>
-                </>
-                :
-                <Col>
-                  <h3>Please connect your wallet first...</h3><br/>
-                  <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
-                </Col>
-              }
+              <ModalProvider>
+                {user.account ?
+                  <>
+                    <Row>
+                      <WillAddress will={will} />
+                    </Row>
+                    <Spacer />
+                    <Row>
+                      <WillForm/>
+                    </Row>
+                    <Spacer y={2}/>
+                    <Row>
+                      <WillList/>
+                    </Row>
+                  </>
+                  :
+                  <Col>
+                    <h3>Please connect your wallet first...</h3><br/>
+                    <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
+                  </Col>
+                }
+              </ModalProvider>
             </Col>
           }
         </Col>

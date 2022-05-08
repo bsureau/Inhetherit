@@ -10,7 +10,7 @@ import { useUser } from "../../context/user";
 import {
   getErc20Iso3FromAddress,
   erc20Abi,
-  maxUINT256
+  maxUINT256, isERC20Token
 } from "../../utils/erc20Contract";
 import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
 
@@ -50,7 +50,7 @@ export default function WillList() {
   const onDeleteToken = async (heirAddress, erc20Address) => {
     let tx: TransactionResponse;
 
-    if (erc20Address == 'ETH') {
+    if (!isERC20Token(erc20Address)) {
       tx = await removeEth(user, heirAddress);
     } else {
       tx = await removeErc20Token(user, heirAddress, erc20Address);

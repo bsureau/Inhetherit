@@ -7,6 +7,8 @@ import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract
 import {FaCheck, FaExclamationTriangle, FaInfoCircle, FaTimes} from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
+import { useModal } from "../../context/modal";
+
 import {
   getWill,
   inhetheritFactoryABI,
@@ -15,13 +17,23 @@ import {
 import {
   erc20Abi,
   erc20Addresses,
-  getBalanceOf,
+  getBalanceOf, isERC20Token,
   maxUINT256
 } from "../../utils/erc20Contract";
+
+import {
+  ConfirmationModal,
+  ErrorModal,
+  LoadingModal,
+  MetamaskApproveModal,
+  MetamaskConfirmModal,
+  ReviewModal
+} from "./modals";
 
 export default function WillForm() {
   const { user } = useUser();
   const { will, setWill } = useWill();
+  const { modal, setModal } = useModal();
 
   // form
   const [firstName, setFirstName]: [string, Dispatch<SetStateAction<string>>] = useState("");
@@ -39,7 +51,6 @@ export default function WillForm() {
   const [gasPrice, setGasPrice] = useState(BigNumber.from(0));
 
   // validation funnel
-  const [openModal, setOpenModal] = useState('');
   const MODAL_REVIEW = 'review-informations';
   const MODAL_METAMASK_VALIDATE = 'metamask-validate';
   const MODAL_LOADING = 'loading';
@@ -53,7 +64,7 @@ export default function WillForm() {
     setTokenBalance('...');
 
     let balance: BigNumber;
-    if (event.target.value == 'ETH') {
+    if (!isERC20Token(event.target.value)) {
       balance = await user.signer.getBalance();
     } else {
       balance = await getBalanceOf(user, erc20Addresses[event.target.value]);
@@ -79,7 +90,19 @@ export default function WillForm() {
   const handleSubmit: Function = (evt) => {
     evt.preventDefault();
     setSubmited(true);
-    setOpenModal(MODAL_REVIEW);
+
+    setModal({
+      open: MODAL_REVIEW,
+      data: {
+        token: token,
+        tokenToTransfer: tokenToTransfer,
+        firstName: firstName == '' && will ? will.firstName : firstName,
+        lastName: lastName == '' && will ? will.lastName : lastName,
+        birthday: birthdayDate == '' && will ? will.birthday : birthdayDate,
+        birthPostCode: birthPostCode == '' && will ? will.postCode : birthPostCode,
+        heirAddress: heirAddress,
+      },
+    });
   }
 
   async function approveTransfer(inhetheritWillAddress: string) {
@@ -91,8 +114,7 @@ export default function WillForm() {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
     if (will != undefined) {
-      if (erc20Address == 'eth') {
-        console.log('Add ETH to will');
+      if (!isERC20Token(erc20Address)) {
         return await contract.addEth(
           heirAddress,
           {
@@ -101,15 +123,13 @@ export default function WillForm() {
         );
       }
 
-      console.log('Add ERC20 token to will');
       return await contract.addErc20Token(
         heirAddress,
         erc20Address
       );
     }
 
-    if (erc20Address == 'eth') {
-      console.log('Create will with ETH');
+    if (!isERC20Token(erc20Address)) {
       return await contract.createWillWithEth(
         firstName,
         lastName,
@@ -119,7 +139,6 @@ export default function WillForm() {
       );
     }
 
-    console.log('Create will with ERC20');
     return await contract.createWill(
       firstName,
       lastName,
@@ -131,47 +150,85 @@ export default function WillForm() {
   }
 
   const handleWill: Function = async () => {
-    setOpenModal(MODAL_METAMASK_VALIDATE);
+    setModal({
+      open: MODAL_METAMASK_VALIDATE,
+      data: {}
+    });
 
     let willTx: TransactionResponse;
     try {
       willTx = await createWill();
     } catch(error) {
       // TODO: handle errors in case will already exists or token already given
-      setOpenModal(MODAL_ERROR);
-      console.error(error);
+      setModal({
+        open: MODAL_ERROR,
+        data: {
+          text: will ? 'We could not add token to your will' : 'We could not create your will',
+          error: error,
+        }
+      });
       return;
     }
 
     // we display loading once user has validated transaction with metamask
-    setOpenModal(MODAL_LOADING);
+    setModal({
+      open: MODAL_LOADING,
+      data: {
+        text: will ? 'We are adding your '+ token +' to your will on the blockchain, this might take a few minutes...' : 'We are uploading your will on the blockchain, this might take a few minutes...'
+      }
+    });
 
     // wait that the block containing our transaction is mined to move forward
     await willTx.wait(3);
 
-    setOpenModal(MODAL_METAMASK_APPROVE);
+    setModal({
+      open: MODAL_METAMASK_APPROVE,
+      data: {}
+    });
 
-    if (erc20Address == 'eth') {
-      setOpenModal(MODAL_LOADING);
+    if (!isERC20Token(erc20Address)) {
+      setModal({
+        open: MODAL_LOADING,
+        data: {
+          text: 'Final checks, making sure all is in order...'
+        }
+      });
     } else {
       let approveTx: TransactionResponse;
       try {
         const tempWill = await getWill(user);
         approveTx = await approveTransfer(tempWill.address);
       } catch(error) {
-        setOpenModal(MODAL_ERROR);
-        console.error(error);
+        setModal({
+          open: MODAL_ERROR,
+          data: {
+            text: 'We could not approve the transfer. You will have to do it manually later in the list.',
+            error: error,
+          }
+        });
+        setWill(await getWill(user));
         return;
       }
 
-      setOpenModal(MODAL_LOADING);
+      setModal({
+        open: MODAL_LOADING,
+        data: {
+          text: 'Final checks, making sure all is in order...'
+        }
+      });
 
       await approveTx.wait(1);
     }
 
+    const isCreation = !will;
     setWill(await getWill(user));
 
-    setOpenModal(MODAL_CONFIRMATION);
+    setModal({
+      open: MODAL_CONFIRMATION,
+      data: {
+        text: isCreation ? 'Your will has successfully been created.' : 'Your '+ token +' has been successfully added to your will'
+      }
+    });
 
     // reset form
     setTokenToTransfer(FixedNumber.from('0.0'));
@@ -182,7 +239,10 @@ export default function WillForm() {
   }
 
   const onCloseModal = () => {
-    //setOpenModal('');
+    /*setModal({
+      open: undefined,
+      data: {}
+    });*/
     setSubmited(false);
   }
 
@@ -388,168 +448,28 @@ export default function WillForm() {
         </Button>
       </Row>
 
-      <Modal
-        closeButton
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_REVIEW}
-        onClose={onCloseModal}
-      >
-        <Modal.Header>
-          <Text id="modal-title" size={30}>
-            Confirm your will
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Col justify="center" align="center">
-            <Text>
-              You are about to give the right to transfer all your {token} funds to your heir. <br />
-              Please make sure all the informations are correct or your funds could never be transferred at the time of your death.
-            </Text>
-            <Spacer />
-            <Text>
-              <strong>First name:</strong>
-              <br />
-              {firstName == '' && will ? will.firstName : firstName}
-            </Text>
-            <Spacer />
-            <Text>
-              <strong>Last name:</strong>
-              <br />
-              {lastName == '' && will ? will.lastName : lastName}
-            </Text>
-            <Spacer />
-            <Text>
-              <strong>Birthday date:</strong>
-              <br />
-              {birthdayDate == '' && will ? will.birthdate : birthdayDate}
-            </Text>
-            <Spacer />
-            <Text>
-              <strong>Birth postal code:</strong>
-              <br />
-              {birthPostCode == '' && will ? will.postCode : birthPostCode}
-            </Text>
-            <Spacer />
-            <Text>
-              <strong>Heir address:</strong>
-              <br />
-              <Link
-                href={`https://rinkeby.etherscan.io/search?f=1&q=${heirAddress}`}
-                target="_blank"
-              >
-                {heirAddress}
-              </Link>
-            </Text>
-          </Col>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button auto onClick={handleWill}>
-            Yes, I confirm!
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal
-        preventClose={true}
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_METAMASK_VALIDATE}
-      >
-        <Modal.Header>
-          <Text id="modal-title" size={30}>
-            Confirm the transaction
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text>
-            You need to confirm the transaction using metamask
-          </Text>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      <Modal
-        preventClose={true}
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_LOADING}
-      >
-        <Modal.Header>
-          <Text id="modal-title" size={30}>
-            Loading...
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text>
-            Your will is being uploaded... <br/>
-            It may take a few minutes...
-          </Text>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      <Modal
-        preventClose={true}
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_METAMASK_APPROVE}
-      >
-        <Modal.Header>
-          <Text id="modal-title" size={30}>
-            Last step
-          </Text>
-        </Modal.Header>
-        <Modal.Body>
-          <Text>
-            You must now approve transfer of your token by your will smart contract 
-          </Text>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      <Modal
-        closeButton
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_CONFIRMATION}
-        onClose={onCloseModal}
-      >
-        <Modal.Header></Modal.Header>
-        <Modal.Body style={{ textAlign: "center" }}>
-          <span style={{ textAlign: "center" }}>
-            <FaCheck size={80} color="#16a085" style={{ display: "inline-block" }} />
-          </span>
-          <Text size={30}>
-            All good
-          </Text>
-          Your will is now on your wallet and will be executed when you die.
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
-
-      <Modal
-        closeButton
-        aria-labelledby="modal-title"
-        width="600px"
-        open={openModal == MODAL_ERROR}
-        onClose={onCloseModal}
-      >
-        <Modal.Header></Modal.Header>
-        <Modal.Body style={{ textAlign: "center" }}>
-          <span style={{ textAlign: "center" }}>
-            <FaTimes size={80} color="#96281b" style={{ display: "inline-block" }} />
-          </span>
-          <Text size={30}>
-            Oops
-          </Text>
-          Something went wrong here...<br/>
-          <code>
-            blablablablabla
-          </code>
-        </Modal.Body>
-        <Modal.Footer></Modal.Footer>
-      </Modal>
+      <ReviewModal
+        isOpened={modal.open == MODAL_REVIEW}
+        onCloseModal={onCloseModal}
+        handleWill={handleWill}
+        formData={modal.data}
+      />
+      <MetamaskConfirmModal isOpened={modal.open == MODAL_METAMASK_VALIDATE} />
+      <MetamaskApproveModal isOpened={modal.open == MODAL_METAMASK_APPROVE} />
+      <LoadingModal
+        isOpened={modal.open == MODAL_LOADING}
+        text={modal.data.text ?? 'Working...'}
+      />
+      <ConfirmationModal
+        isOpened={modal.open == MODAL_CONFIRMATION}
+        onCloseModal={onCloseModal}
+        text={modal.data.text} />
+      <ErrorModal
+        isOpened={modal.open == MODAL_ERROR}
+        onCloseModal={onCloseModal}
+        text={modal.data.text}
+        error={modal.data.error}
+      />
     </Col>
   )
 }

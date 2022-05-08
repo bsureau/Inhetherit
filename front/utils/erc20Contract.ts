@@ -31,3 +31,7 @@ export async function getAllowance(user, erc20Address, willAddress) {
   const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
   return await contract.allowance(user.account, willAddress);
 }
+
+export function isERC20Token(token: string) {
+  return token != 'ETH' && token != 'eth';
+}
