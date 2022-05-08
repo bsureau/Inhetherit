@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
+
 import {
   Container,
   Row,
   Col,
   Spacer,
-  Text, Button
+  Button
 } from "@nextui-org/react";
 
 import {
   TopBar,
   Sidebar,
+  WillAddress,
   WillForm,
   WillList,
   Loader
@@ -40,7 +42,7 @@ const styles: any = {
 
 export default function Will() {
   const { user, setUser } = useUser();
-  const { setWill } = useWill();
+  const { will, setWill } = useWill();
   const [ loading, setLoading ] = useState(true);
 
   useEffect(function () {
@@ -117,8 +119,13 @@ export default function Will() {
               {user.account ?
                 <>
                   <Row>
+                    <WillAddress will={will} />
+                  </Row>
+                  <Spacer />
+                  <Row>
                     <WillForm/>
                   </Row>
+                  <Spacer y={2}/>
                   <Row>
                     <WillList/>
                   </Row>

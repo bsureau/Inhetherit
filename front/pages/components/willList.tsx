@@ -21,9 +21,8 @@ const styles: any = {
     margin: "auto",
     borderRadius: "1rem",
     background: "#ffffff",
-    marginTop: "3rem",
     boxShadow: "0px 0.2rem 10px #e0e0e0",
-    marginBottom: "30px",
+    padding: "2rem 0 2rem 0"
   },
 }
 

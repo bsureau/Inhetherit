@@ -210,7 +210,7 @@ export default function WillForm() {
             justifyContent: "flex-start",
             alignItems: "center",
             textAlign:"left",
-            padding: "3rem 3rem 0rem 3rem"
+            padding: "2rem 3rem 0rem 3rem"
           }}
         >
             <Col 
@@ -374,7 +374,7 @@ export default function WillForm() {
         css={{
           justifyContent: "flex-start",
           textAlign:"left",
-          padding: "1rem 3rem 0rem"
+          padding: "0rem 3rem 2rem"
         }}
       >
        <Button
@@ -386,15 +386,6 @@ export default function WillForm() {
         >
           {will ? 'Add to your will' : 'Create your will'}
         </Button>
-      </Row>
-      <Row css={{
-        justifyContent: "flex-start",
-        textAlign:"left",
-        padding: "1rem 3rem 3rem"
-      }}>
-        { will ?
-          <Text css={{ display: 'block' }}>Your will address: <Link href={`https://rinkeby.etherscan.io/address/${will.address}`} target="_blank">{will.address}</Link></Text>
-          : ''}
       </Row>
 
       <Modal
