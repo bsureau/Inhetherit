@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
+import { Loader, HeirWillList } from "./components";
+import { ModalProvider } from "../context/modal";
 
 import {
+  Button,
   Container,
   Row,
   Col,
@@ -97,14 +100,37 @@ export default function Claims() {
       <Row 
         justify="center"
         align="center"
-      >
+      > 
         <Col 
           justify="center" 
           align="center" 
           css={styles.column}
         >
           <Spacer y={3} />
-          TODO
+          <ModalProvider>
+            { loading === true ?
+              <Loader width={70} />
+              :
+              <Col 
+                justify="center" 
+                align="center" 
+              >
+                {user.account ?
+                  <>
+                    <Spacer y={2}/>
+                    <Row>
+                      <HeirWillList />
+                    </Row>
+                  </>
+                  :
+                  <Col>
+                    <h3>Please connect your wallet first...</h3><br/>
+                    <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
+                  </Col>
+                }
+              </Col>
+            }
+          </ModalProvider>
         </Col>
       </Row>
     </Container>
