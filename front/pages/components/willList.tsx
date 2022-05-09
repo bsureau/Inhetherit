@@ -156,7 +156,7 @@ export default function WillList() {
                         <>
                           <Tooltip content={"This means we won't be able to transfer all your funds in case of your death. Please increase allowance."}>
                             <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
-                            <small>Allowance too low ({(ethers.utils.formatEther(claim.allowance) - (ethers.utils.formatEther(claim.balance)))} {getErc20Iso3FromAddress(claim.erc20Token)})</small>
+                            <small>Allowance too low ({ethers.utils.formatEther(claim.allowance.sub(claim.balance))}) {getErc20Iso3FromAddress(claim.erc20Token)})</small>
                           </Tooltip>
                         </>
                         :
@@ -178,7 +178,7 @@ export default function WillList() {
                       {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
                     </Table.Cell>
                     <Table.Cell>
-                      {claim.allowance < claim.balance ?
+                      {claim.allowance.lt(claim.balance) ?
                         <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
                         : ''
                       }
