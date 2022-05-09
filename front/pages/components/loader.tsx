@@ -1,7 +1,7 @@
 
 export default function Loader ({ width }) {
     return (
-      <svg version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style={{ width: width }} enable-background="new 0 0 0 0">
+      <svg version="1.1" x="0px" y="0px" viewBox="0 0 100 100" style={{ width: width }} enableBackground="new 0 0 0 0">
         <circle fill="#000" stroke="none" cx="6" cy="50" r="6">
           <animateTransform
             attributeName="transform"
