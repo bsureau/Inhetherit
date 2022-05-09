@@ -1,20 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import { Button, Col, Link, Row, StyledHelperTextContainer, Table, Text, Tooltip } from '@nextui-org/react';
-import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
+import React from 'react';
+import { Button, Col, Table, Link, Text, Row, Spacer } from '@nextui-org/react';
 
-import { ethers } from 'ethers';
-import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
-
-import { useWill } from "../../context/will";
-import { useGiver } from "../../context/giver";
-import { useModal } from "../../context/modal";
-
-import {
-  getErc20Iso3FromAddress,
-  isERC20Token
-} from "../../utils/erc20Contract";
-import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
-import {ConfirmationModal, ErrorModal, LoadingModal, MetamaskConfirmModal} from "./modals";
+import { useWills } from '../../context/wills';
 
 const styles: any = {
   column: {
@@ -23,7 +10,6 @@ const styles: any = {
     margin: "auto",
     borderRadius: "1rem",
     background: "#ffffff",
-    boxShadow: "0px 0.2rem 10px #e0e0e0",
     marginTop: "1rem",
     marginBottom: "1rem",
     padding: "0rem 0 0rem 0"
@@ -31,104 +17,13 @@ const styles: any = {
 }
 
 export default function HeirWillList() {
-  const { will, setWill } = useWill();
-  const { giver } = useGiver();
-  const {modal, setModal} = useModal();
 
-  // modals
-  const MODAL_METAMASK_VALIDATE = 'list-metamask-validate';
-  const MODAL_LOADING = 'list-loading';
-  const MODAL_CONFIRMATION = 'list-confirmation';
-  const MODAL_ERROR = 'list-error';
-
-  const onIncreaseAllowance = async (erc20Address) => {
-    let tx: TransactionResponse;
-
-    setModal({
-      open: MODAL_METAMASK_VALIDATE,
-      data: { }
-    });
-
-    try {
-      tx = await approveTransfer(giver, will, erc20Address);
-    } catch(error) {
-      setModal({
-        open: MODAL_ERROR,
-        data: {
-          text: 'We could not increase the allowance for your '+ getErc20Iso3FromAddress(erc20Address),
-          error: error,
-        }
-      });
-      return;
-    }
-
-    setModal({
-      open: MODAL_LOADING,
-      data: {
-        text: 'Increasing allowance for your '+ getErc20Iso3FromAddress(erc20Address),
-      }
-    });
-
-    await tx.wait(1);
-
-    setWill(await getWill(giver));
-
-    setModal({
-      open: MODAL_CONFIRMATION,
-      data: {
-        text: 'Your '+ getErc20Iso3FromAddress(erc20Address) +' allowance has been increased'
-      }
-    });
-  }
-
-  const onDeleteToken = async (heirAddress, erc20Address) => {
-    let tx: TransactionResponse;
-
-    setModal({
-      open: MODAL_METAMASK_VALIDATE,
-      data: { }
-    });
-
-    try {
-      if (!isERC20Token(erc20Address)) {
-        tx = await removeEth(giver, heirAddress);
-      } else {
-        tx = await removeErc20Token(giver, heirAddress, erc20Address);
-      }
-    } catch(error) {
-      setModal({
-        open: MODAL_ERROR,
-        data: {
-          text: 'We could not delete your '+ getErc20Iso3FromAddress(erc20Address) +' from your will',
-          error: error,
-        }
-      });
-      return;
-    }
-
-    setModal({
-      open: MODAL_LOADING,
-      data: {
-        text: 'Removing your '+ getErc20Iso3FromAddress(erc20Address) +' from your will'
-      }
-    });
-
-    await tx.wait(1);
-
-    setWill(await getWill(giver));
-
-    setModal({
-      open: MODAL_CONFIRMATION,
-      data: {
-        text: 'Your '+ getErc20Iso3FromAddress(erc20Address) +' has been successfully deleted from your will'
-      }
-    });
-  };
+  const {wills, setWills} = useWills();
 
   return (
     <>
-      <Col css={styles.column}>
-        {will && will.claims.length > 0 ?
+    <Col css={styles.column}>
+        {wills.length > 0 ?
           <>
             <Table lined css={{
               height: "auto",
@@ -136,24 +31,25 @@ export default function HeirWillList() {
             }}>
               <Table.Header>
                 <Table.Column>Status</Table.Column>
-                <Table.Column>Giver</Table.Column>
                 <Table.Column>Will contract</Table.Column>
                 <Table.Column></Table.Column>
               </Table.Header>
               <Table.Body>
-                {wills.claims.map((will) => (
-                  <Table.Row key={will.address}>
+                {wills.map((address) => (
+                  <Table.Row key={address}>
                     <Table.Cell>
                       Status (Funds to claim/Funds transfered)
                     </Table.Cell>
                     <Table.Cell>
-                      will.giver
+                      <Link
+                        href={`https://rinkeby.etherscan.io/address/${address}`} target="_blank"
+                        className="secondary-button"
+                      >
+                        {address}
+                      </Link>
                     </Table.Cell>
                     <Table.Cell>
-                      will.address
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Details</Button>
+                      <Button onClick={() => alert('tututfdp')}>Details</Button>
                     </Table.Cell>
                   </Table.Row>
                 ))}
@@ -166,22 +62,6 @@ export default function HeirWillList() {
           </Text>
         }
       </Col>
-
-      <MetamaskConfirmModal isOpened={modal.open == MODAL_METAMASK_VALIDATE} />
-      <LoadingModal
-        isOpened={modal.open == MODAL_LOADING}
-        text={modal.data.text}
-      />
-      <ConfirmationModal
-        isOpened={modal.open == MODAL_CONFIRMATION}
-        onCloseModal={() => null}
-        text={modal.data.text} />
-      <ErrorModal
-        isOpened={modal.open == MODAL_ERROR}
-        onCloseModal={() => null}
-        text={modal.data.text}
-        error={modal.data.error}
-      />
     </>
   )
 }

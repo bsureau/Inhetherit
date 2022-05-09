@@ -1,4 +1,5 @@
 import { Contract, ethers } from "ethers";
+import { FaHandHoldingHeart } from "react-icons/fa";
 import { getAllowance, getBalanceOf, maxUINT256 } from "./erc20Contract";
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
@@ -9,6 +10,7 @@ export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
   "function createWillWithEth(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _heir) public returns(address)",
   "function getWill() public view returns(address)",
+  "function getWills() public view returns(address[] memory)",
   "function addErc20Token(address _heir, address _erc20Token) public",
   "function addEth(address _heir) public payable",
   "function removeErc20Token(address _heir, address _erc20Token) public",
@@ -73,6 +75,13 @@ export async function getWill(giver) {
     }*/
     return undefined;
   }
+}
+
+export async function getWills(heir) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, heir.signer);
+  const wills: string[] = await contract.getWills();
+
+  return wills;
 }
 
 export async function removeErc20Token(giver, heirAddress, erc20Address) {

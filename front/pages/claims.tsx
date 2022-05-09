@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
 import { Loader, HeirWillList } from "./components";
-import { ModalProvider } from "../context/modal";
 
 import {
   Button,
@@ -17,9 +16,9 @@ import {
 } from './components';
 
 import { connectWallet, getWallet } from "../utils/metamask";
-import { getWill } from "../utils/willContract";
-import { useGiver } from "../context/giver";
-import { useWill } from "../context/will";
+import { getWills } from "../utils/willContract";
+import { useWills } from "../context/wills";
+import { useHeir } from "../context/heir";
 
 const styles: any = {
   container: {
@@ -39,18 +38,18 @@ const styles: any = {
 };
 
 export default function Claims() {
-  const { giver, setGiver } = useGiver();
-  const { will, setWill } = useWill();
+  const { heir, setHeir } = useHeir();
+  const { wills, setWills } = useWills();
   const [ loading, setLoading ] = useState(true);
 
   useEffect(function () {
     getWallet(window.ethereum)
-      .then((giver) => {
-        setGiver(giver);
+      .then((heir) => {
+        setHeir(heir);
 
-        getWill(giver)
-          .then((will) => {
-            setWill(will);
+        getWills(heir)
+          .then((wills) => {
+            setWills(wills);
           })
           .finally(() => {
             setLoading(false);
@@ -59,8 +58,8 @@ export default function Claims() {
         if (window.ethereum !== undefined) {
           window.ethereum.on('accountsChanged', (accounts) => {
             if (accounts.length === 0) {
-              setGiver({});
-              setWill(undefined);
+              setHeir({});
+              setWills([]);
               return;
             }
             onConnectWallet();
@@ -71,13 +70,13 @@ export default function Claims() {
 
   const onConnectWallet = function () {
     connectWallet(window.ethereum)
-      .then((giver) => {
-        setGiver(giver);
+      .then((heir) => {
+        setHeir(heir);
 
         setLoading(true);
-        getWill(giver)
-          .then((will) => {
-            setWill(will);
+        getWills(heir)
+          .then((wills) => {
+            setWills(wills);
           })
           .finally(() => {
             setLoading(false);
@@ -107,7 +106,6 @@ export default function Claims() {
           css={styles.column}
         >
           <Spacer y={3} />
-          <ModalProvider>
             { loading === true ?
               <Loader width={70} />
               :
@@ -115,7 +113,7 @@ export default function Claims() {
                 justify="center" 
                 align="center" 
               >
-                {giver.account ?
+                {heir.account ?
                   <>
                     <Spacer y={2}/>
                     <Row>
@@ -130,7 +128,6 @@ export default function Claims() {
                 }
               </Col>
             }
-          </ModalProvider>
         </Col>
       </Row>
     </Container>
