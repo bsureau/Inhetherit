@@ -146,7 +146,7 @@ export default function Index() {
                   You lost someone who gave you their cryptos? 
                 </Text>
                 <Card.Footer css={styles.cardFooter}>
-                  <Link href="/claim">
+                  <Link href="/claims">
                     <Button auto>
                       Claim it now
                     </Button>

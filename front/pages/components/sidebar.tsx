@@ -79,12 +79,12 @@ export default function Sidebar() {
       >
         <Link
           color={"text"}
-          href="/claim"
+          href="/claims"
         >
           <Text
             size={17}
             weight="bold"
-            color={router.pathname == "/claim" ? "#dedede" : "#ffffff"}
+            color={router.pathname == "/claims" ? "#dedede" : "#ffffff"}
           >
             <FaMoneyCheck /> &nbsp;
             Make a claim

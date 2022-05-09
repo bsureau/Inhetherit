@@ -35,7 +35,7 @@ const styles: any = {
   },
 };
 
-export default function Claim() {
+export default function Claims() {
   const { user, setUser } = useUser();
   const { will, setWill } = useWill();
   const [ loading, setLoading ] = useState(true);
