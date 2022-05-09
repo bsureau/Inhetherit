@@ -12,7 +12,8 @@ import { useModal } from "../../context/modal";
 import {
   getErc20Iso3FromAddress,
   erc20Abi,
-  maxUINT256, isERC20Token
+  isERC20Token,
+  maxUINT256ForToken
 } from "../../utils/erc20Contract";
 import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
 import {ConfirmationModal, ErrorModal, LoadingModal, MetamaskConfirmModal} from "./modals";
@@ -33,7 +34,7 @@ const styles: any = {
 
 async function approveTransfer(user, will, erc20Address) {
   const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
-  return await erc20Contract.approve(will.address, maxUINT256); //replace value by max uint256 value
+  return await erc20Contract.approve(will.address, maxUINT256ForToken(getErc20Iso3FromAddress(erc20Address)));
 }
 
 export default function WillList() {
@@ -96,7 +97,7 @@ export default function WillList() {
     });
 
     try {
-      if (!isERC20Token(erc20Address)) {
+      if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
         tx = await removeEth(user, heirAddress);
       } else {
         tx = await removeErc20Token(user, heirAddress, erc20Address);

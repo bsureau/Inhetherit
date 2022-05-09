@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import {CssBaseline, NextUIProvider} from '@nextui-org/react';
+import {NextUIProvider} from '@nextui-org/react';
 import { UserProvider } from "../context/user";
 import { WillProvider } from "../context/will";
 

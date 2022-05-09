@@ -16,9 +16,10 @@ import {
 } from "../../utils/willContract";
 import {
   erc20Abi,
-  erc20Addresses,
-  getBalanceOf, isERC20Token,
-  maxUINT256
+  getAddressFromToken,
+  getBalanceOf, getErc20Iso3FromAddress,
+  isERC20Token,
+  maxUINT256ForToken
 } from "../../utils/erc20Contract";
 
 import {
@@ -60,14 +61,14 @@ export default function WillForm() {
 
   const handleChangeToken = async (event) => {
     setToken(event.target.value);
-    setErc20Address(erc20Addresses[event.target.value]);
+    setErc20Address(getAddressFromToken(event.target.value));
     setTokenBalance('...');
 
     let balance: BigNumber;
     if (!isERC20Token(event.target.value)) {
       balance = await user.signer.getBalance();
     } else {
-      balance = await getBalanceOf(user, erc20Addresses[event.target.value]);
+      balance = await getBalanceOf(user, getAddressFromToken(event.target.value));
       setGasPrice(await user.signer.provider.getGasPrice());
     }
 
@@ -107,14 +108,14 @@ export default function WillForm() {
 
   async function approveTransfer(inhetheritWillAddress: string) {
     const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
-    return await erc20Contract.approve(inhetheritWillAddress, maxUINT256); //replace value by max uint256 value
+    return await erc20Contract.approve(inhetheritWillAddress, maxUINT256ForToken(getErc20Iso3FromAddress(erc20Address)));
   }
 
   async function createWill() {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
 
     if (will != undefined) {
-      if (!isERC20Token(erc20Address)) {
+      if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
         return await contract.addEth(
           heirAddress,
           {
@@ -129,7 +130,7 @@ export default function WillForm() {
       );
     }
 
-    if (!isERC20Token(erc20Address)) {
+    if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
       return await contract.createWillWithEth(
         firstName,
         lastName,
@@ -186,7 +187,7 @@ export default function WillForm() {
       data: {}
     });
 
-    if (!isERC20Token(erc20Address)) {
+    if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
       setModal({
         open: MODAL_LOADING,
         data: {
