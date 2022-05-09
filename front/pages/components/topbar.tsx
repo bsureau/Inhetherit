@@ -5,7 +5,7 @@ import { Button, Link, Row } from "@nextui-org/react";
 
 import { inhetheritFactoryAddress } from "../../utils/willContract";
 
-import { useUser } from "../../context/user";
+import { useGiver } from "../../context/giver";
 
 const styles: any = {
   row: {
@@ -25,7 +25,7 @@ const styles: any = {
 };
 
 export default function TopBar({ onConnectWallet }) {
-  const { user } = useUser();
+  const { giver } = useGiver();
 
   return (
     <Row
@@ -43,7 +43,7 @@ export default function TopBar({ onConnectWallet }) {
           Ethereum Rinkeby
         </Button>
       </Link>
-      {user.account ?
+      {giver.account ?
         <div>
           <Button
             css={{ display: "inline-block" }}
@@ -53,7 +53,7 @@ export default function TopBar({ onConnectWallet }) {
           >
             <FaWallet />
             &nbsp;&nbsp;
-            {user.account.substring(0, 15)}...
+            {giver.account.substring(0, 15)}...
           </Button>
         </div>
         :

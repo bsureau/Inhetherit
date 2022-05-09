@@ -5,7 +5,7 @@ import {BigNumber, Contract, ethers, FixedNumber} from 'ethers';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 import { FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
-import { useUser } from "../../context/user";
+import { useGiver } from "../../context/giver";
 import { useWill } from "../../context/will";
 import { useModal } from "../../context/modal";
 
@@ -32,7 +32,7 @@ import {
 } from "./modals";
 
 export default function WillForm() {
-  const { user } = useUser();
+  const { giver } = useGiver();
   const { will, setWill } = useWill();
   const { modal, setModal } = useModal();
 
@@ -66,10 +66,10 @@ export default function WillForm() {
 
     let balance: BigNumber;
     if (!isERC20Token(event.target.value)) {
-      balance = await user.signer.getBalance();
+      balance = await giver.signer.getBalance();
     } else {
-      balance = await getBalanceOf(user, getAddressFromToken(event.target.value));
-      setGasPrice(await user.signer.provider.getGasPrice());
+      balance = await getBalanceOf(giver, getAddressFromToken(event.target.value));
+      setGasPrice(await giver.signer.provider.getGasPrice());
     }
 
     setTokenBalance(`${ethers.utils.formatEther(balance)}`);
@@ -107,12 +107,12 @@ export default function WillForm() {
   }
 
   async function approveTransfer(inhetheritWillAddress: string) {
-    const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
+    const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, giver.signer);
     return await erc20Contract.approve(inhetheritWillAddress, maxUINT256ForToken(getErc20Iso3FromAddress(erc20Address)));
   }
 
   async function createWill() {
-    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, giver.signer);
 
     if (will != undefined) {
       if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
@@ -197,7 +197,7 @@ export default function WillForm() {
     } else {
       let approveTx: TransactionResponse;
       try {
-        const tempWill = await getWill(user);
+        const tempWill = await getWill(giver);
         approveTx = await approveTransfer(tempWill.address);
       } catch(error) {
         setModal({
@@ -207,7 +207,7 @@ export default function WillForm() {
             error: error,
           }
         });
-        setWill(await getWill(user));
+        setWill(await getWill(giver));
         return;
       }
 
@@ -222,7 +222,7 @@ export default function WillForm() {
     }
 
     const isCreation = !will;
-    setWill(await getWill(user));
+    setWill(await getWill(giver));
 
     setModal({
       open: MODAL_CONFIRMATION,

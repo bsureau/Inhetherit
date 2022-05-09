@@ -6,13 +6,12 @@ import { ethers } from 'ethers';
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
 
 import { useWill } from "../../context/will";
-import { useUser } from "../../context/user";
+import { useGiver } from "../../context/giver";
 import { useModal } from "../../context/modal";
 
 import {
   getErc20Iso3FromAddress,
-  erc20Abi,
-  maxUINT256, isERC20Token
+  isERC20Token
 } from "../../utils/erc20Contract";
 import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
 import {ConfirmationModal, ErrorModal, LoadingModal, MetamaskConfirmModal} from "./modals";
@@ -31,14 +30,9 @@ const styles: any = {
   },
 }
 
-async function approveTransfer(user, will, erc20Address) {
-  const erc20Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
-  return await erc20Contract.approve(will.address, maxUINT256); //replace value by max uint256 value
-}
-
 export default function HeirWillList() {
   const { will, setWill } = useWill();
-  const { user } = useUser();
+  const { giver } = useGiver();
   const {modal, setModal} = useModal();
 
   // modals
@@ -56,7 +50,7 @@ export default function HeirWillList() {
     });
 
     try {
-      tx = await approveTransfer(user, will, erc20Address);
+      tx = await approveTransfer(giver, will, erc20Address);
     } catch(error) {
       setModal({
         open: MODAL_ERROR,
@@ -77,7 +71,7 @@ export default function HeirWillList() {
 
     await tx.wait(1);
 
-    setWill(await getWill(user));
+    setWill(await getWill(giver));
 
     setModal({
       open: MODAL_CONFIRMATION,
@@ -97,9 +91,9 @@ export default function HeirWillList() {
 
     try {
       if (!isERC20Token(erc20Address)) {
-        tx = await removeEth(user, heirAddress);
+        tx = await removeEth(giver, heirAddress);
       } else {
-        tx = await removeErc20Token(user, heirAddress, erc20Address);
+        tx = await removeErc20Token(giver, heirAddress, erc20Address);
       }
     } catch(error) {
       setModal({
@@ -121,7 +115,7 @@ export default function HeirWillList() {
 
     await tx.wait(1);
 
-    setWill(await getWill(user));
+    setWill(await getWill(giver));
 
     setModal({
       open: MODAL_CONFIRMATION,

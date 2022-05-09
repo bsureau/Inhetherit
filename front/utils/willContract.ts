@@ -26,12 +26,12 @@ export const willABI: string[] = [
   "function getErc20Tokens() public view returns(address[] memory)",
 ];
 
-export async function getWill(user) {
-  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+export async function getWill(giver) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, giver.signer);
 
   try {
     const willAddress = await contract.getWill();
-    const willContract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+    const willContract: Contract = new ethers.Contract(willAddress, willABI, giver.signer);
 
     const lastName = await willContract.getLastName();
     const firstName = await willContract.getFirstName();
@@ -44,8 +44,8 @@ export async function getWill(user) {
     claims = await Promise.all(claims.map(async (claim) => {
       return {
         ...claim,
-        allowance: await getAllowance(user, claim.erc20Token, willAddress),
-        balance: await getBalanceOf(user, claim.erc20Token)
+        allowance: await getAllowance(giver, claim.erc20Token, willAddress),
+        balance: await getBalanceOf(giver, claim.erc20Token)
       };
     }));
 
@@ -54,7 +54,7 @@ export async function getWill(user) {
         heir: ethHeirAddress,
         erc20Token: 'ETH',
         allowance: maxUINT256,
-        balance: await user.signer.provider.getBalance(willAddress),
+        balance: await giver.signer.provider.getBalance(willAddress),
       });
     }
 
@@ -75,12 +75,12 @@ export async function getWill(user) {
   }
 }
 
-export async function removeErc20Token(user, heirAddress, erc20Address) {
-  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+export async function removeErc20Token(giver, heirAddress, erc20Address) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, giver.signer);
   return await contract.removeErc20Token(heirAddress, erc20Address);
 }
 
-export async function removeEth(user, heirAddress) {
-  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+export async function removeEth(giver, heirAddress) {
+  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, giver.signer);
   return await contract.removeEth(heirAddress);
 }
