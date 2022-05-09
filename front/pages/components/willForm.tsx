@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
-import {Button, Col, Input, Link, Modal, Row, Spacer, Text, textWeights, Tooltip} from '@nextui-org/react';
+import {Button, Col, Input, Row, Spacer, Text, Tooltip} from '@nextui-org/react';
 
 import {BigNumber, Contract, ethers, FixedNumber} from 'ethers';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
@@ -280,7 +280,7 @@ export default function WillForm() {
                 marginRight: "1.5%"
               }}
             >
-              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#0070f3', fontSize: 14 }}>Token</Text>
+              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#0070f3', fontSize: 14 }}>Token: </Text>
               <select
                 value={token}
                 onChange={handleChangeToken}
@@ -308,7 +308,7 @@ export default function WillForm() {
                 rounded
                 bordered
                 type="number"
-                label="ETH to pass on"
+                label="ETH to pass on:"
                 placeholder="0.0"
                 color="primary"
                 width="20%"
@@ -323,7 +323,7 @@ export default function WillForm() {
               <Input 
                 rounded
                 bordered
-                label="Heir address"
+                label="Heir address:"
                 placeholder="0x..."
                 color="primary" 
                 width="30%" 
@@ -343,15 +343,19 @@ export default function WillForm() {
         >
           {token != '' ? (
             <>
-              Current balance: &nbsp;<b>{tokenBalance} {token}</b> &nbsp;
+              <Text css={{ paddingTop: 10 }}>
+                Current balance: &nbsp;<b>{tokenBalance} {token}</b> &nbsp;
+              </Text>
               {token == 'ETH' &&
                 <>
                   <Tooltip content={`Estimated gas price: ${ethers.utils.formatEther(gasPrice)} ETH`}>
                     <FaInfoCircle style={{verticalAlign: 'bottom'}} color="#dbdbdb" size={17}/>
                   </Tooltip>
-                  <Text css={{ paddingTop: 10 }} color="warning">
-                    <FaExclamationTriangle size={20} style={{ verticalAlign: 'top' }}/> Since ETH is not ERC20 compliant, the amount you decide to pass on will be locked on the contract <small>(you can unlock it by deleting the token from the will)</small>
-                  </Text>
+                  <Row>
+                    <Text css={{ paddingTop: "15px" }} color="warning">
+                      <FaExclamationTriangle size={20} style={{ verticalAlign: 'top' }}/> Since ETH is not ERC20 compliant, the amount you decide to pass on will be locked on the contract <small>(you can unlock it by deleting the token from the will)</small>
+                    </Text>
+                  </Row>
                 </>
               }
             </>
@@ -418,7 +422,7 @@ export default function WillForm() {
               <Input 
                 rounded
                 bordered
-                label="Heir address"
+                label="Heir address:"
                 placeholder="0x..."
                 color="primary" 
                 width="30%" 
