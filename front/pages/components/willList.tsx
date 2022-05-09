@@ -152,7 +152,7 @@ export default function WillList() {
                 {will.claims.map((claim) => (
                   <Table.Row key={claim.erc20Token}>
                     <Table.Cell>
-                      {claim.allowance < claim.balance ?
+                      {claim.allowance.lt(claim.balance) ?
                         <>
                           <Tooltip content={"This means we won't be able to transfer all your funds in case of your death. Please increase allowance."}>
                             <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
