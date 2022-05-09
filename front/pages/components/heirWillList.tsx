@@ -142,48 +142,24 @@ export default function HeirWillList() {
             }}>
               <Table.Header>
                 <Table.Column>Status</Table.Column>
-                <Table.Column>Token</Table.Column>
-                <Table.Column>Heir Address</Table.Column>
-                <Table.Column>Amount</Table.Column>
+                <Table.Column>Giver</Table.Column>
+                <Table.Column>Will contract</Table.Column>
                 <Table.Column></Table.Column>
               </Table.Header>
               <Table.Body>
-                {will.claims.map((claim) => (
-                  <Table.Row key={claim.erc20Token}>
+                {wills.claims.map((will) => (
+                  <Table.Row key={will.address}>
                     <Table.Cell>
-                      {claim.allowance < claim.balance ?
-                        <>
-                          <Tooltip content={"This means we won't be able to transfer all your funds in case of your death. Please increase allowance."}>
-                            <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
-                            <small>Allowance too low ({(ethers.utils.formatEther(claim.allowance) - (ethers.utils.formatEther(claim.balance)))} {getErc20Iso3FromAddress(claim.erc20Token)})</small>
-                          </Tooltip>
-                        </>
-                        :
-                        <>
-                          <FaCheck color="#17c964" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
-                          <small>All good</small>
-                        </>
-                      }
+                      Status (Funds to claim/Funds transfered)
                     </Table.Cell>
                     <Table.Cell>
-                      {getErc20Iso3FromAddress(claim.erc20Token)}
+                      will.giver
                     </Table.Cell>
                     <Table.Cell>
-                      <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
-                        {claim.heir.substring(0, 20)}...
-                      </Link>
+                      will.address
                     </Table.Cell>
                     <Table.Cell>
-                      {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
-                    </Table.Cell>
-                    <Table.Cell>
-                      {claim.allowance < claim.balance ?
-                        <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
-                        : ''
-                      }
-                      <Button light color="error" onClick={() => onDeleteToken(claim.heir, claim.erc20Token)}>
-                        Delete token from will
-                      </Button>
+                      <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Details</Button>
                     </Table.Cell>
                   </Table.Row>
                 ))}
@@ -192,9 +168,8 @@ export default function HeirWillList() {
           </>
         :
           <Text css={{ color: '#888', fontWeight: 500 }}>
-            You don't have any will yet
+            You're not listed in any will yet
           </Text>
-
         }
       </Col>
 

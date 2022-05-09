@@ -92,7 +92,7 @@ export default function Claims() {
       css={styles.container}
     >
       <Head>
-        <title>Inhetherit - Create a will</title>
+        <title>Inhetherit - Your claims</title>
       </Head>
       
       <TopBar onConnectWallet={onConnectWallet} />
