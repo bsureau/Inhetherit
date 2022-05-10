@@ -8,7 +8,8 @@ import {
   Container,
   Row,
   Col,
-  Spacer
+  Spacer, 
+  Table
 } from "@nextui-org/react";
 
 import {
@@ -35,6 +36,17 @@ const styles: any = {
     textAlign: "center",
     width: "100%",
   },
+  column2: {
+    width: "85%",
+    minWidth: "1000px",
+    margin: "auto",
+    borderRadius: "1rem",
+    background: "#ffffff",
+    marginTop: "1rem",
+    marginBottom: "1rem",
+    boxShadow: "0px 0.2rem 10px #e0e0e0",
+    padding: "0rem 0 0rem 0"
+  },
 };
 
 export default function Claim() {
@@ -53,6 +65,7 @@ export default function Claim() {
           .then(claims => {
             setClaims(claims);
             claims.map((claim) => {
+
               // ici on récupère l'adresse du token. Il faut : récupérer le symbole... depuis le json en config. Puis faire un call de claim.balanceOf(giver)
             })
           })
@@ -111,16 +124,49 @@ export default function Claim() {
           css={styles.column}
         >
           <Spacer y={3} />
-            { loading === true ?
-              <Loader width={70} />
-              :
-              <Col 
-                justify="center" 
-                align="center" 
-              >
-                TOTO
-              </Col>
-            }
+          { loading === true ?
+            <Loader width={70} />
+            :
+            <Col 
+              justify="center" 
+              align="center" 
+            >
+              <>
+                <Spacer y={2}/>
+                <Row>
+                  <Col css={styles.column2}>
+                    <>
+                      <Table lined css={{
+                        height: "auto",
+                        minWidth: "100%",
+                      }}>
+                        <Table.Header>
+                          <Table.Column>Token</Table.Column>
+                          <Table.Column>Amount</Table.Column>
+                          <Table.Column></Table.Column>
+                        </Table.Header>
+                        <Table.Body>
+                          {claims.map((claim) => (
+                            <Table.Row key={claim}>
+                              <Table.Cell>
+                                  {claim}
+                              </Table.Cell>
+                              <Table.Cell>
+                              
+                              </Table.Cell>
+                              <Table.Cell>
+                              
+                              </Table.Cell>
+                            </Table.Row>
+                          ))}
+                        </Table.Body>
+                      </Table>
+                    </>
+                  </Col>
+                </Row>
+              </>
+            </Col>
+          }
         </Col>
       </Row>
     </Container>
