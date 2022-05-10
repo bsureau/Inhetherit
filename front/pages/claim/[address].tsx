@@ -52,7 +52,9 @@ export default function Claim() {
         getClaimsForHeir(user, router.query.address)
           .then(claims => {
             setClaims(claims);
-            console.log("CLAIMS: ", claims);
+            claims.map((claim) => {
+              // ici on récupère l'adresse du token. Il faut : récupérer le symbole... depuis le json en config. Puis faire un call de claim.balanceOf(giver)
+            })
           })
           .finally(() => {
             setLoading(false);
