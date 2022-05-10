@@ -2,7 +2,7 @@ import Head from 'next/head'
 import {NextUIProvider} from '@nextui-org/react';
 import { UserProvider } from "../context/user";
 import { WillProvider } from "../context/will";
-import { WillsProvider } from "../context/wills";
+import { WillsProvider } from "../context/heirWills";
 
 export default function MainLayout ({ children }) {
   return (

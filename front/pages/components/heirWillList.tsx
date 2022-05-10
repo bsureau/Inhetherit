@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Col, Table, Link, Text, Row, Spacer } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
-import { useWills } from '../../context/wills';
+import { useHeirWills } from '../../context/heirWills';
 
 const styles: any = {
   column: {
@@ -19,13 +19,12 @@ const styles: any = {
 }
 
 export default function HeirWillList() {
-
-  const {wills, setWills} = useWills();
+  const { heirWills } = useHeirWills();
 
   return (
     <>
     <Col css={styles.column}>
-        {wills && wills.length > 0 ?
+        {heirWills && heirWills.length > 0 ?
           <>
             <Table lined css={{
               height: "auto",
@@ -37,7 +36,7 @@ export default function HeirWillList() {
                 <Table.Column></Table.Column>
               </Table.Header>
               <Table.Body>
-                {wills.map((address) => (
+                {heirWills.map((address) => (
                   <Table.Row key={address}>
                     <Table.Cell>
                       <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; Funds to claim/ <FaCheck color="#17c964" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; Funds transfered
