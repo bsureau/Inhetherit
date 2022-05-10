@@ -12,6 +12,7 @@ const styles: any = {
     background: "#ffffff",
     marginTop: "1rem",
     marginBottom: "1rem",
+    boxShadow: "0px 0.2rem 10px #e0e0e0",
     padding: "0rem 0 0rem 0"
   },
 }
@@ -23,7 +24,7 @@ export default function HeirWillList() {
   return (
     <>
     <Col css={styles.column}>
-        {wills.length > 0 ?
+        {wills && wills.length > 0 ?
           <>
             <Table lined css={{
               height: "auto",
@@ -49,7 +50,9 @@ export default function HeirWillList() {
                       </Link>
                     </Table.Cell>
                     <Table.Cell>
-                      <Button onClick={() => alert('tututfdp')}>Details</Button>
+                      <Link href={`/claim/${address}`}>
+                        <Button>Details</Button>
+                      </Link>
                     </Table.Cell>
                   </Table.Row>
                 ))}

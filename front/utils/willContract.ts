@@ -78,10 +78,19 @@ export async function getWill(user) {
 }
 
 export async function getWills(user) {
-  const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
-  const wills: string[] = await contract.getWills();
 
-  return wills;
+  try {
+    const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
+    const wills: string[] = await contract.getWills();
+  
+    return wills;
+  } catch (error) {
+    console.error(error);
+    /*if (error.reason = "WILL_NOT_FOUND") {
+      return {};
+    }*/
+    return undefined;
+  }
 }
 
 export async function removeErc20Token(user, heirAddress, erc20Address) {
