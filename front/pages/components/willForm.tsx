@@ -17,7 +17,8 @@ import {
 import {
   erc20Abi,
   getAddressFromToken,
-  getBalanceOf, getErc20Iso3FromAddress,
+  getBalanceOf,
+  getErc20Iso3FromAddress,
   isERC20Token,
   maxUINT256ForToken
 } from "../../utils/erc20Contract";
@@ -136,7 +137,10 @@ export default function WillForm() {
         lastName,
         birthdayDate,
         birthPostCode,
-        heirAddress
+        heirAddress,
+        {
+          value: BigNumber.from(tokenToTransfer.toHexString())
+        }
       );
     }
 
