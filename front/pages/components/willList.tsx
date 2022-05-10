@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import { Button, Col, Link, Row, StyledHelperTextContainer, Table, Text, Tooltip } from '@nextui-org/react';
+import React from 'react';
+import { Button, Col, Image, Link, Table, Text, Tooltip, Row } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
 import { ethers } from 'ethers';
-import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 import { useWill } from "../../context/will";
 import { useUser } from "../../context/user";
@@ -11,6 +11,7 @@ import { useModal } from "../../context/modal";
 
 import {
   getErc20Iso3FromAddress,
+  getTokenImgFromAddress,
   erc20Abi,
   isERC20Token,
   maxUINT256ForToken
@@ -167,7 +168,16 @@ export default function WillList() {
                       }
                     </Table.Cell>
                     <Table.Cell>
-                      {getErc20Iso3FromAddress(claim.erc20Token)}
+                      <Row
+                      justify="flex-start"
+                       css={{margin: 0}}>
+                        <Tooltip content={getErc20Iso3FromAddress(claim.erc20Token)}>
+                        <Image
+                          width={30}
+                          src={getTokenImgFromAddress(claim.erc20Token)}
+                        />
+                      </Tooltip>
+                      </Row>
                     </Table.Cell>
                     <Table.Cell>
                       <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">

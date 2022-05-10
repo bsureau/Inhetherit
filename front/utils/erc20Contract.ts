@@ -11,6 +11,10 @@ export function getAddressFromToken (token: string) {
   return tokens[token].address;
 }
 
+export function getImgFromToken (token: string) {
+  return tokens[token].img;
+}
+
 export function getTokenInformation(token: string) {
   return tokens[token] ?? undefined;
 }
@@ -22,6 +26,11 @@ export function maxUINT256ForToken(token: string) {
 
 export function getErc20Iso3FromAddress(address: string) {
   return Object.keys(tokens).find(key => getAddressFromToken(key) == address.toLowerCase());
+}
+
+export function getTokenImgFromAddress(address: string) {
+  const token: string =  Object.keys(tokens).find(key => getAddressFromToken(key) == address.toLowerCase());
+  return tokens[token].img;
 }
 
 export function isERC20Token(token: string) {
