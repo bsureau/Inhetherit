@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react'
 
 const HeirWillsContext = createContext([])
 
-export function WillsProvider({ children }) {
+export function HeirWillsProvider({ children }) {
   const [heirWills, setHeirWills] = useState([])
   return (
     <HeirWillsContext.Provider
