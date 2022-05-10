@@ -4,7 +4,7 @@ import { getAllowance, getBalanceOf, maxUINT256 } from "./erc20Contract";
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
-export const inhetheritFactoryAddress: string = "0x6775E21359d2F978a8B4675CDf855807EE2f6dC7";
+export const inhetheritFactoryAddress: string = "0x756791571f948b5266D2350B0D58EdcE09ed4E25";
 
 export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
