@@ -27,6 +27,7 @@ export const willABI: string[] = [
   "function getEth() public view returns(address)",
   "function getBalance() public view returns(uin256)",
   "function getErc20Tokens() public view returns(address[] memory)",
+  "function getState() public view returns(uint8)",
 ];
 
 export async function getWill(user) {
@@ -79,10 +80,17 @@ export async function getWill(user) {
 }
 
 export async function getWills(user) {
-
   try {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
-    const wills: string[] = await contract.getWills();
+    let wills = await contract.getWills();
+
+    wills = await Promise.all(wills.map(async (willAddress) => {
+      const willContract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+      return {
+        address: willAddress,
+        state: await willContract.getState(),
+      };
+    }));
   
     return wills;
   } catch (error) {
@@ -95,8 +103,6 @@ export async function getWills(user) {
 }
 
 export async function getClaimsForHeir(user, will) {
-
-
   try {
     const contract: Contract = new ethers.Contract(will, willABI, user.signer);
     const claims = await contract.getClaimsForHeir(user.account);

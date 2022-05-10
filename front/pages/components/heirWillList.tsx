@@ -36,21 +36,35 @@ export default function HeirWillList() {
                 <Table.Column></Table.Column>
               </Table.Header>
               <Table.Body>
-                {heirWills.map((address) => (
-                  <Table.Row key={address}>
+                {heirWills.map((will) => (
+                  <Table.Row key={will.address}>
                     <Table.Cell>
-                      <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; Funds to claim/ <FaCheck color="#17c964" size={20} style={{verticalAlign: 'middle'}}/>&nbsp; Funds transfered
+                      {will.state == 0 ? (
+                        <>
+                          <FaExclamationTriangle
+                            color="#f7ca18" size={20}
+                            style={{verticalAlign: 'middle'}}/>&nbsp;
+                          Funds to claim
+                        </>) : (
+                        <>
+                          <FaCheck
+                            color="#17c964"
+                            size={20}
+                            style={{verticalAlign: 'middle'}}/>&nbsp;
+                          Funds transfered
+                        </>)
+                      }
                     </Table.Cell>
                     <Table.Cell>
                       <Link
-                        href={`https://rinkeby.etherscan.io/address/${address}`} target="_blank"
+                        href={`https://rinkeby.etherscan.io/address/${will.address}`} target="_blank"
                         className="secondary-button"
                       >
-                        {address}
+                        {will.address}
                       </Link>
                     </Table.Cell>
                     <Table.Cell>
-                      <Link href={`/claim/${address}`}>
+                      <Link href={`/claim/${will.address}`}>
                         <Button>Details</Button>
                       </Link>
                     </Table.Cell>
