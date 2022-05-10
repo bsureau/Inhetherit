@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Card, Col, Link, Text, Row, Spacer } from '@nextui-org/react';
+import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
+import {FaCheck, FaMinus, FaSkull} from 'react-icons/fa';
 
 import { useHeirWills } from '../../context/heirWills';
 
@@ -11,9 +12,9 @@ const styles: any = {
     borderRadius: "1rem",
     background: "#ffffff",
     marginTop: "1rem",
-    marginBottom: "1rem",
+    marginBottom: "2rem",
     boxShadow: "0px 0.2rem 10px #e0e0e0",
-    padding: "0rem 0 0rem 0"
+    padding: "3rem 2rem"
   },
 }
 
@@ -22,100 +23,107 @@ export default function HeirWillList() {
 
   return (
     <>
-      <Col css={styles.column}>
-        { heirWills && heirWills.length > 0 ?
-           heirWills.map((will) => (
-            <Row>
-              <Row
-                css={{
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  textAlign:"left",
-                  padding: "2rem",
-
-                }}
-              >
-                <Col 
-                  css= {{
-                    width: "-webkit-fill-available",
-                    marginRight: "1.5%",
-                  }}
-                >
-                  <Row justify="flex-start" align="center"
-                  css={{
-                    flexWrap: "wrap",
-                    minWidth: 1000
-                  }}>
-                      <Text weight="bold">Will contract:&nbsp;</Text>
-                      <Link
-                        href={`https://rinkeby.etherscan.io/address/${will.address}`} target="_blank">
-                        {will.address}
-                      </Link>
-                      <Spacer />
-                      <Button css={{
-                        position: "absolute",
-                        right: 0
-                      }}>Report death</Button>
-                  </Row>
-                  <Spacer />
-                  <Row>
-                    <Text><strong>From: </strong>Jean Bono</Text>
-                    <Spacer />
-                    <Text><strong>Born on: </strong>01/01/1933</Text>
-                    <Spacer />
-                    <Text><strong>Wallet address: </strong> 
-                      <Link href={`https://rinkeby.etherscan.io/address/${will.address}`} target="_blank">
-                        {will.address}
-                      </Link>
-                    </Text>
-                  </Row>
-                  <Spacer />
-                  <Row>
-                    <Text><strong>Your claims: </strong></Text>
-                  </Row>
-                  <Spacer />
-                  <Row justify="flex-start" align="center"
-                    css={{
-                      flexWrap: "wrap"
-                    }}>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
+      {heirWills && heirWills.length > 0 ?
+        <Col>
+          {heirWills.map((will) => (
+            <Row css={styles.column} key={will.address}>
+              <Col align="center" justify="center">
+                <Row>
+                  <Grid xs={3}>
+                    {will.state == 0 ? (
+                      <>
+                        <FaMinus
+                          color="#888" size={20}
+                          style={{verticalAlign: 'middle'}}/>&nbsp;
+                        Available to claim
+                      </>) : (
+                      <>
+                        <FaCheck
+                          color="#17c964"
+                          size={20}
+                          style={{verticalAlign: 'middle'}}/>&nbsp;
+                        Funds transfered
+                      </>)
+                    }
+                  </Grid>
+                  <Grid xs={6}>
+                    Will &nbsp;
+                    <Link
+                      href={`https://rinkeby.etherscan.io/address/${will.address}`} target="_blank"
+                      className="secondary-button"
+                    >
+                      #{will.address}
+                    </Link>
+                  </Grid>
+                  <Grid xs={3}>
+                    <Button bordered color="warning"><FaSkull size={15} style={{ marginRight: 10 }}/> Report death</Button>
+                  </Grid>
+                </Row>
+                <Row style={{ marginTop: 20 }}>
+                  <Grid xs={5}>
+                    <Col>
+                      <Row><Text style={{ fontWeight: 500 }}>From</Text></Row>
+                      <Row><Text style={{ display: 'block' }}>
+                        Romain Quilliot &nbsp;
+                        {`<`}<Link href="">0x00000000000000000000000</Link>{`>`}
+                      </Text></Row>
+                    </Col>
+                  </Grid>
+                  <Grid xs={3}>
+                    <Col>
+                      <Row><Text style={{ fontWeight: 500 }}>Birthday</Text></Row>
+                      <Row><Text style={{ display: 'block' }}>24/07/1996</Text></Row>
+                    </Col>
+                  </Grid>
+                  <Grid xs={3}>
+                    <Col>
+                      <Row><Text style={{ fontWeight: 500 }}>Birth Postcode</Text></Row>
+                      <Row><Text style={{ display: 'block' }}>95300</Text></Row>
+                    </Col>
+                  </Grid>
+                </Row>
+                <Row style={{ marginTop: 20 }}>
+                  <Text h4>Your claims</Text>
+                </Row>
+                <Row justify="flex-start" align="center"
+                     css={{
+                       marginTop: 10,
+                       flexWrap: "wrap"
+                     }}>
+                  <Grid.Container gap={2}>
+                    <Grid xs={3}>
+                      <Card bordered shadow={false}>
+                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/ETH.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>2.6788388347 ETH</Text></Row>
+                      </Card>
+                    </Grid>
+                    <Grid xs={3}>
+                      <Card bordered shadow={false}>
                         <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
                       </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
+                    </Grid>
+                    <Grid xs={3}>
+                      <Card bordered shadow={false}>
                         <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
                       </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
+                    </Grid>
+                    <Grid xs={3}>
+                      <Card bordered shadow={false}>
                         <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
                       </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
-                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
-                      </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
-                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
-                      </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
-                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
-                      </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
-                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
-                      </Card>
-                      <Card bordered shadow={false} css={{ mw: "180px", margin: "1rem"}}>
-                        <Row css={{display: "flex", flexDirection: "row", justifyContent:"flex-start", alignItems:"center"}}><img src="token-img/LINK.png" width="30px"/> &nbsp;&nbsp;&nbsp; <Text>10 LINK</Text></Row>
-                      </Card>
-                  </Row>
-                </Col>
-              </Row>
+                    </Grid>
+                  </Grid.Container>
+                </Row>
+              </Col>
             </Row>
-          ))
-        :
+          ))}
+        </Col>
+      :
+        <Col css={styles.column}>
           <Text css={{ color: '#888', fontWeight: 500 }}>
             You're not listed in any will yet
           </Text>
-        }
-      </Col>
+        </Col>
+      }
     </>
   )
 }
