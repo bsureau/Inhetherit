@@ -193,7 +193,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         return heirErc20Tokens;
     }
 
-    function getClaimsForHeir(address _heir) external view onlyOwner returns(address[] memory) {
+    function getClaimsForHeir(address _heir) external view returns(address[] memory) {
 
         uint claimsNb;
 
@@ -249,7 +249,11 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         for (uint i=0; i<claims.length; i++) {
             if (claims[i].heir == msg.sender && claims[i].filled == false) {
                 uint256 amount = IERC20(claims[i].erc20Token).allowance(giver, address(this));
-                IERC20(claims[i].erc20Token).transfer(msg.sender, amount);
+                uint256 balance = IERC20(claims[i].erc20Token).balanceOf(giver);
+
+                if (amount > 0 && balance > 0) {
+                    IERC20(claims[i].erc20Token).transfer(msg.sender, amount);
+                }
                 claims[i].filled = true;
             }
         }
