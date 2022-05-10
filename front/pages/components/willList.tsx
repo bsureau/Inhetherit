@@ -201,7 +201,7 @@ export default function WillList() {
                         : ''
                       }
                       <Button light color="error" onClick={() => onDeleteToken(claim.heir, claim.erc20Token)}>
-                        Delete token from will
+                        Delete from will
                       </Button>
                     </Table.Cell>
                   </Table.Row>

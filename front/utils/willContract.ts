@@ -1,6 +1,6 @@
 import { Contract, ethers } from "ethers";
-import { FaHandHoldingHeart } from "react-icons/fa";
-import { getAllowance, getBalanceOf, maxUINT256 } from "./erc20Contract";
+import { getAllowance, getBalanceOf } from "./erc20Contract";
+import { maxUINT256ForToken } from "./erc20Contract";
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
@@ -57,7 +57,7 @@ export async function getWill(user) {
       claims.push({
         heir: ethHeirAddress,
         erc20Token: 'ETH',
-        allowance: maxUINT256,
+        allowance: maxUINT256ForToken("ETH"),
         balance: await user.signer.provider.getBalance(willAddress),
       });
     }
