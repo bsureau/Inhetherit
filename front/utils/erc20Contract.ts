@@ -29,18 +29,18 @@ export function isERC20Token(token: string) {
   return tokenInformation ? tokenInformation.isERC20 : undefined;
 }
 
-export async function getBalanceOf(giver, erc20Address) {
+export async function getBalanceOf(user, erc20Address) {
   if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
     throw new Error('You cannot get balance of not ERC20 token');
   }
-  const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, giver.signer);
-  return await contract.balanceOf(giver.account);
+  const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
+  return await contract.balanceOf(user.account);
 }
 
-export async function getAllowance(giver, erc20Address, willAddress) {
+export async function getAllowance(user, erc20Address, willAddress) {
   if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
     throw new Error('You cannot get allowance of not ERC20 token');
   }
-  const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, giver.signer);
-  return await contract.allowance(giver.account, willAddress);
+  const contract: Contract = new ethers.Contract(erc20Address, erc20Abi, user.signer);
+  return await contract.allowance(user.account, willAddress);
 }

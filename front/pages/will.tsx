@@ -20,7 +20,7 @@ import {
 
 import { connectWallet, getWallet } from "../utils/metamask";
 import { getWill } from "../utils/willContract";
-import { useGiver } from "../context/giver";
+import { useUser } from "../context/user";
 import { useWill } from "../context/will";
 import { ModalProvider } from "../context/modal";
 
@@ -42,18 +42,18 @@ const styles: any = {
 };
 
 export default function Will() {
-  const { giver, setGiver } = useGiver();
+  const { user, setUser } = useUser();
   const { will, setWill } = useWill();
   const [ loading, setLoading ] = useState(true);
 
   useEffect(function () {
     getWallet(window.ethereum)
-      .then((giver) => {
-        setGiver(giver);
+      .then((user) => {
+        setUser(user);
 
-        getWill(giver)
+        getWill(user)
           .then((will) => {
-            setWill(will);
+            setWill(will); 
           })
           .finally(() => {
             setLoading(false);
@@ -62,7 +62,7 @@ export default function Will() {
         if (window.ethereum !== undefined) {
           window.ethereum.on('accountsChanged', (accounts) => {
             if (accounts.length === 0) {
-              setGiver({});
+              setUser({});
               setWill(undefined);
               return;
             }
@@ -74,11 +74,11 @@ export default function Will() {
 
   const onConnectWallet = function () {
     connectWallet(window.ethereum)
-      .then((giver) => {
-        setGiver(giver);
+      .then((user) => {
+        setUser(user);
 
         setLoading(true);
-        getWill(giver)
+        getWill(user)
           .then((will) => {
             setWill(will);
           })
@@ -118,7 +118,7 @@ export default function Will() {
               align="center"
             >
               <ModalProvider>
-                {giver.account ?
+                {user.account ?
                   <>
                     <Row>
                       <WillAddress will={will} />

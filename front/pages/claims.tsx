@@ -18,7 +18,7 @@ import {
 import { connectWallet, getWallet } from "../utils/metamask";
 import { getWills } from "../utils/willContract";
 import { useWills } from "../context/wills";
-import { useHeir } from "../context/heir";
+import { useUser } from "../context/user";
 
 const styles: any = {
   container: {
@@ -38,16 +38,16 @@ const styles: any = {
 };
 
 export default function Claims() {
-  const { heir, setHeir } = useHeir();
+  const { user, setUser } = useUser();
   const { wills, setWills } = useWills();
   const [ loading, setLoading ] = useState(true);
 
   useEffect(function () {
     getWallet(window.ethereum)
-      .then((heir) => {
-        setHeir(heir);
+      .then((user) => {
+        setUser(user);
 
-        getWills(heir)
+        getWills(user)
           .then((wills) => {
             setWills(wills);
           })
@@ -58,7 +58,7 @@ export default function Claims() {
         if (window.ethereum !== undefined) {
           window.ethereum.on('accountsChanged', (accounts) => {
             if (accounts.length === 0) {
-              setHeir({});
+              setUser({});
               setWills([]);
               return;
             }
@@ -70,11 +70,11 @@ export default function Claims() {
 
   const onConnectWallet = function () {
     connectWallet(window.ethereum)
-      .then((heir) => {
-        setHeir(heir);
+      .then((user) => {
+        setUser(user);
 
         setLoading(true);
-        getWills(heir)
+        getWills(user)
           .then((wills) => {
             setWills(wills);
           })
@@ -113,7 +113,7 @@ export default function Claims() {
                 justify="center" 
                 align="center" 
               >
-                {heir.account ?
+                {user.account ?
                   <>
                     <Spacer y={2}/>
                     <Row>

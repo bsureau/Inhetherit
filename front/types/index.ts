@@ -1,17 +1,11 @@
 import { BigNumber, Signer } from "ethers";
 import { ExternalProvider } from '@ethersproject/providers';
 
-export type Giver = {
+export type User = {
     account: string;
     balance: BigNumber | number;
     signer: Signer | null;
     will?: Will;
-};
-
-export type Heir = {
-    account: string;
-    signer: Signer | null;
-    wills: Array<string>;
 };
 
 export type Will = {
@@ -26,12 +20,12 @@ export type Claim = {
 };
 
 export type GlobalState = {
-    giver: Giver;
+    user: User;
 };
 
 export type Action = {
     type: string;
-    giver?: Giver;
+    user?: User;
 }
 
 declare global {
