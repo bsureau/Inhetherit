@@ -162,12 +162,6 @@ export default function Index() {
           align="center"
           background="#fefefe"
         >
-          Powered with ❤️ &nbsp; by &nbsp;
-          <Link 
-            color="text"
-          >
-            Maître Yoda
-          </Link>
           &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
           <Link
             color="text"
@@ -175,6 +169,7 @@ export default function Index() {
           >
             Manifesto
           </Link>
+          &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
         </Row>
         <Spacer />
       </Col>
