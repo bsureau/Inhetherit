@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Image, Link, Table, Text, Tooltip, Row } from '@nextui-org/react';
+import { Button, Col, Link, Table, Text, Tooltip, Row } from '@nextui-org/react';
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 
 import { ethers } from 'ethers';
@@ -31,6 +31,14 @@ const styles: any = {
     marginBottom: "1rem",
     padding: "0rem 0 0rem 0"
   },
+  token: {
+    display: "flex", 
+    justifyContent: "flex-start", 
+    alignItems: "center",
+    img: {
+      marginRight: "10px"
+    }
+  }
 }
 
 async function approveTransfer(user, will, erc20Address) {
@@ -170,13 +178,13 @@ export default function WillList() {
                     <Table.Cell>
                       <Row
                       justify="flex-start"
-                       css={{margin: 0}}>
-                        <Tooltip content={getErc20Iso3FromAddress(claim.erc20Token)}>
-                        <Image
+                       style= {styles.token}>
+                        <img
                           width={30}
                           src={getTokenImgFromAddress(claim.erc20Token)}
+                          style={styles.token.img}
                         />
-                      </Tooltip>
+                        {getErc20Iso3FromAddress(claim.erc20Token)}
                       </Row>
                     </Table.Cell>
                     <Table.Cell>
