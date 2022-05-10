@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Loader, HeirWillList } from "../components";
+import { Loader } from "../components";
 
 import {
   Button,
@@ -17,8 +17,7 @@ import {
 } from '../components';
 
 import { connectWallet, getWallet } from "../../utils/metamask";
-import { getWills } from "../../utils/willContract";
-import { useWills } from "../../context/wills";
+import { getClaimsForHeir } from "../../utils/willContract";
 import { useUser } from "../../context/user";
 
 const styles: any = {
@@ -40,7 +39,7 @@ const styles: any = {
 
 export default function Claim() {
   const { user, setUser } = useUser();
-  const { wills, setWills } = useWills();
+  const [ claims, setClaims ] = useState([]);
   const [ loading, setLoading ] = useState(true);
   const router = useRouter()
 
@@ -50,9 +49,10 @@ export default function Claim() {
       .then((user) => {
         setUser(user);
 
-        getWills(user)
-          .then((wills) => {
-            setWills(wills);
+        getClaimsForHeir(user, router.query.address)
+          .then(claims => {
+            setClaims(claims);
+            console.log("CLAIMS: ", claims);
           })
           .finally(() => {
             setLoading(false);
@@ -62,7 +62,7 @@ export default function Claim() {
           window.ethereum.on('accountsChanged', (accounts) => {
             if (accounts.length === 0) {
               setUser({});
-              setWills([]);
+              setClaims([]);
               return;
             }
             onConnectWallet();
@@ -77,9 +77,9 @@ export default function Claim() {
         setUser(user);
 
         setLoading(true);
-        getWills(user)
-          .then((wills) => {
-            setWills(wills);
+        getClaimsForHeir(user, router.query.address)
+          .then((claims) => {
+            setClaims(claims);
           })
           .finally(() => {
             setLoading(false);

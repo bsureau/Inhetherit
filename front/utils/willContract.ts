@@ -23,6 +23,7 @@ export const willABI: string[] = [
   "function getBirthdayDate() public view returns(string memory)",
   "function getBirthPlace() public view returns(string memory)",
   "function getClaims() public view returns(tuple(address heir, address erc20Token, bool filled)[] memory)",
+  "function getClaimsForHeir(address _heir) external view returns(address[] memory)",
   "function getEth() public view returns(address)",
   "function getBalance() public view returns(uin256)",
   "function getErc20Tokens() public view returns(address[] memory)",
@@ -90,6 +91,23 @@ export async function getWills(user) {
       return {};
     }*/
     return undefined;
+  }
+}
+
+export async function getClaimsForHeir(user, will) {
+
+
+  try {
+    const contract: Contract = new ethers.Contract(will, willABI, user.signer);
+    const claims = await contract.getClaimsForHeir(user.account);
+  
+    return claims;
+  } catch (error) {
+    console.error(error);
+    /*if (error.reason = "WILL_NOT_FOUND") {
+      return {};
+    }*/
+    return [];
   }
 }
 
