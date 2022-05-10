@@ -111,7 +111,7 @@ export default function Claims() {
               :
               <Col 
                 justify="center" 
-                align="center" 
+                align="center"
               >
                 {user.account ?
                   <>
