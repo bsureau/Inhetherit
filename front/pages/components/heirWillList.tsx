@@ -91,7 +91,7 @@ export default function HeirWillList() {
                   </Grid>
                 </Row>
                 <Row style={styles.row}>
-                  <Grid xs={4}>
+                  <Grid xs={5}>
                     <Col>
                       <Row><Text style={styles.fieldName}>From: </Text></Row>
                       <Row><Text>
@@ -104,13 +104,13 @@ export default function HeirWillList() {
                       </Text></Row>
                     </Col>
                   </Grid>
-                  <Grid xs={2}>
+                  <Grid xs={3}>
                     <Col>
                       <Row><Text style={styles.fieldName}>Birthday: </Text></Row>
                       <Row><Text>{will.birthdate}</Text></Row>
                     </Col>
                   </Grid>
-                  <Grid xs={2}>
+                  <Grid xs={3}>
                     <Col>
                       <Row><Text style={styles.fieldName}>Birth Postcode: </Text></Row>
                       <Row><Text>{will.postCode}</Text></Row>
@@ -123,7 +123,7 @@ export default function HeirWillList() {
                 <Row justify="flex-start" align="center" css={styles.tokensContainer}>
                   <Grid.Container gap={2}>
                     {will.claims.map((claim) => (
-                      <Grid xs={2} key={claim.address}>
+                      <Grid xs={3} key={claim.address}>
                         <Card bordered shadow={false} css={styles.card}>
                           <Row css={styles.tokenContent}>
                             <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
