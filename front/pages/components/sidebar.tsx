@@ -19,6 +19,13 @@ const styles: any = {
   menuItem: {
     paddingLeft: "4em"
   },
+  menuText: {
+    color: "#dedede",
+  },
+  menuSelectedText: {
+    textDecoration: "underline",
+    color: "#ffffff",
+  },
   menuFooter: {
     position: "absolute",
     bottom: "4rem",
@@ -28,6 +35,10 @@ const styles: any = {
   menuFooterItem: {
     paddingBottom: "10px",
   },
+  icon: {
+    marginRight: 10,
+    verticalAlign: 'middle',
+  }
 }
 
 export default function Sidebar() {
@@ -65,11 +76,11 @@ export default function Sidebar() {
         >
           <Text
             size={17}
-            weight="bold"
-            color={router.pathname == "/will" ? "#dedede" : "#ffffff"}
+            weight="600"
+            style={router.pathname == "/will" ? styles.menuSelectedText : styles.menuText }
           >
-            <FaRegStickyNote /> &nbsp;
-            Make a will
+            <FaRegStickyNote style={styles.icon} />
+            My will
           </Text>
         </Link>
       </Row>
@@ -83,11 +94,11 @@ export default function Sidebar() {
         >
           <Text
             size={17}
-            weight="bold"
-            color={router.pathname == "/claims" ? "#dedede" : "#ffffff"}
+            weight="600"
+            style={router.pathname == "/claims" ? styles.menuSelectedText : styles.menuText }
           >
-            <FaMoneyCheck /> &nbsp;
-            Make a claim
+            <FaMoneyCheck style={styles.icon} />
+            My claims
           </Text>
         </Link>
       </Row>
@@ -105,10 +116,10 @@ export default function Sidebar() {
           >
             <Text
               size={17}
-              weight="bold"
-              color={router.pathname == "/manifesto" ? "#dedede" : "#ffffff"}
+              weight="600"
+              style={router.pathname == "/manifesto" ? styles.menuSelectedText : styles.menuText }
             >
-              <FaFile /> &nbsp;
+              <FaFile style={styles.icon} />
               Manifesto
             </Text>
           </Link>
