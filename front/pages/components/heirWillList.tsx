@@ -22,7 +22,7 @@ const styles: any = {
     marginTop: 20,
   },
   icon: {
-    verticalAlign: 'middle',
+    verticalAlign: "middle",
     marginRight: 10,
   },
   fieldName: {
@@ -30,13 +30,16 @@ const styles: any = {
   },
   tokensContainer: {
     marginTop: 10,
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   tokenContent: {
     display: "flex",
     flexDirection: "row",
     justifyContent:"flex-start",
     alignItems:"center"
+  }, 
+  card: {
+    width: "200px"
   }
 }
 
@@ -102,8 +105,8 @@ export default function HeirWillList() {
                 <Row justify="flex-start" align="center" css={styles.tokensContainer}>
                   <Grid.Container gap={2}>
                     {will.claims.map((claim) => (
-                      <Grid xs={3} key={claim.address}>
-                        <Card bordered shadow={false}>
+                      <Grid xs={2} key={claim.address}>
+                        <Card bordered shadow={false} css={styles.card}>
                           <Row css={styles.tokenContent}>
                             <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
                             <Text>{ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.tokenAddress)}</Text></Row>
