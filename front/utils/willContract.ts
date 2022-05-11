@@ -112,7 +112,14 @@ export async function getHeirWills(user) {
         });
       }
 
-      return {
+      claims.map(((claim) => {
+          if (ethers.utils.formatEther(claim.balance) === "0.0") {
+            claims.splice(claims.indexOf(claim), 1);
+          }
+      }));
+
+
+      return claims.length === 0 ? undefined : {
         address: willAddress,
         state: await willContract.getState(),
         claims: claims,
@@ -123,8 +130,10 @@ export async function getHeirWills(user) {
         birthdate: await willContract.getBirthdayDate(),
       };
     }));
+
+    console.log('WILLS: ', wills);
+    return wills[0] === undefined ? undefined : wills;
   
-    return wills;
   } catch (error) {
     console.error(error);
     /*if (error.reason = "WILL_NOT_FOUND") {

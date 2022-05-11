@@ -1,4 +1,4 @@
-import React from 'react';
+import React,  {useEffect} from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
 import {FaCheck, FaMinus, FaSkull} from 'react-icons/fa';
 
@@ -43,6 +43,11 @@ const styles: any = {
 export default function HeirWillList() {
   const { heirWills } = useHeirWills();
 
+  useEffect(function () {
+    console.log('COUCOU')
+    console.log("WILLS: ", heirWills);
+  });
+  
   return (
     <>
       {heirWills && heirWills.length > 0 ?
@@ -119,7 +124,7 @@ export default function HeirWillList() {
                 <Row justify="flex-start" align="center" css={styles.tokensContainer}>
                   <Grid.Container gap={2}>
                     {will.claims.map((claim) => (
-                      <Grid xs={3}>
+                      <Grid xs={3} key={claim.address}>
                         <Card bordered shadow={false}>
                           <Row css={styles.tokenContent}>
                             <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
