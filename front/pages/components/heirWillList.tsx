@@ -1,9 +1,11 @@
 import React from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
-import {FaRainbow} from 'react-icons/fa';
+import { FaRainbow, FaMoneyCheck } from 'react-icons/fa';
 
+import { willABI } from '../../utils/willContract';
 import { useHeirWills } from '../../context/heirWills';
-import {ethers} from "ethers";
+import { useUser } from "../../context/user";
+import {Contract, ethers} from "ethers";
 import {getErc20Iso3FromAddress, getTokenImgFromAddress} from "../../utils/erc20Contract";
 
 const styles: any = {
@@ -45,9 +47,9 @@ const styles: any = {
 
 export default function HeirWillList() {
   const { heirWills } = useHeirWills();
+  const { user } = useUser();
 
   const reportDeath = async (willAddress: string) => {
-    console.log(willAddress);
 
     //TODO:
     //1. première modale qui demande à l'héritier de confirmer la mort en saisissant la date de mort au format JJ/MM/AAAA 
@@ -56,12 +58,33 @@ export default function HeirWillList() {
     //4. la callback est appelée par Chainlink dans le contrat. Le contrat envoie un event DeathReport(boolean) auquel il faut s'abonner
     //5. si l'event renvoie false, c'est que le giver n'a pas été trouvé dans l'API -> on renvoie un message d'erreur dans la modale
     //6. si le giver apparaît, on charge une nouvelle modale dans laquelle on propose à l'utilisateur d'enchainer avec le transfer des fonds (voir méthode claimFunds ci-dessous)
+
+    const deathDate: string = window.prompt("Please enter death date using JJ/MM/AAAA format: ")
+    const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+
+    await contract.reportDeath(deathDate);
+
+    contract.on("DeathReport", (result: boolean, event: object) => {
+        console.log('result: ', result);
+
+        if(result === false) {
+          alert("Giver not found in death records");
+        } else {
+          alert("Giver found in death records. Continue to claim funds");
+          claimFunds(willAddress);
+        }
+    });    
   }
 
-  const claimFunds = async () => {
+  const claimFunds = async (willAddress: string) => {
     //TODO:
     //1. Appel de la méthode du contrat will.claimFunds()
     //2. message de confirmation avec un lien du hash de la tx sur rinkeby.etherscan.io
+    const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+    console.log(await contract.getClaims());
+    await contract.claimFunds();
+
+    alert("All good, funds transfered!")
   }
   
   return (
@@ -86,7 +109,10 @@ export default function HeirWillList() {
                       <Button bordered size="lg" onClick={() => { reportDeath(will.address)} }>
                         <FaRainbow size={20} style={styles.icon}/> Report death
                       </Button>
-                      ) : ''
+                      ) : 
+                      <Button bordered size="lg" onClick={() => { claimFunds(will.address)} }>
+                        <FaMoneyCheck size={20} style={styles.icon}/> Claim funds
+                      </Button>
                     }
                   </Grid>
                 </Row>

@@ -4,7 +4,7 @@ import { maxUINT256ForToken } from "./erc20Contract";
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
-export const inhetheritFactoryAddress: string = "0x756791571f948b5266D2350B0D58EdcE09ed4E25";
+export const inhetheritFactoryAddress: string = "0xEa6A3447176bFE0c6A9409d4325Edd76673E7c79";
 
 export const inhetheritFactoryABI: string[] = [
   "function createWill(string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace, address _erc20Token, address _heir) public returns(address)",
@@ -29,6 +29,10 @@ export const willABI: string[] = [
   "function getBalance() public view returns(uin256)",
   "function getErc20Tokens() public view returns(address[] memory)",
   "function getState() public view returns(uint8)",
+  "function reportDeath(string memory _deathDate) public returns(bytes32 requestId)",
+  "function claimFunds() public",
+  "event DeathReport(bool isDead)"
+
 ];
 
 export async function getWill(user) {
