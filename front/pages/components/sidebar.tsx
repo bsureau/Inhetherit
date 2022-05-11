@@ -76,7 +76,7 @@ export default function Sidebar() {
         >
           <Text
             size={17}
-            weight="600"
+            weight="bold"
             style={router.pathname == "/will" ? styles.menuSelectedText : styles.menuText }
           >
             <FaRegStickyNote style={styles.icon} />
@@ -94,7 +94,7 @@ export default function Sidebar() {
         >
           <Text
             size={17}
-            weight="600"
+            weight="bold"
             style={router.pathname == "/claims" ? styles.menuSelectedText : styles.menuText }
           >
             <FaMoneyCheck style={styles.icon} />

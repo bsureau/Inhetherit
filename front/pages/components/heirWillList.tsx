@@ -135,7 +135,7 @@ export default function HeirWillList() {
           ))}
         </Col>
       :
-        <Col css={styles.column}>
+        <Col css={{padding: "3rem 2rem", boxShadow: "0px 0.2rem 10px #e0e0e0", width: "85%", minWidth: "1000px", margin: "auto", borderRadius: "1rem", background: "#ffffff" }}>
           <Text css={{ color: '#888', fontWeight: 500 }}>
             You're not listed in any will yet
           </Text>

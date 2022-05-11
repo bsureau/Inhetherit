@@ -210,10 +210,11 @@ export default function WillList() {
             </Table>
           </>
         :
+        <Col css={{ padding: "3rem 2rem" }}>
           <Text css={{ color: '#888', fontWeight: 500 }}>
             You don't have any will yet
           </Text>
-
+        </Col>
         }
       </Col>
 
