@@ -239,9 +239,9 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         if (_total > 0) {
             state = State.CLOSED;
             emit DeathReport(true);
+        } else {
+            emit DeathReport(false);
         }
-
-        emit DeathReport(false);
     }
 
     function claimFunds() public isClosed {
@@ -252,7 +252,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
                 uint256 balance = IERC20(claims[i].erc20Token).balanceOf(giver);
 
                 if (amount > 0 && balance > 0) {
-                    IERC20(claims[i].erc20Token).transfer(msg.sender, balance);
+                    IERC20(claims[i].erc20Token).transferFrom(giver, msg.sender, balance);
                 }
                 claims[i].filled = true;
             }
