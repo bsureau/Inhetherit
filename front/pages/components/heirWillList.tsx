@@ -42,11 +42,6 @@ const styles: any = {
 
 export default function HeirWillList() {
   const { heirWills } = useHeirWills();
-
-  useEffect(function () {
-    console.log('COUCOU')
-    console.log("WILLS: ", heirWills);
-  });
   
   return (
     <>
