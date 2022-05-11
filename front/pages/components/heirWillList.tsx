@@ -1,6 +1,6 @@
-import React,  {useEffect} from 'react';
+import React from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
-import {FaCheck, FaMinus, FaSkull} from 'react-icons/fa';
+import {FaRainbow} from 'react-icons/fa';
 
 import { useHeirWills } from '../../context/heirWills';
 import {ethers} from "ethers";
@@ -26,7 +26,7 @@ const styles: any = {
     marginRight: 10,
   },
   fieldName: {
-    fontWeight: 500,
+    fontWeight: 700,
   },
   tokensContainer: {
     marginTop: 10,
@@ -51,70 +51,53 @@ export default function HeirWillList() {
             <Row css={styles.column} key={will.address}>
               <Col align="center" justify="center">
                 <Row>
-                  <Grid xs={3}>
-                    {will.state == 0 ? (
-                      <>
-                        <FaMinus
-                          color="#888" size={20}
-                          style={styles.icon} />
-                        Available to claim
-                      </>) : (
-                      <>
-                        <FaCheck
-                          color="#17c964"
-                          size={20}
-                          style={styles.icon} />
-                        Funds transfered
-                      </>)
-                    }
-                  </Grid>
                   <Grid xs={6}>
-                    Will &nbsp;
+                    <Text weight="bold">Will contract: &nbsp;</Text>
                     <Link
                       href={`https://rinkeby.etherscan.io/address/${will.address}`}
                       target="_blank"
                     >
-                      #{will.address}
+                      {will.address}
                     </Link>
                   </Grid>
-                  <Grid xs={3}>
+                  <Grid xs={3} css={{position: "absolute", right: 0}}>
                     {will.state == 0 ? (
-                      <Button bordered color="warning">
-                        <FaSkull size={15} style={styles.icon}/> Report death
+                      <Button bordered size="lg">
+                        <FaRainbow size={20} style={styles.icon}/> Report death
                       </Button>
                       ) : ''
                     }
                   </Grid>
                 </Row>
                 <Row style={styles.row}>
-                  <Grid xs={5}>
+                  <Grid xs={4}>
                     <Col>
-                      <Row><Text style={styles.fieldName}>From</Text></Row>
+                      <Row><Text style={styles.fieldName}>From: </Text></Row>
                       <Row><Text>
                         {will.firstName} {will.lastName} &nbsp;
                         {`<`}
                         <Link href={`https://rinkeby.etherscan.io/address/${will.giverAddress}`} target="_blank">
-                          {will.giverAddress.substring(0,20)}...
+                          {will.giverAddress.substring(0,25)}...
                         </Link>
                         {`>`}
                       </Text></Row>
                     </Col>
                   </Grid>
-                  <Grid xs={3}>
+                  <Grid xs={2}>
                     <Col>
-                      <Row><Text style={styles.fieldName}>Birthday</Text></Row>
+                      <Row><Text style={styles.fieldName}>Birthday: </Text></Row>
                       <Row><Text>{will.birthdate}</Text></Row>
                     </Col>
                   </Grid>
-                  <Grid xs={3}>
+                  <Grid xs={2}>
                     <Col>
-                      <Row><Text style={styles.fieldName}>Birth Postcode</Text></Row>
+                      <Row><Text style={styles.fieldName}>Birth Postcode: </Text></Row>
                       <Row><Text>{will.postCode}</Text></Row>
                     </Col>
                   </Grid>
                 </Row>
                 <Row style={styles.row}>
-                  <Text h4>You will receive</Text>
+                  <Text style={styles.fieldName}>You will receive: </Text>
                 </Row>
                 <Row justify="flex-start" align="center" css={styles.tokensContainer}>
                   <Grid.Container gap={2}>
