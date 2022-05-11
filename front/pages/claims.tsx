@@ -16,7 +16,7 @@ import {
 } from './components';
 
 import { connectWallet, getWallet } from "../utils/metamask";
-import { getWills } from "../utils/willContract";
+import { getHeirWills } from "../utils/willContract";
 import { useHeirWills } from "../context/heirWills";
 import { useUser } from "../context/user";
 
@@ -47,7 +47,7 @@ export default function Claims() {
       .then((user) => {
         setUser(user);
 
-        getWills(user)
+        getHeirWills(user)
           .then((wills) => {
             setHeirWills(wills);
           })
@@ -74,7 +74,7 @@ export default function Claims() {
         setUser(user);
 
         setLoading(true);
-        getWills(user)
+        getHeirWills(user)
           .then((wills) => {
             setHeirWills(wills);
           })
@@ -115,7 +115,6 @@ export default function Claims() {
               >
                 {user.account ?
                   <>
-                    <Spacer y={2}/>
                     <Row>
                       <HeirWillList />
                     </Row>

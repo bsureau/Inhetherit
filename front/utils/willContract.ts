@@ -18,6 +18,7 @@ export const inhetheritFactoryABI: string[] = [
 ];
 
 export const willABI: string[] = [
+  "function getGiver() public view returns(address)",
   "function getLastName() public view returns(string memory)",
   "function getFirstName() public view returns(string memory)",
   "function getBirthdayDate() public view returns(string memory)",
@@ -79,16 +80,47 @@ export async function getWill(user) {
   }
 }
 
-export async function getWills(user) {
+export async function getHeirWills(user) {
   try {
     const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
     let wills = await contract.getWills();
 
     wills = await Promise.all(wills.map(async (willAddress) => {
       const willContract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+
+      const giverAddress = await willContract.getGiver();
+      const ethHeirAddress = await willContract.getEth();
+      let claims = await willContract.getClaimsForHeir(user.account);
+
+      claims = await Promise.all(claims.map(async (claim) => {
+        return {
+          tokenAddress: claim,
+          balance: await getBalanceOf(
+            {
+              account: giverAddress,
+              signer: user.signer
+            },
+            claim
+          )
+        };
+      }));
+
+      if (ethHeirAddress == user.account) {
+        claims.push({
+          tokenAddress: 'eth',
+          balance: await user.signer.provider.getBalance(willAddress),
+        });
+      }
+
       return {
         address: willAddress,
         state: await willContract.getState(),
+        claims: claims,
+        giverAddress: giverAddress,
+        lastName: await willContract.getLastName(),
+        firstName: await willContract.getFirstName(),
+        postCode: await willContract.getBirthPlace(),
+        birthdate: await willContract.getBirthdayDate(),
       };
     }));
   
@@ -99,21 +131,6 @@ export async function getWills(user) {
       return {};
     }*/
     return undefined;
-  }
-}
-
-export async function getClaimsForHeir(user, will) {
-  try {
-    const contract: Contract = new ethers.Contract(will, willABI, user.signer);
-    const claims = await contract.getClaimsForHeir(user.account);
-  
-    return claims;
-  } catch (error) {
-    console.error(error);
-    /*if (error.reason = "WILL_NOT_FOUND") {
-      return {};
-    }*/
-    return [];
   }
 }
 
