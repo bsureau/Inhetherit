@@ -1,4 +1,4 @@
-import { Contract, ethers } from "ethers";
+import { Contract, ethers, Event, EventFilter } from "ethers";
 import { getAllowance, getBalanceOf } from "./erc20Contract";
 import { maxUINT256ForToken } from "./erc20Contract";
 
@@ -115,11 +115,17 @@ export async function getHeirWills(user) {
           tokenAddress: 'eth',
           balance: await user.signer.provider.getBalance(willAddress),
         });
-      }
+      }       
 
+
+      const filter: EventFilter = willContract.filters.FundsTransfered(user.address);
+      const events: Event[] = await willContract.queryFilter(filter);
+      const fundsTransferedTx: string|null = events.length > 0 ? events[0].transactionHash : null;
+      
       return claims.length > 0 ? {
         address: willAddress,
         state: await willContract.getState(),
+        fundsTransferedTx: fundsTransferedTx,
         claims: claims,
         giverAddress: giverAddress,
         lastName: await willContract.getLastName(),

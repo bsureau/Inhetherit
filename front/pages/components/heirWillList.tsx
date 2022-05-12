@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
-import { FaRainbow, FaMoneyCheck } from 'react-icons/fa';
+import { FaRainbow, FaMoneyCheck, FaEye } from 'react-icons/fa';
 
 import { willABI } from '../../utils/willContract';
 import { useHeirWills } from '../../context/heirWills';
@@ -85,14 +85,17 @@ export default function HeirWillList() {
     alert("All good, funds transfered!")
   }
   
-  useEffect(() => {
-    const contract: Contract = new ethers.Contract("0x4f4901f7375d979C92d6443Bd65cc7E722d0Fd85", willABI, user.signer);
-    const filter: EventFilter = contract.filters.FundsTransfered();
-    console.log('Filter Event: ', contract.queryFilter(filter).then((data) => {
-      console.log(data[0].transactionHash); //TODO: mettre dans une funciton pour checker si les fonds ont déjà été transférés
-    }));
+  // useEffect(() => {
+  //   const willContract: Contract = new ethers.Contract("0x4f4901f7375d979C92d6443Bd65cc7E722d0Fd85", willABI, user.signer);
+  //   const filter: EventFilter = willContract.filters.FundsTransfered(user.address);
+  //   willContract.queryFilter(filter).then((events) => {
+  //     events.map((event) => {
+  //       console.log('coucou');
+  //       console.log(event.transactionHash);
+  //     });
+  //   })
     
-  });
+  // });
   
   return (
     <>
@@ -112,14 +115,22 @@ export default function HeirWillList() {
                     </Link>
                   </Grid>
                   <Grid xs={3} css={{position: "absolute", right: 0}}>
-                    {will.state == 0 ? (
-                      <Button bordered size="lg" onClick={() => { reportDeath(will.address)} }>
-                        <FaRainbow size={20} style={styles.icon}/> Report death
-                      </Button>
-                      ) : 
-                      <Button bordered size="lg" onClick={() => { claimFunds(will.address)} }>
-                        <FaMoneyCheck size={20} style={styles.icon}/> Claim funds
-                      </Button>
+                    {will.fundsTransferedTx ? (
+                      <Link href={`https://rinkeby.etherscan.io/tx/${will.fundsTransferedTx}`} target="_blank">
+                        <Button bordered size="lg">
+                          <FaEye size={20} style={styles.icon}/> Funds transfered
+                        </Button>
+                      </Link>
+                        )
+                    :
+                      will.state == 0 ? (
+                        <Button bordered size="lg" onClick={() => { reportDeath(will.address)} }>
+                          <FaRainbow size={20} style={styles.icon}/> Report death
+                        </Button>
+                        ) : 
+                        <Button bordered size="lg" onClick={() => { claimFunds(will.address)} }>
+                          <FaMoneyCheck size={20} style={styles.icon}/> Claim funds
+                        </Button>
                     }
                   </Grid>
                 </Row>
@@ -150,23 +161,27 @@ export default function HeirWillList() {
                     </Col>
                   </Grid>
                 </Row>
-                <Row style={styles.row}>
-                  <Text style={styles.fieldName}>You will receive: </Text>
-                </Row>
-                <Row justify="flex-start" align="center" css={styles.tokensContainer}>
-                  <Grid.Container gap={2}>
-                    {will.claims.map((claim) => (
-                      <Grid xs={3} key={claim.address}>
-                        <Card bordered shadow={false} css={styles.card}>
-                          <Row css={styles.tokenContent}>
-                            <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
-                            <Text>{ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.tokenAddress)}</Text></Row>
-                        </Card>
-                      </Grid>
-                      )
-                    )}
-                  </Grid.Container>
-                </Row>
+                {will.fundsTransferedTx === null && 
+                  <>
+                    <Row style={styles.row}>
+                      <Text style={styles.fieldName}>You will receive: </Text>
+                    </Row>
+                    <Row justify="flex-start" align="center" css={styles.tokensContainer}>
+                      <Grid.Container gap={2}>
+                        {will.claims.map((claim) => (
+                          <Grid xs={3} key={claim.address}>
+                            <Card bordered shadow={false} css={styles.card}>
+                              <Row css={styles.tokenContent}>
+                                <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
+                                <Text>{ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.tokenAddress)}</Text></Row>
+                            </Card>
+                          </Grid>
+                          )
+                        )}
+                      </Grid.Container>
+                    </Row>
+                  </>
+                }
               </Col>
             </Row>
           ))}
