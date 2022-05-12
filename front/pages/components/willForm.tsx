@@ -262,7 +262,7 @@ export default function WillForm() {
                 marginRight: "1.5%"
               }}
             >
-              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#0070f3', fontSize: 14 }}>Token: </Text>
+              <Text style={{ marginLeft: "5px", marginBottom: "4px", color: '#0070f3', fontWeight: 600 }}>Token: </Text>
               <select
                 value={token}
                 onChange={handleChangeToken}
@@ -380,7 +380,7 @@ export default function WillForm() {
               <Input 
                 rounded
                 bordered
-                label="Birthday date:"
+                label="Birth date:"
                 placeholder="07/12/1990"
                 color="primary"
                 width="15%" 
@@ -392,8 +392,8 @@ export default function WillForm() {
               <Input 
                 rounded
                 bordered
-                label="Birth post code:"
-                placeholder="75012"
+                label="Birth postcode:"
+                placeholder="13000"
                 color="primary" 
                 width="15%" 
                 value={birthPostCode}

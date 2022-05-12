@@ -17,10 +17,14 @@ const styles: any = {
     marginTop: "1rem",
     marginBottom: "2rem",
     boxShadow: "0px 0.2rem 10px #e0e0e0",
-    padding: "3rem 2rem"
+    padding: "3rem"
   },
   row: {
     marginTop: 20,
+  },
+  col: {
+    width: 'max-content',
+    marginRight: '5rem'
   },
   icon: {
     verticalAlign: "middle",
@@ -93,13 +97,22 @@ export default function HeirWillList() {
               <Col align="center" justify="center">
                 <Row>
                   <Grid xs={6}>
-                    <Text weight="bold">Will contract: &nbsp;</Text>
-                    <Link
-                      href={`https://rinkeby.etherscan.io/address/${will.address}`}
-                      target="_blank"
-                    >
-                      {will.address}
-                    </Link>
+                    <Col>
+                      <Row>
+                        <Text weight="bold" color="primary">Will contract: &nbsp;</Text> 
+                      </Row>
+                      <Row>
+                        <Text>
+                          <Link
+                            href={`https://rinkeby.etherscan.io/address/${will.address}`}
+                            target="_blank"
+                            color="black"
+                          >
+                            {will.address}
+                          </Link>
+                        </Text>
+                      </Row>
+                    </Col>
                   </Grid>
                   <Grid xs={3} css={{position: "absolute", right: 0}}>
                     {will.fundsTransferedTx ? (
@@ -122,36 +135,32 @@ export default function HeirWillList() {
                   </Grid>
                 </Row>
                 <Row style={styles.row}>
-                  <Grid xs={5}>
-                    <Col>
-                      <Row><Text style={styles.fieldName}>From: </Text></Row>
-                      <Row><Text>
-                        {will.firstName} {will.lastName} &nbsp;
-                        {`<`}
-                        <Link href={`https://rinkeby.etherscan.io/address/${will.giverAddress}`} target="_blank">
-                          {will.giverAddress.substring(0,25)}...
-                        </Link>
-                        {`>`}
-                      </Text></Row>
+                    <Col style={styles.col}>
+                      <Row><Text style={styles.fieldName} color="primary">From: </Text></Row>
+                      <Row>
+                        <Text>
+                          {will.firstName} {will.lastName} &nbsp;
+                          {`<`}
+                          <Link color="black" href={`https://rinkeby.etherscan.io/address/${will.giverAddress}`} target="_blank">
+                          {will.giverAddress.substring(0, 35)}...
+                          </Link>
+                          {`>`}
+                        </Text>
+                      </Row>
                     </Col>
-                  </Grid>
-                  <Grid xs={3}>
-                    <Col>
-                      <Row><Text style={styles.fieldName}>Birthday: </Text></Row>
+                    <Col style={styles.col}>
+                      <Row><Text style={styles.fieldName} color="primary">Birth date: </Text></Row>
                       <Row><Text>{will.birthdate}</Text></Row>
                     </Col>
-                  </Grid>
-                  <Grid xs={3}>
-                    <Col>
-                      <Row><Text style={styles.fieldName}>Birth Postcode: </Text></Row>
+                    <Col style={styles.col}>
+                      <Row><Text style={styles.fieldName} color="primary">Birth Postcode: </Text></Row>
                       <Row><Text>{will.postCode}</Text></Row>
                     </Col>
-                  </Grid>
                 </Row>
                 {will.fundsTransferedTx === null && 
                   <>
                     <Row style={styles.row}>
-                      <Text style={styles.fieldName}>You will receive: </Text>
+                      <Text style={styles.fieldName} color="primary">You will receive: </Text>
                     </Row>
                     <Row justify="flex-start" align="center" css={styles.tokensContainer}>
                       <Grid.Container gap={2}>

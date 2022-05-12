@@ -14,3 +14,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+label {
+    font-weight: 600 !important;
+    font-size: inherit !important;
+}
