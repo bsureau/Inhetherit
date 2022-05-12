@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
-import { FaRainbow, FaMoneyCheck, FaEye } from 'react-icons/fa';
+import { FaRainbow, FaMoneyCheck, FaCheck } from 'react-icons/fa';
 
 import { willABI } from '../../utils/willContract';
 import { useHeirWills } from '../../context/heirWills';
@@ -118,7 +118,7 @@ export default function HeirWillList() {
                     {will.fundsTransferedTx ? (
                       <Link href={`https://rinkeby.etherscan.io/tx/${will.fundsTransferedTx}`} target="_blank">
                         <Button bordered size="lg">
-                          <FaEye size={20} style={styles.icon}/> Funds transfered
+                          <FaCheck size={20} style={styles.icon}/> Funds transfered
                         </Button>
                       </Link>
                         )
