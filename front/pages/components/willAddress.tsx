@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Col, Link, Row, Text} from '@nextui-org/react';
+import { Col, Link, Row, Text } from '@nextui-org/react';
 
 export default function WillAddress ({ will }) {
   return (

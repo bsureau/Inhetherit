@@ -1,36 +1,14 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
-import {Button, Col, Input, Row, Spacer, Text, Tooltip} from '@nextui-org/react';
-
-import {BigNumber, Contract, ethers, FixedNumber} from 'ethers';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Button, Col, Input, Row, Spacer, Text, Tooltip } from '@nextui-org/react';
+import { BigNumber, Contract, ethers, FixedNumber } from 'ethers';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
-
 import { FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
 import { useUser } from "../../context/user";
 import { useWill } from "../../context/will";
 import { useModal } from "../../context/modal";
-
-import {
-  getWill,
-  inhetheritFactoryABI,
-  inhetheritFactoryAddress
-} from "../../utils/willContract";
-import {
-  erc20Abi,
-  getAddressFromToken,
-  getBalanceOf,
-  getErc20Iso3FromAddress,
-  isERC20Token,
-  maxUINT256ForToken
-} from "../../utils/erc20Contract";
-
-import {
-  ConfirmationModal,
-  ErrorModal,
-  LoadingModal,
-  MetamaskApproveModal,
-  MetamaskConfirmModal,
-  ReviewModal
-} from "./modals";
+import { getWill, inhetheritFactoryABI, inhetheritFactoryAddress } from "../../utils/willContract";
+import { erc20Abi,  getAddressFromToken, getBalanceOf, getErc20Iso3FromAddress, isERC20Token, maxUINT256ForToken } from "../../utils/erc20Contract";
+import { ConfirmationModal, ErrorModal, LoadingModal, MetamaskApproveModal, MetamaskConfirmModal, ReviewModal } from "./modals";
 
 export default function WillForm() {
   const { user } = useUser();

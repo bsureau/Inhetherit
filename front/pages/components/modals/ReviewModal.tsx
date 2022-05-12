@@ -1,6 +1,5 @@
-import {Button, Col, Link, Modal, Spacer, Text} from "@nextui-org/react";
+import { Button, Col, Link, Modal, Spacer, Text } from "@nextui-org/react";
 import React from "react";
-
 import { useWill } from "../../../context/will";
 import { isERC20Token } from "../../../utils/erc20Contract";
 

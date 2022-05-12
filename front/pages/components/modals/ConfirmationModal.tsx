@@ -1,5 +1,5 @@
-import {Modal, Text} from "@nextui-org/react";
-import {FaCheck} from "react-icons/fa";
+import { Modal, Text } from "@nextui-org/react";
+import { FaCheck } from "react-icons/fa";
 import React from "react";
 
 export function ConfirmationModal ({

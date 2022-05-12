@@ -1,5 +1,5 @@
 import { Link, Row, Col, Text, Spacer } from "@nextui-org/react";
-import { FaMoneyCheck, FaRegStickyNote, FaQuestion, FaFile } from 'react-icons/fa';
+import { FaMoneyCheck, FaRegStickyNote, FaFile } from 'react-icons/fa';
 import { useRouter, NextRouter } from "next/router";
 
 const styles: any = {

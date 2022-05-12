@@ -1,23 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
-
-import {
-  Container,
-  Row,
-  Col,
-  Spacer,
-  Button
-} from "@nextui-org/react";
-
-import {
-  TopBar,
-  Sidebar,
-  WillAddress,
-  WillForm,
-  WillList,
-  Loader
-} from './components';
-
+import { Container, Row, Col, Spacer, Button } from "@nextui-org/react";
+import { TopBar, Sidebar, WillAddress, WillForm, WillList, Loader } from './components';
 import { connectWallet, getWallet } from "../utils/metamask";
 import { getWill } from "../utils/willContract";
 import { useUser } from "../context/user";

@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
+import React  from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
 import { FaRainbow, FaMoneyCheck, FaCheck } from 'react-icons/fa';
-
 import { willABI } from '../../utils/willContract';
 import { useHeirWills } from '../../context/heirWills';
 import { useUser } from "../../context/user";
-import {Contract, ethers, EventFilter} from "ethers";
-import {getErc20Iso3FromAddress, getTokenImgFromAddress} from "../../utils/erc20Contract";
+import { Contract, ethers } from "ethers";
+import { getErc20Iso3FromAddress, getTokenImgFromAddress } from "../../utils/erc20Contract";
 
 const styles: any = {
   column: {

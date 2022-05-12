@@ -1,10 +1,7 @@
 import React from 'react';
 import { FaDotCircle, FaWallet } from 'react-icons/fa';
-
 import { Button, Link, Row } from "@nextui-org/react";
-
 import { inhetheritFactoryAddress } from "../../utils/willContract";
-
 import { useUser } from "../../context/user";
 
 const styles: any = {
