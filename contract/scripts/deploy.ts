@@ -21,7 +21,7 @@ async function main() {
 
   await contract.deployed();
 
-  console.log("Inhetherit Factory contract deployed to:", contract.address);
+  console.log("Inhetherit Facade contract deployed to:", contract.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
