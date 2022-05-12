@@ -59,6 +59,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
     }
 
     event DeathReport(bool isDead);
+    event FundsTransfered(address to);
 
     constructor (address _giver, string memory _firstName, string memory _lastName, string memory _birthdayDate, string memory _birthPlace) {
 
@@ -261,5 +262,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         if (eth == msg.sender) {
             payable(msg.sender).transfer(address(this).balance);
         }
+
+        emit FundsTransfered(msg.sender);
     }
 }
