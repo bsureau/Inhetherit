@@ -17,6 +17,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
     string private birthPlace;
     address private eth;   
     address[] private erc20Tokens;
+    address[] private fundsTransferedTo;
     Claim[] private claims;
     State private state;
 
@@ -54,6 +55,22 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         require(
             result == true,
             "NOTHING_TO_CLAIM"
+        );
+        _;
+    }
+
+    modifier fundsWaitingForTransfer {
+        bool fundsTransfered = false;
+
+        for (uint i=0; i<fundsTransferedTo.length; i++) {
+            if (fundsTransferedTo[i] == msg.sender) {
+                fundsTransfered = true;
+            }
+        }
+
+        require(
+            fundsTransfered == false,
+            "FUNDS_ALREADY_TRANSFERED"
         );
         _;
     }
@@ -245,7 +262,7 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         }
     }
 
-    function claimFunds() public isClosed {
+    function claimFunds() public isClosed fundsWaitingForTransfer {
 
         for (uint i=0; i<claims.length; i++) {
             if (claims[i].heir == msg.sender && claims[i].filled == false) {
@@ -262,7 +279,8 @@ contract InhetheritWill is Ownable, ChainlinkClient {
         if (eth == msg.sender) {
             payable(msg.sender).transfer(address(this).balance);
         }
-
+        
+        fundsTransferedTo.push(msg.sender);
         emit FundsTransfered(msg.sender);
     }
 }
