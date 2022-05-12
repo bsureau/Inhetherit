@@ -65,9 +65,8 @@ export default function HeirWillList() {
     await contract.reportDeath(deathDate);
 
     contract.on("DeathReport", (result: boolean, event: object) => {
-        console.log('result: ', result);
 
-        if(result === false) {
+      if(result === false) {
           alert("Giver not found in death records");
         } else {
           alert("Giver found in death records. Continue to claim funds");
