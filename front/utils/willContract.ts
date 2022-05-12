@@ -31,7 +31,8 @@ export const willABI: string[] = [
   "function getState() public view returns(uint8)",
   "function reportDeath(string memory _deathDate) public returns(bytes32 requestId)",
   "function claimFunds() public",
-  "event DeathReport(bool isDead)"
+  "event DeathReport(bool isDead)",
+  "event FundsTransfered(address to)"
 
 ];
 

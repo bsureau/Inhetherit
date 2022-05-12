@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, Col, Link, Text, Row, Grid } from '@nextui-org/react';
 import { FaRainbow, FaMoneyCheck } from 'react-icons/fa';
 
 import { willABI } from '../../utils/willContract';
 import { useHeirWills } from '../../context/heirWills';
 import { useUser } from "../../context/user";
-import {Contract, ethers} from "ethers";
+import {Contract, ethers, EventFilter} from "ethers";
 import {getErc20Iso3FromAddress, getTokenImgFromAddress} from "../../utils/erc20Contract";
 
 const styles: any = {
@@ -80,11 +80,19 @@ export default function HeirWillList() {
     //1. Appel de la méthode du contrat will.claimFunds()
     //2. message de confirmation avec un lien du hash de la tx sur rinkeby.etherscan.io
     const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
-    console.log(await contract.getClaims());
     await contract.claimFunds();
 
     alert("All good, funds transfered!")
   }
+  
+  useEffect(() => {
+    const contract: Contract = new ethers.Contract("0x4f4901f7375d979C92d6443Bd65cc7E722d0Fd85", willABI, user.signer);
+    const filter: EventFilter = contract.filters.FundsTransfered();
+    console.log('Filter Event: ', contract.queryFilter(filter).then((data) => {
+      console.log(data[0].transactionHash); //TODO: mettre dans une funciton pour checker si les fonds ont déjà été transférés
+    }));
+    
+  });
   
   return (
     <>
