@@ -84,18 +84,6 @@ export default function HeirWillList() {
     alert("All good, funds transfered!")
   }
   
-  // useEffect(() => {
-  //   const willContract: Contract = new ethers.Contract("0x4f4901f7375d979C92d6443Bd65cc7E722d0Fd85", willABI, user.signer);
-  //   const filter: EventFilter = willContract.filters.FundsTransfered(user.address);
-  //   willContract.queryFilter(filter).then((events) => {
-  //     events.map((event) => {
-  //       console.log('coucou');
-  //       console.log(event.transactionHash);
-  //     });
-  //   })
-    
-  // });
-  
   return (
     <>
       {heirWills && heirWills.length > 0 ?
