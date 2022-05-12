@@ -1,6 +1,7 @@
 import { Contract, ethers, Event, EventFilter } from "ethers";
 import { getAllowance, getBalanceOf } from "./erc20Contract";
 import { maxUINT256ForToken } from "./erc20Contract";
+import { sortNullishValues } from './arrayy';
 
 export const EMPTY_ADDRESS = 0x0000000000000000000000000000000000000000;
 
@@ -134,6 +135,8 @@ export async function getHeirWills(user) {
         birthdate: await willContract.getBirthdayDate(),
       } : {};
     }));
+
+    sortNullishValues(wills);
 
     return wills;
   } catch (error) {
