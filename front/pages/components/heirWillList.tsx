@@ -123,9 +123,6 @@ export default function HeirWillList() {
   }
 
   const onClaimFunds = async (willAddress: string) => {
-    //TODO:
-    //1. Appel de la méthode du contrat will.claimFunds()
-    //2. message de confirmation avec un lien du hash de la tx sur rinkeby.etherscan.io
     setModal({
       open: MODAL_METAMASK_CONFIRM,
       data: { }
@@ -196,7 +193,7 @@ export default function HeirWillList() {
                       {will.fundsTransferedTx ? (
                         <Link href={`https://rinkeby.etherscan.io/tx/${will.fundsTransferedTx}`} target="_blank">
                           <Button bordered size="lg" color="success">
-                            <FaCheck size={20} style={styles.icon}/> Funds transfered
+                            <FaCheck size={20} style={styles.icon}/> Funds transferred
                           </Button>
                         </Link>
                           )
