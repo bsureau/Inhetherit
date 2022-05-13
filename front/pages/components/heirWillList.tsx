@@ -12,7 +12,14 @@ import { useModal } from "../../context/modal";
 import { getErc20Iso3FromAddress, getTokenImgFromAddress } from "../../utils/erc20Contract";
 import {claimFunds, getHeirWills, reportDeath} from '../../utils/willContract';
 
-import {ConfirmDeathModal, DeathConfirmedModal, ErrorModal, LoadingModal, MetamaskConfirmModal} from "./modals";
+import {
+  ConfirmDeathModal,
+  DeathConfirmedModal,
+  ErrorModal,
+  FundsTransferedModal,
+  LoadingModal,
+  MetamaskConfirmModal
+} from "./modals";
 
 const styles: any = {
   column: {
@@ -68,14 +75,6 @@ export default function HeirWillList() {
   const MODAL_FUNDS_TRANSFERED = 'claims-funds-transfered';
 
   const onReportDeath = async (willAddress: string) => {
-    //TODO:
-    //1. première modale qui demande à l'héritier de confirmer la mort en saisissant la date de mort au format JJ/MM/AAAA 
-    //2. call de will.reportDeath(deathDate). Gérer les erreurs (mettre un message générique et demander de vérifier si il y a assez de link sur le contrat, sinon l'user doit en envoyer 0.05LINK)
-    //3. chargement... (la requête est partie du smart contract au réseau chainlink. On attend que Chainlink nous renvoie la réponse)
-    //4. la callback est appelée par Chainlink dans le contrat. Le contrat envoie un event DeathReport(boolean) auquel il faut s'abonner
-    //5. si l'event renvoie false, c'est que le giver n'a pas été trouvé dans l'API -> on renvoie un message d'erreur dans la modale
-    //6. si le giver apparaît, on charge une nouvelle modale dans laquelle on propose à l'utilisateur d'enchainer avec le transfer des fonds (voir méthode claimFunds ci-dessous)
-
     setModal({
       open: MODAL_CONFIRM_DEATH,
       data: {
@@ -119,6 +118,7 @@ export default function HeirWillList() {
           error: error,
         }
       });
+      return;
     }
   }
 
@@ -127,21 +127,42 @@ export default function HeirWillList() {
     //1. Appel de la méthode du contrat will.claimFunds()
     //2. message de confirmation avec un lien du hash de la tx sur rinkeby.etherscan.io
     setModal({
-      open: MODAL_LOADING,
-      data: {
-        text: "Contacting contract to transfer funds"
-      }
+      open: MODAL_METAMASK_CONFIRM,
+      data: { }
     });
 
-    await claimFunds(willAddress, user);
+    try {
+      await claimFunds(
+        willAddress,
+        () => setModal({
+          open: MODAL_LOADING,
+          data: {
+            text: "Contacting contract to transfer funds"
+          }
+        }),
+        async (address) => {
+          setModal({
+            open: MODAL_FUNDS_TRANSFERED,
+            data: {
+              address: address
+            }
+          });
 
-    setModal({
-      open: MODAL_FUNDS_TRANSFERED,
-      data: {}
-    });
-
-    // update heir wills list
-    setHeirWills(await getHeirWills(user));
+          // update heir wills list
+          setHeirWills(await getHeirWills(user));
+        },
+        user,
+      );
+    } catch (error) {
+      setModal({
+        open: MODAL_ERROR,
+        data: {
+          text: "We could not transfer the funds at the moment...",
+          error: error,
+        }
+      });
+      return;
+    }
   }
   
   return (
@@ -252,6 +273,10 @@ export default function HeirWillList() {
             isOpened={modal.open == MODAL_DEATH_CONFIRMED}
             willAddress={modal.data.willAddress}
             onTransferfunds={(willAddress) => onClaimFunds(willAddress)}
+          />
+          <FundsTransferedModal
+            isOpened={modal.open == MODAL_FUNDS_TRANSFERED}
+            address={modal.data.address}
           />
           <ErrorModal
             onCloseModal={() => null}

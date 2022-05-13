@@ -6,6 +6,7 @@ import { ConfirmationModal } from "./ConfirmationModal";
 import { ErrorModal } from "./ErrorModal";
 import { ConfirmDeathModal } from "./ConfirmDeathModal";
 import { DeathConfirmedModal } from "./DeathConfirmedModal";
+import { FundsTransferedModal } from "./FundsTransferedModal";
 
 export {
   ReviewModal,
@@ -16,4 +17,5 @@ export {
   ConfirmationModal,
   ConfirmDeathModal,
   DeathConfirmedModal,
+  FundsTransferedModal,
 };

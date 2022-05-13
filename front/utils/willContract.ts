@@ -34,7 +34,6 @@ export const willABI: string[] = [
   "function claimFunds() public",
   "event DeathReport(bool isDead)",
   "event FundsTransfered(address to)"
-
 ];
 
 export async function getWill(user) {
@@ -167,7 +166,11 @@ export async function reportDeath(willAddress, deathDate, callbackLoading, callb
   contract.on('DeathReport', callbackDeathReport);
 }
 
-export async function claimFunds(willAddress, user) {
+export async function claimFunds(willAddress, callbackLoading, callbackFundsClaimed, user) {
   const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
   await contract.claimFunds();
+
+  callbackLoading();
+
+  contract.on('FundsTransfered', callbackFundsClaimed);
 }
