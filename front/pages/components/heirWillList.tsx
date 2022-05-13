@@ -117,7 +117,7 @@ export default function HeirWillList() {
                   <Grid xs={3} css={{position: "absolute", right: 0}}>
                     {will.fundsTransferedTx ? (
                       <Link href={`https://rinkeby.etherscan.io/tx/${will.fundsTransferedTx}`} target="_blank">
-                        <Button bordered size="lg">
+                        <Button bordered size="lg" color="success">
                           <FaCheck size={20} style={styles.icon}/> Funds transfered
                         </Button>
                       </Link>
