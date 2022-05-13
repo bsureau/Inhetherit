@@ -165,7 +165,8 @@ export default function Index() {
           &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
           <Link
             color="text"
-            href="/manifesto"
+            href="https://github.com/bsureau/chainlink-hackathon"
+            target="_blank"
           >
             Manifesto
           </Link>

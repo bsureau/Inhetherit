@@ -112,7 +112,8 @@ export default function Sidebar() {
         >          
           <Link
             color="text"
-            href="/manifesto"
+            href="https://github.com/bsureau/chainlink-hackathon"
+            target="_blank"
           >
             <Text
               size={17}
