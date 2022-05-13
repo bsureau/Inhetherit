@@ -5,12 +5,12 @@ import { FaRainbow, FaMoneyCheck, FaCheck } from 'react-icons/fa';
 
 import { Contract, ethers } from "ethers";
 
-import { useUser } from "../../context/user";
-import { useHeirWills } from '../../context/heirWills';
-import { useModal } from "../../context/modal";
+import { useUser } from "../context/user";
+import { useHeirWills } from '../context/heirWills';
+import { useModal } from "../context/modal";
 
-import { getErc20Iso3FromAddress, getTokenImgFromAddress } from "../../utils/erc20Contract";
-import {claimFunds, getHeirWills, reportDeath} from '../../utils/willContract';
+import { getErc20Iso3FromAddress, getTokenImgFromAddress } from "../utils/erc20Contract";
+import {claimFunds, getHeirWills, reportDeath} from '../utils/willContract';
 
 import {
   ConfirmDeathModal,

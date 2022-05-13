@@ -6,12 +6,12 @@ import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 import { FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
 
-import { useUser } from "../../context/user";
-import { useWill } from "../../context/will";
-import { useModal } from "../../context/modal";
+import { useUser } from "../context/user";
+import { useWill } from "../context/will";
+import { useModal } from "../context/modal";
 
-import { getWill, inhetheritFactoryABI, inhetheritFactoryAddress } from "../../utils/willContract";
-import { erc20Abi,  getAddressFromToken, getBalanceOf, getErc20Iso3FromAddress, isERC20Token, maxUINT256ForToken } from "../../utils/erc20Contract";
+import { getWill, inhetheritFactoryABI, inhetheritFactoryAddress } from "../utils/willContract";
+import { erc20Abi,  getAddressFromToken, getBalanceOf, getErc20Iso3FromAddress, isERC20Token, maxUINT256ForToken } from "../utils/erc20Contract";
 
 import { ConfirmationModal, ErrorModal, LoadingModal, MetamaskApproveModal, MetamaskConfirmModal, ReviewModal } from "./modals";
 

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Head from 'next/head';
 import { Button, Container, Row, Col, Spacer } from "@nextui-org/react";
 
-import { Loader, HeirWillList } from "./components";
-import { TopBar, Sidebar } from './components';
+import { Loader, HeirWillList } from "../components";
+import { TopBar, Sidebar } from '../components';
 
 import { connectWallet, getWallet } from "../utils/metamask";
 import { getHeirWills } from "../utils/willContract";

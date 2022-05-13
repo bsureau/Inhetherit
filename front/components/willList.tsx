@@ -3,11 +3,11 @@ import { Button, Col, Link, Table, Text, Tooltip, Row } from '@nextui-org/react'
 import { FaCheck, FaExclamationTriangle } from 'react-icons/fa';
 import { ethers } from 'ethers';
 import { TransactionResponse } from "@ethersproject/abstract-provider";
-import { useWill } from "../../context/will";
-import { useUser } from "../../context/user";
-import { useModal } from "../../context/modal";
-import { getErc20Iso3FromAddress, getTokenImgFromAddress, erc20Abi, isERC20Token, maxUINT256ForToken } from "../../utils/erc20Contract";
-import { getWill, removeErc20Token, removeEth } from "../../utils/willContract";
+import { useWill } from "../context/will";
+import { useUser } from "../context/user";
+import { useModal } from "../context/modal";
+import { getErc20Iso3FromAddress, getTokenImgFromAddress, erc20Abi, isERC20Token, maxUINT256ForToken } from "../utils/erc20Contract";
+import { getWill, removeErc20Token, removeEth } from "../utils/willContract";
 import { ConfirmationModal, ErrorModal, LoadingModal, MetamaskConfirmModal } from "./modals";
 
 const styles: any = {

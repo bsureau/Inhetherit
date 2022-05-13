@@ -50,7 +50,7 @@ export default function Sidebar() {
       align="center"
       css={styles.column}
     >
-      <Link href="/">
+      <Link href="/front/pages">
         <Text
           h1 size={23}
           color="white"
@@ -72,7 +72,7 @@ export default function Sidebar() {
       >
         <Link
           color="text"
-          href="/will"
+          href="/front/pages/will"
         >
           <Text
             size={17}
@@ -90,7 +90,7 @@ export default function Sidebar() {
       >
         <Link
           color={"text"}
-          href="/claims"
+          href="/front/pages/claims"
         >
           <Text
             size={17}
