@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import Head from 'next/head';
-import { Loader, HeirWillList } from "./components";
 import { Button, Container, Row, Col, Spacer } from "@nextui-org/react";
+
+import { Loader, HeirWillList } from "./components";
 import { TopBar, Sidebar } from './components';
+
 import { connectWallet, getWallet } from "../utils/metamask";
 import { getHeirWills } from "../utils/willContract";
+
 import { useHeirWills } from "../context/heirWills";
 import { useUser } from "../context/user";
+import { ModalProvider } from "../context/modal";
 
 const styles: any = {
   container: {
@@ -104,7 +108,9 @@ export default function Claims() {
                 {user.account ?
                   <>
                     <Row>
-                      <HeirWillList />
+                      <ModalProvider>
+                        <HeirWillList />
+                      </ModalProvider>
                     </Row>
                   </>
                   :

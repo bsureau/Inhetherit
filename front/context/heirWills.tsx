@@ -1,9 +1,9 @@
 import { createContext, useContext, useState } from 'react'
 
-const HeirWillsContext = createContext([])
+const HeirWillsContext = createContext(undefined)
 
 export function HeirWillsProvider({ children }) {
-  const [heirWills, setHeirWills] = useState([])
+  const [heirWills, setHeirWills] = useState({})
   return (
     <HeirWillsContext.Provider
       value={{

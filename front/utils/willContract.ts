@@ -157,3 +157,17 @@ export async function removeEth(user, heirAddress) {
   const contract: Contract = new ethers.Contract(inhetheritFactoryAddress, inhetheritFactoryABI, user.signer);
   return await contract.removeEth(heirAddress);
 }
+
+export async function reportDeath(willAddress, deathDate, callbackLoading, callbackDeathReport, user) {
+  const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+  await contract.reportDeath(deathDate);
+
+  callbackLoading();
+
+  contract.on('DeathReport', callbackDeathReport);
+}
+
+export async function claimFunds(willAddress, user) {
+  const contract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
+  await contract.claimFunds();
+}

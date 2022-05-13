@@ -4,6 +4,8 @@ import { MetamaskConfirmModal } from "./MetamaskConfirmModal";
 import { MetamaskApproveModal } from "./MetamaskApproveModal";
 import { ConfirmationModal } from "./ConfirmationModal";
 import { ErrorModal } from "./ErrorModal";
+import { ConfirmDeathModal } from "./ConfirmDeathModal";
+import { DeathConfirmedModal } from "./DeathConfirmedModal";
 
 export {
   ReviewModal,
@@ -12,4 +14,6 @@ export {
   MetamaskApproveModal,
   ErrorModal,
   ConfirmationModal,
+  ConfirmDeathModal,
+  DeathConfirmedModal,
 };
