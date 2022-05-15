@@ -43,10 +43,10 @@ export async function getWill(user) {
     const willAddress = await contract.getWill();
     const willContract: Contract = new ethers.Contract(willAddress, willABI, user.signer);
 
-    const lastName = await willContract.getLastName();
-    const firstName = await willContract.getFirstName();
-    const postCode = await willContract.getBirthPlace();
-    const birthdate = await willContract.getBirthdayDate();
+    const lastName = decodeURI(await willContract.getLastName());
+    const firstName = decodeURI(await willContract.getFirstName());
+    const postCode = decodeURI(await willContract.getBirthPlace());
+    const birthdate = decodeURI(await willContract.getBirthdayDate());
     const ethHeirAddress = await willContract.getEth();
     let claims = await willContract.getClaims();
 
@@ -128,10 +128,10 @@ export async function getHeirWills(user) {
         fundsTransferedTx: fundsTransferedTx,
         claims: claims,
         giverAddress: giverAddress,
-        lastName: await willContract.getLastName(),
-        firstName: await willContract.getFirstName(),
-        postCode: await willContract.getBirthPlace(),
-        birthdate: await willContract.getBirthdayDate(),
+        lastName: decodeURI(await willContract.getLastName()),
+        firstName: decodeURI(await willContract.getFirstName()),
+        postCode: decodeURI(await willContract.getBirthPlace()),
+        birthdate: decodeURI(await willContract.getBirthdayDate()),
       } : {};
     }));
 

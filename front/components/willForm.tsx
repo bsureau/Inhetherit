@@ -116,10 +116,10 @@ export default function WillForm() {
 
     if (!isERC20Token(getErc20Iso3FromAddress(erc20Address))) {
       return await contract.createWillWithEth(
-        firstName,
-        lastName,
-        birthdayDate,
-        birthPostCode,
+        encodeURI(firstName),
+        encodeURI(lastName),
+        encodeURI(birthdayDate),
+        encodeURI(birthPostCode),
         heirAddress,
         {
           value: BigNumber.from(tokenToTransfer.toHexString())
@@ -128,10 +128,10 @@ export default function WillForm() {
     }
 
     return await contract.createWill(
-      firstName,
-      lastName,
-      birthdayDate,
-      birthPostCode,
+      encodeURI(firstName),
+      encodeURI(lastName),
+      encodeURI(birthdayDate),
+      encodeURI(birthPostCode),
       erc20Address,
       heirAddress
     );
