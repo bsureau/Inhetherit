@@ -63,4 +63,12 @@ Here are some improvement ideas we’ve already think of:
 
 ## Few sketches to explain how it works (technically)
 #### Big Picture of the app and it's interactions
-![big picture](doc/big-picture.png)
+![big picture](doc/0-big-picture.png)
+#### François creates a will and pass on his LINK to Bob
+![1 create will](doc/1-create-will.png)
+#### François passes on 3.0 ETH to Alice
+![2 add ETH token](doc/2-add-token-eth.png)
+#### Alice reports François' death
+![3 report death](doc/3-report-death.png)
+#### Alice claims her funds from François
+![4 claim funds](doc/4-claim-funds.png)
