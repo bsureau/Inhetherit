@@ -46,8 +46,8 @@ Inhetherit is a Dapp developed on Ethereum smart contracts platform that allows 
 
 ## What's next for 🌈 Inhetherit?
 Here are some improvement ideas we’ve already think of:
-- Accept ERC721 tokens (NFTs)
 - Be able to split a certain % of a same ERC20 token to different heirs
+- Accept ERC721 tokens (NFTs)
 - Propose to users to give their funds to associations
 - Make frontend responsive
 - Make Dapp cross chain interoperable (Chainlink CCIP?)
