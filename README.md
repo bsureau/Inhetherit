@@ -1,4 +1,4 @@
-# **🌈Inhetherit**
+# **🌈 Inhetherit**
 ### _Your cryptos should never disappear when you die. Plan to pass on your cryptos to your loved ones!_
 
 > ⚠️ **Reminder:** Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet 
@@ -60,3 +60,7 @@ Here are some improvement ideas we’ve already think of:
 
 ## Wanna try? 
 🔗 [inhetherit.link](https://www.inhetherit.link)
+
+## Few sketches to explain how it works (technically)
+#### Big Picture of the app and it's interactions
+![big picture](doc/big-picture.png)
