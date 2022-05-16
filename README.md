@@ -56,7 +56,7 @@ Here are some improvement ideas we’ve already think of:
 - Extend security while preserving privacy (Chainlink Mixicles?)
 
 ## Demo video
-🎥 [![watch here](https://i.ibb.co/fpfS4FM/Capture-d-e-cran-2022-05-16-a-14-35-48.png)](https://www.youtube.com/watch?v=9KKFVsAiAqU)
+[![watch here](https://i.ibb.co/fpfS4FM/Capture-d-e-cran-2022-05-16-a-14-35-48.png)](https://www.youtube.com/watch?v=9KKFVsAiAqU)
 
 ## Wanna try? 
 🔗 [inhetherit.link](https://www.inhetherit.link)
