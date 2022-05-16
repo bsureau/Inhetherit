@@ -117,11 +117,16 @@ export async function getHeirWills(user) {
         });
       }       
 
-
-      const filter: EventFilter = willContract.filters.FundsTransfered(user.address);
+      const filter: EventFilter = willContract.filters.FundsTransfered();
       const events: Event[] = await willContract.queryFilter(filter);
-      const fundsTransferedTx: string|null = events.length > 0 ? events[0].transactionHash : null;
-      
+
+      let fundsTransferedTx: string|null = null;
+      events.map((event) => {
+         if (event.args.to == user.account) {
+          fundsTransferedTx = event.transactionHash;
+         }
+      })
+
       return claims.length > 0 ? {
         address: willAddress,
         state: await willContract.getState(),
