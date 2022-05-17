@@ -2,7 +2,7 @@
   "name": "hardhat-project",
   "devDependencies": {
     "@defi-wonderland/smock": "^2.0.7",
-    "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
@@ -16,6 +16,7 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "@appliedblockchain/chainlink-plugins-fund-link": "^0.0.3",
     "@chainlink/contracts": "^0.4.0",
     "@openzeppelin/contracts": "^4.3.0",
     "dotenv": "^16.0.0"

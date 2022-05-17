@@ -27,8 +27,7 @@ describe("InhetheritFacade", function () {
       "function getErc20Tokens() public view returns(address[] memory)",
       "function getClaims() public view returns(tuple(address heir, address erc20Token)[] memory)",
       "function getClaimsForHeir() public view returns(address[] memory)",
-      "function getState() public view returns(uint)",
-      "function reportDeath(string memory _deathDate) public isOpen hasClaim returns(bytes32 requestId)"
+      "function getState() public view returns(uint)"
     ];
 
     InhetheritFacadeFactory = await smock.mock("InhetheritFacade");

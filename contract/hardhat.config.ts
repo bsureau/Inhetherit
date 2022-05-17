@@ -1,5 +1,6 @@
 require("dotenv").config();
 require('hardhat-contract-sizer');
+require("@appliedblockchain/chainlink-plugins-fund-link");
 import "@nomiclabs/hardhat-waffle";
 import { task } from "hardhat/config";
 
@@ -43,12 +44,15 @@ module.exports = {
     },
     rinkeby: {
       url: process.env.STAGING_ALCHEMY_KEY,
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY_2],
     },
     mainnet: {
       chainId: 1,
       url: process.env.PROD_ALCHEMY_KEY,
       accounts: [process.env.PRIVATE_KEY],
     },
-  }
+  },
+  mocha: {
+    timeout: 200000, // 200 seconds max for running tests
+  },
 };
