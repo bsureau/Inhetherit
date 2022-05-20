@@ -169,7 +169,7 @@ export default function HeirWillList() {
           <Col>
             {heirWills.map((will) => (
               <Row css={styles.column} key={will.address}>
-                <Col align="center" justify="center">
+                <Col>
                   <Row>
                     <Grid xs={6}>
                       <Col>
@@ -181,7 +181,7 @@ export default function HeirWillList() {
                             <Link
                               href={`https://rinkeby.etherscan.io/address/${will.address}`}
                               target="_blank"
-                              color="black"
+                              style={{ color: "black" }}
                             >
                               {will.address}
                             </Link>
@@ -216,7 +216,7 @@ export default function HeirWillList() {
                           <Text>
                             {will.firstName} {will.lastName} &nbsp;
                             {`<`}
-                            <Link color="black" href={`https://rinkeby.etherscan.io/address/${will.giverAddress}`} target="_blank">
+                            <Link style={{ color: "black"}} href={`https://rinkeby.etherscan.io/address/${will.giverAddress}`} target="_blank">
                             {will.giverAddress.substring(0, 35)}...
                             </Link>
                             {`>`}

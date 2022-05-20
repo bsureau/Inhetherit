@@ -28,7 +28,7 @@ export function ConfirmDeathModal ({
         </Text>
       </Modal.Header>
       <Modal.Body>
-        <Col justify="center" align="center">
+        <Col style={{ textAlign: 'center' }}>
           <Text>
             We are sorry for your loss. <br/>
             In order to unlock the funds, please fill the date of death.

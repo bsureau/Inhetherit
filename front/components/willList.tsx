@@ -146,7 +146,7 @@ export default function WillList() {
                 <Table.Column>Token</Table.Column>
                 <Table.Column>Heir Address</Table.Column>
                 <Table.Column>Amount</Table.Column>
-                <Table.Column></Table.Column>
+                <Table.Column>&nbsp;</Table.Column>
               </Table.Header>
               <Table.Body>
                 {will.claims.map((claim) => (

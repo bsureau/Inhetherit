@@ -58,25 +58,22 @@ export default function Index() {
          <strong>REMINDER: </strong> Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet... 
         </Text>
       </Row>
-      <Col 
-        justify="center" 
-        align="center" 
-      >
+      <Col style={{ textAlign: "center" }} >
         <Spacer y={3} />
-        <Text 
-          h1 size={25} 
+        <Text
+          h1 size={25}
           weight="bold"
           css={styles.logo}
         >
-          🌈 &nbsp;INHETHERIT  
+          🌈 &nbsp;INHETHERIT
         </Text>
-        <Text 
-          h2 
-          size={100} 
-          css={styles.title} 
+        <Text
+          h2
+          size={100}
+          css={styles.title}
           weight="bold"
         >
-          Find peace of mind. 
+          Find peace of mind.
         </Text>
         <Text h3 size={20}>
           Your cryptos should <strong>never</strong> disappear when you die. <br />
@@ -94,8 +91,7 @@ export default function Index() {
             <Grid 
               xs={10} 
               md={3} 
-              justify="center" 
-              wrap="wrap"
+              justify="center"
             >
               <Card hoverable css={styles.card}>
                 <Text 
@@ -115,7 +111,7 @@ export default function Index() {
                 </Text>
                 <Card.Footer css={styles.cardFooter}>
                   <Link href="/will">
-                    <Button auto justify="center">
+                    <Button auto>
                       Get started
                     </Button>
                   </Link>
@@ -125,8 +121,7 @@ export default function Index() {
             <Grid 
               xs={10} 
               md={3} 
-              justify="center" 
-              wrap="wrap"
+              justify="center"
             >
               <Card hoverable css={styles.card}>
                 <Text 
@@ -160,7 +155,7 @@ export default function Index() {
         <Row 
           justify="center" 
           align="center"
-          background="#fefefe"
+          style={{ marginTop: "10px" }}
         >
           &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
           <Link
@@ -171,6 +166,17 @@ export default function Index() {
             Manifesto
           </Link>
           &nbsp;&nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp;&nbsp;
+        </Row>
+        <Spacer />
+        <Spacer />
+        <Row
+          justify="center"
+          align="center"
+          style={{ marginTop: "10px" }}
+        >
+          Made in 🇫🇷 by&nbsp;
+          <Link href="https://github.com/bsureau" target="_blank">@bsureau</Link>&nbsp;&&nbsp;
+          <Link href="https://github.com/romainjeff" target="_blank">@romainjeff</Link>
         </Row>
         <Spacer />
       </Col>

@@ -25,7 +25,7 @@ export function ReviewModal ({
         </Text>
       </Modal.Header>
       <Modal.Body>
-        <Col justify="center" align="center">
+        <Col>
           <Text>
             {isERC20Token(formData.token) ?
               `You are about to give the right to transfer all your ${formData.token} funds to your heir.`

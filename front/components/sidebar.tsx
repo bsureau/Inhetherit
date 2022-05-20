@@ -14,17 +14,19 @@ const styles: any = {
     zIndex: "100"
   },
   logo: {
-    fontFamily: 'Avenir Next'
+    fontFamily: 'Avenir Next',
   },
   menuItem: {
     paddingLeft: "4em"
   },
   menuText: {
     color: "#dedede",
+    weight: 600,
   },
   menuSelectedText: {
     textDecoration: "underline",
     color: "#ffffff",
+    weight: 600,
   },
   menuFooter: {
     position: "absolute",
@@ -47,26 +49,29 @@ export default function Sidebar() {
 
   return (
     <Col
-      align="center"
       css={styles.column}
     >
-      <Link href="/">
-        <Text
-          h1 size={23}
-          color="white"
-          weight="bold"
-          css={styles.logo}
-        >
-          🌈 &nbsp;INHETHERIT {"\n"}
-        </Text>
-      </Link>
-      <Text
-        size={13}
-        color="white"
-      >
-        Find peace of mind.
-      </Text>
-      <Spacer y={3} />
+      <Row>
+        <Col style={{ textAlign: 'center' }}>
+          <Link href="/">
+            <Text
+              h1 size={23}
+              color="white"
+              weight="bold"
+              css={styles.logo}
+            >
+              🌈 &nbsp;INHETHERIT {"\n"}
+            </Text>
+          </Link>
+          <Text
+            size={13}
+            color="white"
+          >
+            Find peace of mind.
+          </Text>
+          <Spacer y={3} />
+        </Col>
+      </Row>
       <Row
         css={styles.menuItem}
       >
@@ -107,9 +112,8 @@ export default function Sidebar() {
         css={styles.menuFooter}
       >
         <Col
-          align="left"
           css={styles.menuFooterItem}
-        >          
+        >
           <Link
             color="text"
             href="https://github.com/bsureau/chainlink-hackathon"
@@ -117,7 +121,6 @@ export default function Sidebar() {
           >
             <Text
               size={17}
-              weight="600"
               style={router.pathname == "/manifesto" ? styles.menuSelectedText : styles.menuText }
             >
               <FaFile style={styles.icon} />

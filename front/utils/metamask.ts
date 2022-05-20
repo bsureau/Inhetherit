@@ -1,4 +1,5 @@
-import {ethers, Provider} from "ethers";
+import {ethers} from "ethers";
+import { Web3Provider } from '@ethersproject/providers';
 import {WalletError} from "../exceptions/walletError";
 
 export async function getWallet (ethereum) {
@@ -8,7 +9,7 @@ export async function getWallet (ethereum) {
       throw new WalletError("Please install Metamask first: https://metamask.io");
     }
 
-    const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
+    const provider: Web3Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
     const accounts: any[] = await provider.send("eth_accounts", []); // Retrieve authorized accounts
 
     if (accounts.length > 0) {
@@ -35,7 +36,7 @@ export async function connectWallet (ethereum) {
       throw new WalletError("Please install Metamask first: https://metamask.io");
     }
 
-    const provider: Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
+    const provider: Web3Provider = new ethers.providers.Web3Provider(ethereum); // Connect to Ethereum using MetaMask
     await provider.send("eth_requestAccounts", []); // Requesting permission to connect users accounts
 
     const signer = provider.getSigner();

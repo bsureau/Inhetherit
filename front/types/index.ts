@@ -1,5 +1,5 @@
 import { BigNumber, Signer } from "ethers";
-import { ExternalProvider } from '@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 
 export type User = {
     account: string;
@@ -30,6 +30,6 @@ export type Action = {
 
 declare global {
     interface Window {
-        ethereum: ExternalProvider;
+        ethereum: Web3Provider;
     }
 };

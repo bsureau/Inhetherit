@@ -32,7 +32,7 @@ export default function WillForm() {
   const [token, setToken] = useState('');
   const [erc20Address, setErc20Address]: [string, Dispatch<SetStateAction<string>>] = useState("");
   const [tokenBalance, setTokenBalance] = useState('0');
-  const [tokenToTransfer, setTokenToTransfer] = useState(FixedNumber.from(0));
+  const [tokenToTransfer, setTokenToTransfer]: [FixedNumber, Dispatch<SetStateAction<FixedNumber>>] = useState(FixedNumber.from(0));
   const [gasPrice, setGasPrice] = useState(BigNumber.from(0));
 
   // validation funnel
@@ -72,8 +72,8 @@ export default function WillForm() {
     }
   }
 
-  const handleSubmit: Function = (evt) => {
-    evt.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     setSubmited(true);
 
     setModal({
@@ -301,7 +301,8 @@ export default function WillForm() {
                 width="20%"
                 css={{ paddingRight: "20px" }}
                 min="0.0"
-                value={tokenToTransfer}
+                step="0.0001"
+                value={tokenToTransfer.toString()}
                 onChange={e => setTokenToTransfer(FixedNumber.from(e.target.value == '' ? 0.0 : e.target.value))}
                 disabled={submited}
               />

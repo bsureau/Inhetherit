@@ -49,6 +49,7 @@ export default function Claims() {
           });
 
         if (window.ethereum !== undefined) {
+          /** @ts-ignore **/
           window.ethereum.on('accountsChanged', (accounts) => {
             if (accounts.length === 0) {
               setUser({});
@@ -93,19 +94,14 @@ export default function Claims() {
         justify="center"
         align="center"
       > 
-        <Col 
-          justify="center" 
-          align="center" 
+        <Col
           css={styles.column}
         >
           <Spacer y={3} />
             { loading === true ?
               <Loader width={70} />
               :
-              <Col 
-                justify="center" 
-                align="center"
-              >
+              <Col>
                 {user.account ?
                   <>
                     <Row>
@@ -115,7 +111,7 @@ export default function Claims() {
                     </Row>
                   </>
                   :
-                  <Col>
+                  <Col style={{ textAlign: 'center' }}>
                     <h3>Please connect your wallet first...</h3><br/>
                     <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
                   </Col>
