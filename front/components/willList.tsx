@@ -23,9 +23,11 @@ const styles: any = {
     padding: "0rem 0 0rem 0"
   },
   token: {
-    display: "flex", 
-    justifyContent: "flex-start", 
-    alignItems: "center",
+    row: {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
     img: {
       marginRight: "10px"
     }
@@ -153,23 +155,23 @@ export default function WillList() {
                   <Table.Row key={claim.erc20Token}>
                     <Table.Cell>
                       {claim.allowance.lt(claim.balance) ?
-                        <>
+                        <Row justify="flex-start">
                           <Tooltip content={"This means we won't be able to transfer all your funds in case of your death. Please increase allowance."}>
                             <FaExclamationTriangle color="#f7ca18" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
                             <small>Allowance too low ({ethers.utils.formatEther(claim.allowance.sub(claim.balance))}) {getErc20Iso3FromAddress(claim.erc20Token)})</small>
                           </Tooltip>
-                        </>
+                        </Row>
                         :
-                        <>
+                        <Row justify="flex-start">
                           <FaCheck color="#17c964" size={20} style={{verticalAlign: 'middle'}}/>&nbsp;
                           <small>All good</small>
-                        </>
+                        </Row>
                       }
                     </Table.Cell>
                     <Table.Cell>
                       <Row
-                      justify="flex-start"
-                       style= {styles.token}>
+                       justify="flex-start"
+                       style= {styles.token.row}>
                         <img
                           alt="token icon"
                           width={30}
@@ -180,21 +182,30 @@ export default function WillList() {
                       </Row>
                     </Table.Cell>
                     <Table.Cell>
-                      <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
-                        {claim.heir.substring(0, 20)}...
-                      </Link>
+                      <Row justify="flex-start">
+                        <Link href={`https://rinkeby.etherscan.io/address/${claim.heir}`} target="_blank">
+                          {claim.heir.substring(0, 20)}...
+                        </Link>
+                      </Row>
                     </Table.Cell>
                     <Table.Cell>
-                      {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
+                      <Row justify="flex-start">
+                        {ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.erc20Token)}
+                      </Row>
                     </Table.Cell>
                     <Table.Cell>
-                      {claim.allowance.lt(claim.balance) ?
-                        <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
-                        : ''
-                      }
-                      <Button light color="error" onClick={() => onDeleteToken(claim.heir, claim.erc20Token)}>
-                        Delete from will
-                      </Button>
+                      <Col>
+                        {claim.allowance.lt(claim.balance) ? (
+                          <Row justify="flex-start">
+                            <Button onClick={() => onIncreaseAllowance(claim.erc20Token)}>Increase allowance</Button>
+                          </Row>
+                        ): ''}
+                        <Row justify="flex-start">
+                          <Button light color="error" onClick={() => onDeleteToken(claim.heir, claim.erc20Token)}>
+                            Delete from will
+                          </Button>
+                        </Row>
+                      </Col>
                     </Table.Cell>
                   </Table.Row>
                 ))}
