@@ -111,9 +111,13 @@ export default function Claims() {
                     </Row>
                   </>
                   :
-                  <Col style={{ textAlign: 'center' }}>
-                    <h3>Please connect your wallet first...</h3><br/>
-                    <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
+                  <Col>
+                    <Row justify="center" align="center" style={{ marginBottom: 10 }}>
+                      <h3>Please connect your wallet first...</h3>
+                    </Row>
+                    <Row justify="center" align="center">
+                      <Button bordered onClick={onConnectWallet}>Connect with Metamask</Button>
+                    </Row>
                   </Col>
                 }
               </Col>
