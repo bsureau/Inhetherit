@@ -171,6 +171,7 @@ export default function WillList() {
                       justify="flex-start"
                        style= {styles.token}>
                         <img
+                          alt="token icon"
                           width={30}
                           src={getTokenImgFromAddress(claim.erc20Token)}
                           style={styles.token.img}
@@ -203,7 +204,7 @@ export default function WillList() {
         :
         <Col css={{ padding: "3rem 2rem" }}>
           <Text css={{ color: '#888', fontWeight: 500 }}>
-            You don't have any will yet
+            You don&lsquo;t have any will yet
           </Text>
         </Col>
         }

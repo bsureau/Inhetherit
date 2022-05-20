@@ -243,7 +243,7 @@ export default function HeirWillList() {
                             <Grid xs={3} key={claim.address}>
                               <Card bordered shadow={false} css={styles.card}>
                                 <Row css={styles.tokenContent}>
-                                  <img src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
+                                  <img alt="token icon" src={getTokenImgFromAddress(claim.tokenAddress)} width="30px"/> &nbsp;&nbsp;&nbsp;
                                   <Text>{ethers.utils.formatEther(claim.balance)} {getErc20Iso3FromAddress(claim.tokenAddress)}</Text></Row>
                               </Card>
                             </Grid>
@@ -289,7 +289,7 @@ export default function HeirWillList() {
       :
         <Col css={{padding: "3rem 2rem", boxShadow: "0px 0.2rem 10px #e0e0e0", width: "85%", minWidth: "1000px", margin: "auto", borderRadius: "1rem", background: "#ffffff" }}>
           <Text css={{ color: '#888', fontWeight: 500 }}>
-            You're not listed in any will yet
+            You&lsquo;re not listed in any will yet
           </Text>
         </Col>
       }

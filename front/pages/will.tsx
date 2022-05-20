@@ -30,6 +30,7 @@ export default function Will() {
   const { will, setWill } = useWill();
   const [ loading, setLoading ] = useState(true);
 
+  /* eslint-disable */
   useEffect(function () {
     getWallet(window.ethereum)
       .then((user) => {

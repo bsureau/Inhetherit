@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import Head from 'next/head';
 import { Button, Container, Row, Col, Spacer } from "@nextui-org/react";
 
@@ -34,6 +34,7 @@ export default function Claims() {
   const { setHeirWills } = useHeirWills();
   const [ loading, setLoading ] = useState(true);
 
+  /* eslint-disable */
   useEffect(function () {
     getWallet(window.ethereum)
       .then((user) => {
