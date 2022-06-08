@@ -3,6 +3,8 @@
 
 > ⚠️ **Reminder:** Inhetherit was made during Chainlink Spring 22 Hackathon and is only available on testnet 
 
+> ⭐️ this project has been awarded "Top Quality Projects" (40 projects among 342 submissions) during [Chainlink Spring 22 hackathon](https://devpost.com/software/inhetherit)
+
 ## What is it?
 One must always have foresight in life. After I bought my first apartment with my wife, I, for the first time ever, wrote a will at the notary. And the issue of passing on my cryptocurrencies arose very quickly. First of all, because crypto-currencies are not yet well defined in terms of legislation. And even so my wife, or my notary, would still need to have access to my private key in order to release the funds. Wouldn't there be a more direct, fast, secured and reliable way to solve this problem? That's how we came up with the idea of developing 🌈 **Inhetherit**. 
 
